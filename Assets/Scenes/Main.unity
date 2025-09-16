@@ -1004,7 +1004,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -136}
+  m_AnchoredPosition: {x: 0, y: -138}
   m_SizeDelta: {x: 975, y: 500}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &948208860
@@ -1232,7 +1232,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -100, y: -80}
+  m_SizeDelta: {x: -100, y: -50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1395434257
 MonoBehaviour:
@@ -1255,7 +1255,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: '"They asked me how well I understood theoretical physics. I said I had
-    a theoretical degree in physics. They said welcome aboard."'
+    a theoretical degree in physics. They said welcome aboard." And so on and so
+    forth yada yada shish boom bada.'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3c93b49dd9cc5844da5debbc1fcc4436, type: 2}
   m_sharedMaterial: {fileID: -8726526792022010780, guid: 3c93b49dd9cc5844da5debbc1fcc4436, type: 2}
