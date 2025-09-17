@@ -21,7 +21,8 @@ public class SpeechBubble : MonoBehaviour
     {
         if (textMeshPro != null && rectTransform != null)
         {
-            float preferredHeight = textMeshPro.GetPreferredValues(textMeshPro.text, rectTransform.rect.width, Mathf.Infinity).y;
+            textMeshPro.ForceMeshUpdate();
+            float preferredHeight = textMeshPro.preferredHeight;
             if (!Mathf.Approximately(preferredHeight, lastPreferredHeight))
             {
                 rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, preferredHeight + extraHeight);
