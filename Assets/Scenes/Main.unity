@@ -969,6 +969,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DialogManager
   dialogText: {fileID: 1395434257}
+  speechBubble: {fileID: 970933595}
+  textSpoken: {r: 0.9450981, g: 0.9450981, b: 0.89019614, a: 1}
+  textUnspoken: {r: 0.19215688, g: 0.1254902, b: 0.21960786, a: 1}
   characterPortraits:
   - {fileID: 127503010}
   - {fileID: 1471344122}

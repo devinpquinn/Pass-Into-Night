@@ -7,6 +7,10 @@ using System.Collections.Generic;
 public class DialogManager : MonoBehaviour
 {
     public TextMeshProUGUI dialogText;
+    public GameObject speechBubble;
+
+    public Color textSpoken;
+    public Color textUnspoken;
 
     public Image[] characterPortraits;
     public Sprite[] characterSpritesInactive;
@@ -19,9 +23,11 @@ public class DialogManager : MonoBehaviour
     {
         // Debug dialog lines
         dialogQueue.Enqueue("0: Hello, I am character 0.");
+        dialogQueue.Enqueue("Interesting. Here is some descriptive text.");
         dialogQueue.Enqueue("1: Now character 1 is speaking.");
-        dialogQueue.Enqueue("2: Test dialog");
-        dialogQueue.Enqueue("0: Back to character 0!");
+        dialogQueue.Enqueue("2: And now character 2 is speaking.");
+        dialogQueue.Enqueue("Character 3 waits patiently.");
+        dialogQueue.Enqueue("3: Ok, now it's my turn!");
         ShowNextDialog();
     }
 
@@ -39,6 +45,7 @@ public class DialogManager : MonoBehaviour
         {
             dialogText.text = "";
             HighlightSpeaker(-1);
+            speechBubble.SetActive(false);
             return;
         }
 
@@ -52,18 +59,26 @@ public class DialogManager : MonoBehaviour
             {
                 currentSpeaker = speakerIndex;
                 dialogText.text = dialog;
+                dialogText.color = textSpoken;
                 HighlightSpeaker(currentSpeaker);
+                if (speechBubble != null) speechBubble.SetActive(true);
             }
             else
             {
+                // Fallback: treat as unspoken text
                 dialogText.text = line;
+                dialogText.color = textUnspoken;
                 HighlightSpeaker(-1);
+                if (speechBubble != null) speechBubble.SetActive(false);
             }
         }
         else
         {
+            // Descriptive/unspoken text
             dialogText.text = line;
+            dialogText.color = textUnspoken;
             HighlightSpeaker(-1);
+            if (speechBubble != null) speechBubble.SetActive(false);
         }
     }
 
