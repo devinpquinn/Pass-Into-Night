@@ -419,6 +419,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 344441669}
+  - component: {fileID: 344441670}
   m_Layer: 5
   m_Name: DialogUI
   m_TagString: Untagged
@@ -447,6 +448,37 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -12.5}
   m_SizeDelta: {x: 975, y: 800.4}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &344441670
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 344441668}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 091740787516f92419c940db262a646d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DialogManager
+  dialogText: {fileID: 1395434257}
+  speechBubble: {fileID: 970933595}
+  textSpoken: {r: 0.9450981, g: 0.9450981, b: 0.89019614, a: 1}
+  textUnspoken: {r: 0.19215688, g: 0.1254902, b: 0.21960786, a: 1}
+  characterPortraits:
+  - {fileID: 127503010}
+  - {fileID: 1471344122}
+  - {fileID: 272330669}
+  - {fileID: 67896010}
+  characterSpritesInactive:
+  - {fileID: 21300000, guid: 88ca2fe3036c0e445ae6088abc3ad5fe, type: 3}
+  - {fileID: 21300000, guid: b5981955173e6aa4bab86d7d3d2e270d, type: 3}
+  - {fileID: 21300000, guid: 3841c37c868efd94ab4b33733893ad76, type: 3}
+  - {fileID: 21300000, guid: 6f85c018fce920647bed6ec6cc16e61a, type: 3}
+  characterSpritesActive:
+  - {fileID: 21300000, guid: a25b60d099e15274bbbc6af81bf916d9, type: 3}
+  - {fileID: 21300000, guid: c396d4b3fd13bd84db8462540536d0a2, type: 3}
+  - {fileID: 21300000, guid: bee6e797aae821f4097b9c6da6e0b34e, type: 3}
+  - {fileID: 21300000, guid: 07dbc3afed7051e409a82aba6979ddcb, type: 3}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -925,7 +957,6 @@ GameObject:
   - component: {fileID: 948208859}
   - component: {fileID: 948208861}
   - component: {fileID: 948208860}
-  - component: {fileID: 948208862}
   m_Layer: 5
   m_Name: DialogPanel
   m_TagString: Untagged
@@ -992,37 +1023,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 948208858}
   m_CullTransparentMesh: 1
---- !u!114 &948208862
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 948208858}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 091740787516f92419c940db262a646d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DialogManager
-  dialogText: {fileID: 1395434257}
-  speechBubble: {fileID: 970933595}
-  textSpoken: {r: 0.9450981, g: 0.9450981, b: 0.89019614, a: 1}
-  textUnspoken: {r: 0.19215688, g: 0.1254902, b: 0.21960786, a: 1}
-  characterPortraits:
-  - {fileID: 127503010}
-  - {fileID: 1471344122}
-  - {fileID: 272330669}
-  - {fileID: 67896010}
-  characterSpritesInactive:
-  - {fileID: 21300000, guid: 88ca2fe3036c0e445ae6088abc3ad5fe, type: 3}
-  - {fileID: 21300000, guid: b5981955173e6aa4bab86d7d3d2e270d, type: 3}
-  - {fileID: 21300000, guid: 3841c37c868efd94ab4b33733893ad76, type: 3}
-  - {fileID: 21300000, guid: 6f85c018fce920647bed6ec6cc16e61a, type: 3}
-  characterSpritesActive:
-  - {fileID: 21300000, guid: a25b60d099e15274bbbc6af81bf916d9, type: 3}
-  - {fileID: 21300000, guid: c396d4b3fd13bd84db8462540536d0a2, type: 3}
-  - {fileID: 21300000, guid: bee6e797aae821f4097b9c6da6e0b34e, type: 3}
-  - {fileID: 21300000, guid: 07dbc3afed7051e409a82aba6979ddcb, type: 3}
 --- !u!1 &970933595
 GameObject:
   m_ObjectHideFlags: 0
