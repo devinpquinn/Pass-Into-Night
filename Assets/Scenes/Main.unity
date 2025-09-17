@@ -1136,6 +1136,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpeechBubble
   textMeshPro: {fileID: 1395434257}
   extraHeight: 87.33
+  lightTextColor: {r: 0.9450981, g: 0.9450981, b: 0.89019614, a: 1}
+  darkTextColor: {r: 0.19215688, g: 0.12941177, b: 0.2392157, a: 1}
+  image: {fileID: 970933597}
 --- !u!1 &1276441278
 GameObject:
   m_ObjectHideFlags: 0
