@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 public class DialogManager : MonoBehaviour
 {
+    private Camera uiCamera;
     public TextMeshProUGUI dialogText;
     public GameObject speechBubble;
 
@@ -30,6 +31,12 @@ public class DialogManager : MonoBehaviour
 
     void Start()
     {
+        // Find the parent Canvas and cache its worldCamera (if any)
+        Canvas canvas = GetComponentInParent<Canvas>();
+        if (canvas != null)
+        {
+            uiCamera = canvas.renderMode == RenderMode.ScreenSpaceCamera ? canvas.worldCamera : null;
+        }
         // Debug dialog lines
         dialogQueue.Enqueue("0: Hello, I am character 0.");
         dialogQueue.Enqueue("Interesting. Here is some descriptive text.");
@@ -77,7 +84,25 @@ public class DialogManager : MonoBehaviour
             }
         }
 
+        bool advance = false;
         if (!isScaling && Input.GetKeyDown(KeyCode.Space))
+        {
+            advance = true;
+        }
+        else if (!isScaling && Input.GetMouseButtonDown(0))
+        {
+            // Check if mouse is over this object's RectTransform
+            RectTransform rt = GetComponent<RectTransform>();
+            if (rt != null)
+            {
+                Vector2 mousePos = Input.mousePosition;
+                if (RectTransformUtility.RectangleContainsScreenPoint(rt, mousePos, uiCamera))
+                {
+                    advance = true;
+                }
+            }
+        }
+        if (advance)
         {
             ShowNextDialog();
         }
