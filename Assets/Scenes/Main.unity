@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 67896011}
   - component: {fileID: 67896010}
   m_Layer: 5
-  m_Name: Portrait
+  m_Name: Portrait 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -206,7 +206,7 @@ GameObject:
   - component: {fileID: 127503011}
   - component: {fileID: 127503010}
   m_Layer: 5
-  m_Name: Portrait
+  m_Name: Portrait 0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -281,7 +281,7 @@ GameObject:
   - component: {fileID: 272330670}
   - component: {fileID: 272330669}
   m_Layer: 5
-  m_Name: Portrait
+  m_Name: Portrait 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -746,7 +746,7 @@ GameObject:
   - component: {fileID: 869053198}
   - component: {fileID: 869053197}
   m_Layer: 5
-  m_Name: Frame (2)
+  m_Name: Frame 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -889,6 +889,7 @@ GameObject:
   - component: {fileID: 948208859}
   - component: {fileID: 948208861}
   - component: {fileID: 948208860}
+  - component: {fileID: 948208862}
   m_Layer: 5
   m_Name: DialogPanel
   m_TagString: Untagged
@@ -955,6 +956,34 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 948208858}
   m_CullTransparentMesh: 1
+--- !u!114 &948208862
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 948208858}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 091740787516f92419c940db262a646d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DialogManager
+  dialogText: {fileID: 1395434257}
+  characterPortraits:
+  - {fileID: 127503010}
+  - {fileID: 1471344122}
+  - {fileID: 272330669}
+  - {fileID: 67896010}
+  characterSpritesInactive:
+  - {fileID: 21300000, guid: 88ca2fe3036c0e445ae6088abc3ad5fe, type: 3}
+  - {fileID: 21300000, guid: b5981955173e6aa4bab86d7d3d2e270d, type: 3}
+  - {fileID: 21300000, guid: 3841c37c868efd94ab4b33733893ad76, type: 3}
+  - {fileID: 21300000, guid: 6f85c018fce920647bed6ec6cc16e61a, type: 3}
+  characterSpritesActive:
+  - {fileID: 21300000, guid: a25b60d099e15274bbbc6af81bf916d9, type: 3}
+  - {fileID: 21300000, guid: c396d4b3fd13bd84db8462540536d0a2, type: 3}
+  - {fileID: 21300000, guid: bee6e797aae821f4097b9c6da6e0b34e, type: 3}
+  - {fileID: 21300000, guid: 07dbc3afed7051e409a82aba6979ddcb, type: 3}
 --- !u!1 &970933595
 GameObject:
   m_ObjectHideFlags: 0
@@ -1042,7 +1071,7 @@ GameObject:
   - component: {fileID: 1276441281}
   - component: {fileID: 1276441280}
   m_Layer: 5
-  m_Name: Frame (1)
+  m_Name: Frame 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1118,7 +1147,7 @@ GameObject:
   - component: {fileID: 1369122230}
   - component: {fileID: 1369122229}
   m_Layer: 5
-  m_Name: Frame
+  m_Name: Frame 0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1330,7 +1359,7 @@ GameObject:
   - component: {fileID: 1471344123}
   - component: {fileID: 1471344122}
   m_Layer: 5
-  m_Name: Portrait
+  m_Name: Portrait 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1405,7 +1434,7 @@ GameObject:
   - component: {fileID: 1895655451}
   - component: {fileID: 1895655450}
   m_Layer: 5
-  m_Name: Frame (3)
+  m_Name: Frame 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
