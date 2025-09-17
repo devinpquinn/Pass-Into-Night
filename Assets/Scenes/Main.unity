@@ -1348,8 +1348,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '"They asked me how well I understood theoretical physics. I said I had
-    a theoretical degree in physics. They said welcome aboard."'
+  m_text: They asked me how well I understood theoretical physics. I said I had a
+    theoretical degree in physics. They said welcome aboard.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3c93b49dd9cc5844da5debbc1fcc4436, type: 2}
   m_sharedMaterial: {fileID: -8726526792022010780, guid: 3c93b49dd9cc5844da5debbc1fcc4436, type: 2}
