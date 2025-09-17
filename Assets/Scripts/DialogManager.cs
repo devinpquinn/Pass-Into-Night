@@ -106,7 +106,7 @@ public class DialogManager : MonoBehaviour
             {
                 previousSpeaker = currentSpeaker;
                 currentSpeaker = speakerIndex;
-                dialogText.text = dialog;
+                dialogText.text = $"\"{dialog}\""; // Add quotation marks
                 dialogText.color = textSpoken;
                 HighlightSpeaker(currentSpeaker);
                 if (speechBubble != null) speechBubble.SetActive(true);
