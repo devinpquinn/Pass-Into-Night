@@ -15,9 +15,18 @@ public class DialogManager : MonoBehaviour
     public Image[] characterPortraits;
     public Sprite[] characterSpritesInactive;
     public Sprite[] characterSpritesActive;
+    
+    private float activePortraitScale = 1.125f;
+    private float portraitScaleTime = 0.1f;
 
     private Queue<string> dialogQueue = new Queue<string>();
     private int currentSpeaker = -1;
+    private int previousSpeaker = -1;
+
+    private bool isScaling = false;
+    private float[] portraitScaleTimers;
+    private float[] portraitStartScales;
+    private float[] portraitTargetScales;
 
     void Start()
     {
@@ -28,12 +37,47 @@ public class DialogManager : MonoBehaviour
         dialogQueue.Enqueue("2: And now character 2 is speaking.");
         dialogQueue.Enqueue("Character 3 waits patiently.");
         dialogQueue.Enqueue("3: Ok, now it's my turn!");
+
+        portraitScaleTimers = new float[characterPortraits.Length];
+        portraitStartScales = new float[characterPortraits.Length];
+        portraitTargetScales = new float[characterPortraits.Length];
+        for (int i = 0; i < characterPortraits.Length; i++)
+        {
+            if (characterPortraits[i].transform.parent != null)
+                characterPortraits[i].transform.parent.localScale = Vector3.one;
+            portraitScaleTimers[i] = 0f;
+            portraitStartScales[i] = 1f;
+            portraitTargetScales[i] = 1f;
+        }
+
         ShowNextDialog();
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        // Handle portrait scaling
+        if (isScaling)
+        {
+            bool allDone = true;
+            for (int i = 0; i < characterPortraits.Length; i++)
+            {
+                if (portraitScaleTimers[i] < portraitScaleTime)
+                {
+                    portraitScaleTimers[i] += Time.deltaTime;
+                    float t = Mathf.Clamp01(portraitScaleTimers[i] / portraitScaleTime);
+                    float scale = Mathf.Lerp(portraitStartScales[i], portraitTargetScales[i], t);
+                    if (characterPortraits[i].transform.parent != null)
+                        characterPortraits[i].transform.parent.localScale = new Vector3(scale, scale, 1f);
+                    if (t < 1f) allDone = false;
+                }
+            }
+            if (allDone)
+            {
+                isScaling = false;
+            }
+        }
+
+        if (!isScaling && Input.GetKeyDown(KeyCode.Space))
         {
             ShowNextDialog();
         }
@@ -46,6 +90,9 @@ public class DialogManager : MonoBehaviour
             dialogText.text = "";
             HighlightSpeaker(-1);
             speechBubble.SetActive(false);
+            // Smoothly scale last speaker's portrait parent back to 1
+            StartPortraitScale(currentSpeaker, -1);
+            currentSpeaker = -1;
             return;
         }
 
@@ -57,11 +104,13 @@ public class DialogManager : MonoBehaviour
             string dialog = line.Substring(colonIndex + 1).Trim();
             if (int.TryParse(speakerStr, out int speakerIndex))
             {
+                previousSpeaker = currentSpeaker;
                 currentSpeaker = speakerIndex;
                 dialogText.text = dialog;
                 dialogText.color = textSpoken;
                 HighlightSpeaker(currentSpeaker);
                 if (speechBubble != null) speechBubble.SetActive(true);
+                StartPortraitScale(previousSpeaker, currentSpeaker);
             }
             else
             {
@@ -70,6 +119,7 @@ public class DialogManager : MonoBehaviour
                 dialogText.color = textUnspoken;
                 HighlightSpeaker(-1);
                 if (speechBubble != null) speechBubble.SetActive(false);
+                StartPortraitScale(currentSpeaker, -1);
             }
         }
         else
@@ -79,6 +129,7 @@ public class DialogManager : MonoBehaviour
             dialogText.color = textUnspoken;
             HighlightSpeaker(-1);
             if (speechBubble != null) speechBubble.SetActive(false);
+            StartPortraitScale(currentSpeaker, -1);
         }
     }
 
@@ -95,5 +146,28 @@ public class DialogManager : MonoBehaviour
                 characterPortraits[i].sprite = characterSpritesInactive[i];
             }
         }
+    }
+
+    void StartPortraitScale(int prev, int curr)
+    {
+        // Reset all timers and set targets
+        for (int i = 0; i < characterPortraits.Length; i++)
+        {
+            float currentScale = 1f;
+            if (characterPortraits[i].transform.parent != null)
+                currentScale = characterPortraits[i].transform.parent.localScale.x;
+            portraitStartScales[i] = currentScale;
+            if (i == curr)
+            {
+                portraitTargetScales[i] = activePortraitScale;
+                portraitScaleTimers[i] = 0f;
+            }
+            else
+            {
+                portraitTargetScales[i] = 1f;
+                portraitScaleTimers[i] = 0f;
+            }
+        }
+        isScaling = true;
     }
 }
