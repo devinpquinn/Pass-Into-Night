@@ -462,6 +462,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 091740787516f92419c940db262a646d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DialogManager
+  dialogPanel: {fileID: 948208859}
+  shrinkAmount: 24
   dialogText: {fileID: 1395434257}
   speechBubble: {fileID: 970933595}
   textSpoken: {r: 0.9450981, g: 0.9450981, b: 0.89019614, a: 1}
@@ -1022,9 +1024,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 149.99997}
+  m_AnchoredPosition: {x: 0, y: -125.20004}
   m_SizeDelta: {x: 975, y: 550.4}
-  m_Pivot: {x: 0.5, y: 1}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &948208860
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,11 +1,16 @@
+
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-
 using System.Collections.Generic;
 
 public class DialogManager : MonoBehaviour
 {
+    public RectTransform dialogPanel;
+    public float shrinkAmount = 12f;
+    private Vector2 dialogPanelOriginalSize;
+    private bool isDialogPanelPunching = false;
+    private float dialogPanelPunchTimer = 0f;
     private Camera uiCamera;
     public TextMeshProUGUI dialogText;
     public GameObject speechBubble;
@@ -29,8 +34,13 @@ public class DialogManager : MonoBehaviour
     private float[] portraitStartScales;
     private float[] portraitTargetScales;
 
+
     void Start()
     {
+        if (dialogPanel != null)
+        {
+            dialogPanelOriginalSize = dialogPanel.sizeDelta;
+        }
         // Find the parent Canvas and cache its worldCamera (if any)
         Canvas canvas = GetComponentInParent<Canvas>();
         if (canvas != null)
@@ -62,6 +72,20 @@ public class DialogManager : MonoBehaviour
 
     void Update()
     {
+        // Handle dialog panel punch effect
+        if (isDialogPanelPunching && dialogPanel != null)
+        {
+            dialogPanelPunchTimer += Time.deltaTime;
+            float t = Mathf.Clamp01(dialogPanelPunchTimer / portraitScaleTime);
+            // Ease out: overshoot a bit for punchiness
+            float punchT = Mathf.Sin(t * Mathf.PI * 0.5f);
+            dialogPanel.sizeDelta = Vector2.Lerp(dialogPanelOriginalSize - new Vector2(shrinkAmount, shrinkAmount), dialogPanelOriginalSize, punchT);
+            if (t >= 1f)
+            {
+                dialogPanel.sizeDelta = dialogPanelOriginalSize;
+                isDialogPanelPunching = false;
+            }
+        }
         // Handle portrait scaling
         if (isScaling)
         {
@@ -110,6 +134,13 @@ public class DialogManager : MonoBehaviour
 
     void ShowNextDialog()
     {
+        // Start punch effect on dialog panel
+        if (dialogPanel != null)
+        {
+            dialogPanel.sizeDelta = dialogPanelOriginalSize - new Vector2(shrinkAmount, shrinkAmount);
+            dialogPanelPunchTimer = 0f;
+            isDialogPanelPunching = true;
+        }
         if (dialogQueue.Count == 0)
         {
             dialogText.text = "";
