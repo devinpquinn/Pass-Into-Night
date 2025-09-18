@@ -7,8 +7,8 @@ using System.Collections.Generic;
 public class DialogManager : MonoBehaviour
 {
     public RectTransform dialogPanel;
-    public float shrinkAmount = 12f;
-    private Vector2 dialogPanelOriginalSize;
+    private float shrinkAmount = 0.967f;
+    private Vector3 dialogPanelOriginalScale;
     private bool isDialogPanelPunching = false;
     private float dialogPanelPunchTimer = 0f;
     private Camera uiCamera;
@@ -39,7 +39,7 @@ public class DialogManager : MonoBehaviour
     {
         if (dialogPanel != null)
         {
-            dialogPanelOriginalSize = dialogPanel.sizeDelta;
+            dialogPanelOriginalScale = dialogPanel.localScale;
         }
         // Find the parent Canvas and cache its worldCamera (if any)
         Canvas canvas = GetComponentInParent<Canvas>();
@@ -72,17 +72,16 @@ public class DialogManager : MonoBehaviour
 
     void Update()
     {
-        // Handle dialog panel punch effect
+        // Handle dialog panel punch effect (scale)
         if (isDialogPanelPunching && dialogPanel != null)
         {
             dialogPanelPunchTimer += Time.deltaTime;
             float t = Mathf.Clamp01(dialogPanelPunchTimer / portraitScaleTime);
-            // Ease out: overshoot a bit for punchiness
             float punchT = Mathf.Sin(t * Mathf.PI * 0.5f);
-            dialogPanel.sizeDelta = Vector2.Lerp(dialogPanelOriginalSize - new Vector2(shrinkAmount, shrinkAmount), dialogPanelOriginalSize, punchT);
+            dialogPanel.localScale = Vector3.Lerp(dialogPanelOriginalScale * shrinkAmount, dialogPanelOriginalScale, punchT);
             if (t >= 1f)
             {
-                dialogPanel.sizeDelta = dialogPanelOriginalSize;
+                dialogPanel.localScale = dialogPanelOriginalScale;
                 isDialogPanelPunching = false;
             }
         }
@@ -134,10 +133,10 @@ public class DialogManager : MonoBehaviour
 
     void ShowNextDialog()
     {
-        // Start punch effect on dialog panel
+        // Start punch effect on dialog panel (scale)
         if (dialogPanel != null)
         {
-            dialogPanel.sizeDelta = dialogPanelOriginalSize - new Vector2(shrinkAmount, shrinkAmount);
+            dialogPanel.localScale = dialogPanelOriginalScale * shrinkAmount;
             dialogPanelPunchTimer = 0f;
             isDialogPanelPunching = true;
         }
