@@ -52,6 +52,7 @@ public class DialogManager : MonoBehaviour
         dialogQueue.Enqueue("Interesting. Here is some descriptive text.");
         dialogQueue.Enqueue("1: Now character 1 is speaking.");
         dialogQueue.Enqueue("2: And now character 2 is speaking.");
+        dialogQueue.Enqueue("2: I am still speaking.");
         dialogQueue.Enqueue("Character 3 waits patiently.");
         dialogQueue.Enqueue("3: Ok, now it's my turn!");
 
