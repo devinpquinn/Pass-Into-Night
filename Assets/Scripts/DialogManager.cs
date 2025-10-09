@@ -21,7 +21,7 @@ public class DialogManager : MonoBehaviour
     public Image[] characterPortraits;
     public Sprite[] characterSpritesInactive;
     public Sprite[] characterSpritesActive;
-    
+
     private float activePortraitScale = 1.125f;
     private float portraitScaleTime = 0.1f;
 
@@ -41,12 +41,7 @@ public class DialogManager : MonoBehaviour
         {
             dialogPanelOriginalScale = dialogPanel.localScale;
         }
-        // Find the parent Canvas and cache its worldCamera (if any)
-        Canvas canvas = GetComponentInParent<Canvas>();
-        if (canvas != null)
-        {
-            uiCamera = canvas.renderMode == RenderMode.ScreenSpaceCamera ? canvas.worldCamera : null;
-        }
+        uiCamera = Camera.main;
         // Debug dialog lines
         dialogQueue.Enqueue("0: Hello, I am character 0.");
         dialogQueue.Enqueue("Interesting. Here is some descriptive text.");
@@ -115,15 +110,10 @@ public class DialogManager : MonoBehaviour
         }
         else if (!isScaling && Input.GetMouseButtonDown(0))
         {
-            // Check if mouse is over this object's RectTransform
-            RectTransform rt = GetComponent<RectTransform>();
-            if (rt != null)
+            Vector2 mousePos = Input.mousePosition;
+            if (RectTransformUtility.RectangleContainsScreenPoint(dialogPanel, mousePos, uiCamera))
             {
-                Vector2 mousePos = Input.mousePosition;
-                if (RectTransformUtility.RectangleContainsScreenPoint(rt, mousePos, uiCamera))
-                {
-                    advance = true;
-                }
+                advance = true;
             }
         }
         if (advance)
