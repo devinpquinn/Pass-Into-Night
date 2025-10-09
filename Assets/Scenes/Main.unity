@@ -1524,7 +1524,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CharacterManager
   characterArcs: 00000000000000000000000000000000
   relationshipMatrix: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-  showRelationshipLabels: 1
+  showRelationshipLabels: 0
 --- !u!4 &1728258053
 Transform:
   m_ObjectHideFlags: 0
@@ -1620,8 +1620,8 @@ CanvasRenderer:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 419666009}
   - {fileID: 1728258053}
+  - {fileID: 419666009}
   - {fileID: 519420032}
   - {fileID: 619394802}
   - {fileID: 683762353}

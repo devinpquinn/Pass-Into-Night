@@ -126,14 +126,7 @@ public class CharacterManager : MonoBehaviour
     // Utility Methods
     public string GetRelationshipDescription(int relationshipValue)
     {
-        if (relationshipValue == 0) return "Stranger";
-        else if (relationshipValue > 0 && relationshipValue <= 3) return "Acquaintance";
-        else if (relationshipValue > 3 && relationshipValue <= 6) return "Friend";
-        else if (relationshipValue > 6) return "Close Friend";
-        else if (relationshipValue < 0 && relationshipValue >= -3) return "Dislike";
-        else if (relationshipValue < -3 && relationshipValue >= -6) return "Hostile";
-        else if (relationshipValue < -6) return "Enemy";
-        return "Unknown";
+        return "Unspecified"; // Placeholder
     }
     
     public void PrintAllRelationships()
