@@ -4,7 +4,7 @@ using System;
 public class CharacterManager : MonoBehaviour
 {
     [Header("Character Arc Progress")]
-    [SerializeField] private int[] characterArcs = new int[4]; // Internal growth for each character (0-3)
+    [SerializeField] private int[] characterArcs = new int[4]; // Internal growth for each character (Waif, Priestess, Warder, Pilot)
     
     [Header("Relationship Matrix")]
     [SerializeField] private int[,] relationships = new int[4, 4]; // Relationships between characters
@@ -17,10 +17,10 @@ public class CharacterManager : MonoBehaviour
     // Character indices
     public enum CharacterID
     {
-        Character0 = 0,
-        Character1 = 1,
-        Character2 = 2,
-        Character3 = 3
+        Waif = 0,
+        Priestess = 1,
+        Warder = 2,
+        Pilot = 3
     }
     
     void Start()
@@ -126,7 +126,14 @@ public class CharacterManager : MonoBehaviour
     // Utility Methods
     public string GetRelationshipDescription(int relationshipValue)
     {
-        return "Unspecified"; // Placeholder
+        if (relationshipValue == 0) return "Stranger";
+        else if (relationshipValue > 0 && relationshipValue <= 3) return "Acquaintance";
+        else if (relationshipValue > 3 && relationshipValue <= 6) return "Friend";
+        else if (relationshipValue > 6) return "Close Friend";
+        else if (relationshipValue < 0 && relationshipValue >= -3) return "Dislike";
+        else if (relationshipValue < -3 && relationshipValue >= -6) return "Hostile";
+        else if (relationshipValue < -6) return "Enemy";
+        return "Unknown";
     }
     
     public void PrintAllRelationships()

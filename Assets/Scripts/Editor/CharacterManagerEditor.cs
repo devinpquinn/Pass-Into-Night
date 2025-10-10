@@ -8,7 +8,7 @@ public class CharacterManagerEditor : Editor
     private SerializedProperty relationshipMatrix;
     private SerializedProperty showRelationshipLabels;
     
-    private string[] characterNames = { "Character 0", "Character 1", "Character 2", "Character 3" };
+    private string[] characterNames = { "Waif", "Priestess", "Warder", "Pilot" };
     
     void OnEnable()
     {
@@ -91,6 +91,13 @@ public class CharacterManagerEditor : Editor
     
     private string GetRelationshipDescription(int relationshipValue)
     {
-        return "Unspecified"; // Placeholder
+        if (relationshipValue == 0) return "Stranger";
+        else if (relationshipValue > 0 && relationshipValue <= 3) return "Acquaintance";
+        else if (relationshipValue > 3 && relationshipValue <= 6) return "Friend";
+        else if (relationshipValue > 6) return "Close Friend";
+        else if (relationshipValue < 0 && relationshipValue >= -3) return "Dislike";
+        else if (relationshipValue < -3 && relationshipValue >= -6) return "Hostile";
+        else if (relationshipValue < -6) return "Enemy";
+        return "Unknown";
     }
 }
