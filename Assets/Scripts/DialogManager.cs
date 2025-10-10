@@ -34,6 +34,18 @@ public class DialogManager : MonoBehaviour
     private float[] portraitStartScales;
     private float[] portraitTargetScales;
 
+    // Character name to index mapping
+    private int GetCharacterIndex(string characterName)
+    {
+        switch (characterName.ToLower())
+        {
+            case "waif": return 0;
+            case "priestess": return 1;
+            case "warder": return 2;
+            case "pilot": return 3;
+            default: return -1; // Unknown character
+        }
+    }
 
     void Start()
     {
@@ -43,13 +55,13 @@ public class DialogManager : MonoBehaviour
         }
         uiCamera = Camera.main;
         // Debug dialog lines
-        dialogQueue.Enqueue("0: Hello, I am Waif.");
+        dialogQueue.Enqueue("Waif: Hello, I am Waif.");
         dialogQueue.Enqueue("Interesting. Here is some descriptive text.");
-        dialogQueue.Enqueue("1: Now Priestess is speaking.");
-        dialogQueue.Enqueue("2: And now Warder is speaking.");
-        dialogQueue.Enqueue("2: I am still speaking.");
+        dialogQueue.Enqueue("Priestess: Now Priestess is speaking.");
+        dialogQueue.Enqueue("Warder: And now Warder is speaking.");
+        dialogQueue.Enqueue("Warder: I am still speaking.");
         dialogQueue.Enqueue("Pilot waits patiently.");
-        dialogQueue.Enqueue("3: Ok, now it's my turn!");
+        dialogQueue.Enqueue("Pilot: Ok, now it's my turn!");
 
         portraitScaleTimers = new float[characterPortraits.Length];
         portraitStartScales = new float[characterPortraits.Length];
@@ -148,7 +160,20 @@ public class DialogManager : MonoBehaviour
         {
             string speakerStr = line.Substring(0, colonIndex).Trim();
             string dialog = line.Substring(colonIndex + 1).Trim();
-            if (int.TryParse(speakerStr, out int speakerIndex))
+            
+            // Try to parse as number first (for backwards compatibility)
+            int speakerIndex = -1;
+            if (int.TryParse(speakerStr, out speakerIndex))
+            {
+                // Using numeric index
+            }
+            else
+            {
+                // Try to parse as character name
+                speakerIndex = GetCharacterIndex(speakerStr);
+            }
+            
+            if (speakerIndex >= 0 && speakerIndex < 4)
             {
                 previousSpeaker = currentSpeaker;
                 currentSpeaker = speakerIndex;
@@ -160,7 +185,7 @@ public class DialogManager : MonoBehaviour
             }
             else
             {
-                // Fallback: treat as unspoken text
+                // Unknown speaker: treat as unspoken text
                 dialogText.text = line;
                 dialogText.color = textUnspoken;
                 HighlightSpeaker(-1);
