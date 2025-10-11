@@ -50,9 +50,9 @@ public class SelectionManager : MonoBehaviour
         }
         
         // Initialize all portraits as inactive
-        //SetAllPortraitsInactive();
+        SetAllPortraitsInactive();
         
-        //StartSelection(2); // Example: start selection for 2 characters
+        StartSelection(2); // Example: start selection for 2 characters
     }
     
     void Update()
@@ -227,7 +227,7 @@ public class SelectionManager : MonoBehaviour
         
         // Clear prompt text
         if (promptText != null)
-            promptText.text = "";
+            promptText.text = "...";
         
         // Set selected portraits to full alpha and keep them active
         for (int i = 0; i < characterPortraits.Length; i++)
