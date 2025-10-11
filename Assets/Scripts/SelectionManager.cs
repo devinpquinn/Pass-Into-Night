@@ -20,6 +20,12 @@ public class SelectionManager : MonoBehaviour
     private HashSet<int> selectedCharacters = new HashSet<int>();
     private int hoveredCharacter = -1;
     
+    // Animation state for completion
+    private bool isAnimatingCompletion = false;
+    private float completionAnimationTime = 1.0f;
+    private float completionTimer = 0f;
+    private float[] originalWidths;
+    
     // Character names for logging
     private string[] characterNames = { "Waif", "Priestess", "Warder", "Pilot" };
     
@@ -36,6 +42,13 @@ public class SelectionManager : MonoBehaviour
     
     void Start()
     {
+        // Store original widths
+        originalWidths = new float[characterPortraits.Length];
+        for (int i = 0; i < characterPortraits.Length; i++)
+        {
+            originalWidths[i] = characterPortraits[i].GetComponent<RectTransform>().rect.width;
+        }
+        
         // Initialize all portraits as inactive
         SetAllPortraitsInactive();
         
@@ -44,6 +57,12 @@ public class SelectionManager : MonoBehaviour
     
     void Update()
     {
+        if (isAnimatingCompletion)
+        {
+            HandleCompletionAnimation();
+            return;
+        }
+        
         if (!isSelectionActive) return;
         
         HandleMouseInput();
@@ -210,15 +229,16 @@ public class SelectionManager : MonoBehaviour
         if (promptText != null)
             promptText.text = "";
         
-        // Disable unselected portraits, keep selected ones visible
+        // Set selected portraits to full alpha and keep them active
+        // Set unselected portraits to alpha 0 immediately
         for (int i = 0; i < characterPortraits.Length; i++)
         {
             if (characterPortraits[i] != null)
             {
+                CanvasGroup canvasGroup = characterPortraits[i].GetComponent<CanvasGroup>();
                 if (selectedCharacters.Contains(i))
                 {
-                    // Keep selected character visible at full alpha
-                    CanvasGroup canvasGroup = characterPortraits[i].GetComponent<CanvasGroup>();
+                    // Selected: keep at full alpha and active
                     if (canvasGroup != null)
                     {
                         canvasGroup.alpha = selectedAlpha;
@@ -227,11 +247,18 @@ public class SelectionManager : MonoBehaviour
                 }
                 else
                 {
-                    // Disable unselected character portraits
-                    characterPortraits[i].gameObject.SetActive(false);
+                    // Unselected: immediately set alpha to 0
+                    if (canvasGroup != null)
+                    {
+                        canvasGroup.alpha = 0f;
+                    }
                 }
             }
         }
+        
+        // Start completion animation for unselected portraits
+        isAnimatingCompletion = true;
+        completionTimer = 0f;
     }
     
     // Public methods for external use
@@ -255,6 +282,38 @@ public class SelectionManager : MonoBehaviour
             promptText.text = "";
         
         SetAllPortraitsInactive();
+    }
+    
+    void HandleCompletionAnimation()
+    {
+        completionTimer += Time.deltaTime;
+        float progress = completionTimer / completionAnimationTime;
+        
+        if (progress >= 1.0f)
+        {
+            // Animation complete - disable unselected portraits
+            for (int i = 0; i < characterPortraits.Length; i++)
+            {
+                if (!selectedCharacters.Contains(i))
+                {
+                    characterPortraits[i].gameObject.SetActive(false);
+                }
+            }
+            
+            isAnimatingCompletion = false;
+            return;
+        }
+        
+        // Animate unselected portraits
+        for (int i = 0; i < characterPortraits.Length; i++)
+        {
+            if (!selectedCharacters.Contains(i))
+            {
+                RectTransform rectTransform = characterPortraits[i].GetComponent<RectTransform>();
+                float currentWidth = Mathf.Lerp(originalWidths[i], -25f, progress);
+                rectTransform.sizeDelta = new Vector2(currentWidth, rectTransform.sizeDelta.y);
+            }
+        }
     }
     
     // Test methods - remove these in production
