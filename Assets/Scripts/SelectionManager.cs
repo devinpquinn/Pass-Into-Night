@@ -210,15 +210,25 @@ public class SelectionManager : MonoBehaviour
         if (promptText != null)
             promptText.text = "";
         
-        // Keep selected characters visible, others inactive
+        // Disable unselected portraits, keep selected ones visible
         for (int i = 0; i < characterPortraits.Length; i++)
         {
             if (characterPortraits[i] != null)
             {
-                CanvasGroup canvasGroup = characterPortraits[i].GetComponent<CanvasGroup>();
-                if (canvasGroup != null)
+                if (selectedCharacters.Contains(i))
                 {
-                    canvasGroup.alpha = selectedCharacters.Contains(i) ? selectedAlpha : inactiveAlpha;
+                    // Keep selected character visible at full alpha
+                    CanvasGroup canvasGroup = characterPortraits[i].GetComponent<CanvasGroup>();
+                    if (canvasGroup != null)
+                    {
+                        canvasGroup.alpha = selectedAlpha;
+                    }
+                    characterPortraits[i].gameObject.SetActive(true);
+                }
+                else
+                {
+                    // Disable unselected character portraits
+                    characterPortraits[i].gameObject.SetActive(false);
                 }
             }
         }
