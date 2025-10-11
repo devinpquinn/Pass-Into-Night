@@ -54,7 +54,9 @@ public class DialogManager : MonoBehaviour
             dialogPanelOriginalScale = dialogPanel.localScale;
         }
         uiCamera = Camera.main;
+        
         // Debug dialog lines
+        /*
         dialogQueue.Enqueue("Waif: Hello, I am Waif.");
         dialogQueue.Enqueue("Interesting. Here is some descriptive text.");
         dialogQueue.Enqueue("Priestess: Now Priestess is speaking.");
@@ -62,6 +64,7 @@ public class DialogManager : MonoBehaviour
         dialogQueue.Enqueue("Warder: I am still speaking.");
         dialogQueue.Enqueue("Pilot waits patiently.");
         dialogQueue.Enqueue("Pilot: Ok, now it's my turn!");
+        */
 
         portraitScaleTimers = new float[characterPortraits.Length];
         portraitStartScales = new float[characterPortraits.Length];
@@ -75,7 +78,7 @@ public class DialogManager : MonoBehaviour
             portraitTargetScales[i] = 1f;
         }
 
-        ShowNextDialog();
+        //ShowNextDialog();
     }
 
     void Update()
