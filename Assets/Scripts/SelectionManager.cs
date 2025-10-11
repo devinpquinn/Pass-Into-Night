@@ -86,15 +86,16 @@ public class SelectionManager : MonoBehaviour
         // Handle hover state changes
         if (newHoveredCharacter != hoveredCharacter)
         {
-            // Remove hover from previous character
-            if (hoveredCharacter >= 0)
-            {
-                UpdatePortraitVisual(hoveredCharacter);
-            }
-            
+            int previousHover = hoveredCharacter;
             hoveredCharacter = newHoveredCharacter;
             
-            // Apply hover to new character
+            // Update visual for previously hovered character (removes hover state)
+            if (previousHover >= 0)
+            {
+                UpdatePortraitVisual(previousHover);
+            }
+            
+            // Update visual for newly hovered character (applies hover state)
             if (hoveredCharacter >= 0)
             {
                 UpdatePortraitVisual(hoveredCharacter);
