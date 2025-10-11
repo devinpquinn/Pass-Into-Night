@@ -232,7 +232,7 @@ public class SelectionManager : MonoBehaviour
         // Set selected portraits to full alpha and keep them active
         for (int i = 0; i < characterPortraits.Length; i++)
         {
-            if (characterPortraits[i] != null && selectedCharacters.Contains(i))
+            if (selectedCharacters.Contains(i))
             {
                 CanvasGroup canvasGroup = characterPortraits[i].GetComponent<CanvasGroup>();
                 if (canvasGroup != null)
@@ -240,6 +240,11 @@ public class SelectionManager : MonoBehaviour
                     canvasGroup.alpha = selectedAlpha;
                 }
                 characterPortraits[i].gameObject.SetActive(true);
+            }
+            else
+            {
+                Image portrait = characterPortraits[i].GetComponent<Image>();
+                portrait.color = Color.clear; // Make invisible but still interactable during animation
             }
         }
         
