@@ -230,29 +230,16 @@ public class SelectionManager : MonoBehaviour
             promptText.text = "";
         
         // Set selected portraits to full alpha and keep them active
-        // Set unselected portraits to alpha 0 immediately
         for (int i = 0; i < characterPortraits.Length; i++)
         {
-            if (characterPortraits[i] != null)
+            if (characterPortraits[i] != null && selectedCharacters.Contains(i))
             {
                 CanvasGroup canvasGroup = characterPortraits[i].GetComponent<CanvasGroup>();
-                if (selectedCharacters.Contains(i))
+                if (canvasGroup != null)
                 {
-                    // Selected: keep at full alpha and active
-                    if (canvasGroup != null)
-                    {
-                        canvasGroup.alpha = selectedAlpha;
-                    }
-                    characterPortraits[i].gameObject.SetActive(true);
+                    canvasGroup.alpha = selectedAlpha;
                 }
-                else
-                {
-                    // Unselected: immediately set alpha to 0
-                    if (canvasGroup != null)
-                    {
-                        canvasGroup.alpha = 0f;
-                    }
-                }
+                characterPortraits[i].gameObject.SetActive(true);
             }
         }
         
@@ -307,6 +294,10 @@ public class SelectionManager : MonoBehaviour
         // Apply easing to the progress (ease-out cubic for smooth deceleration)
         float easedProgress = 1f - Mathf.Pow(1f - progress, 3f);
         
+        // Calculate alpha progress (completes in half the time)
+        float alphaProgress = Mathf.Clamp01(progress * 2f);
+        float easedAlphaProgress = 1f - Mathf.Pow(1f - alphaProgress, 3f);
+        
         // Animate unselected portraits
         for (int i = 0; i < characterPortraits.Length; i++)
         {
@@ -315,6 +306,13 @@ public class SelectionManager : MonoBehaviour
                 RectTransform rectTransform = characterPortraits[i].GetComponent<RectTransform>();
                 float currentWidth = Mathf.Lerp(originalWidths[i], -25f, easedProgress);
                 rectTransform.sizeDelta = new Vector2(currentWidth, rectTransform.sizeDelta.y);
+                
+                // Fade alpha over half the duration
+                CanvasGroup canvasGroup = characterPortraits[i].GetComponent<CanvasGroup>();
+                if (canvasGroup != null)
+                {
+                    canvasGroup.alpha = Mathf.Lerp(selectedAlpha, 0f, easedAlphaProgress);
+                }
             }
         }
     }
