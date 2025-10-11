@@ -22,7 +22,7 @@ public class SelectionManager : MonoBehaviour
     
     // Animation state for completion
     private bool isAnimatingCompletion = false;
-    private float completionAnimationTime = 1.0f;
+    private float completionAnimationTime = 0.5f;
     private float completionTimer = 0f;
     private float[] originalWidths;
     
