@@ -7,8 +7,7 @@ public class SelectionManager : MonoBehaviour
 {
     [Header("UI References")]
     public TextMeshProUGUI promptText;
-    public Image[] characterPortraits = new Image[4]; // Waif, Priestess, Warder, Pilot
-    public CanvasGroup[] portraitCanvasGroups = new CanvasGroup[4];
+    public Image[] characterPortraits = new Image[4]; // Waif, Priestess, Warder, Pilot (must have CanvasGroup components)
     
     [Header("Visual Settings")]
     public float inactiveAlpha = 0.4f;
@@ -143,7 +142,10 @@ public class SelectionManager : MonoBehaviour
     
     void UpdatePortraitVisual(int characterIndex)
     {
-        if (portraitCanvasGroups[characterIndex] == null) return;
+        if (characterPortraits[characterIndex] == null) return;
+        
+        CanvasGroup canvasGroup = characterPortraits[characterIndex].GetComponent<CanvasGroup>();
+        if (canvasGroup == null) return;
         
         float targetAlpha;
         
@@ -160,16 +162,20 @@ public class SelectionManager : MonoBehaviour
             targetAlpha = inactiveAlpha;
         }
         
-        portraitCanvasGroups[characterIndex].alpha = targetAlpha;
+        canvasGroup.alpha = targetAlpha;
     }
     
     void SetAllPortraitsInactive()
     {
-        for (int i = 0; i < portraitCanvasGroups.Length; i++)
+        for (int i = 0; i < characterPortraits.Length; i++)
         {
-            if (portraitCanvasGroups[i] != null)
+            if (characterPortraits[i] != null)
             {
-                portraitCanvasGroups[i].alpha = inactiveAlpha;
+                CanvasGroup canvasGroup = characterPortraits[i].GetComponent<CanvasGroup>();
+                if (canvasGroup != null)
+                {
+                    canvasGroup.alpha = inactiveAlpha;
+                }
             }
         }
     }
@@ -193,11 +199,15 @@ public class SelectionManager : MonoBehaviour
             promptText.text = "";
         
         // Keep selected characters visible, others inactive
-        for (int i = 0; i < portraitCanvasGroups.Length; i++)
+        for (int i = 0; i < characterPortraits.Length; i++)
         {
-            if (portraitCanvasGroups[i] != null)
+            if (characterPortraits[i] != null)
             {
-                portraitCanvasGroups[i].alpha = selectedCharacters.Contains(i) ? selectedAlpha : inactiveAlpha;
+                CanvasGroup canvasGroup = characterPortraits[i].GetComponent<CanvasGroup>();
+                if (canvasGroup != null)
+                {
+                    canvasGroup.alpha = selectedCharacters.Contains(i) ? selectedAlpha : inactiveAlpha;
+                }
             }
         }
     }
