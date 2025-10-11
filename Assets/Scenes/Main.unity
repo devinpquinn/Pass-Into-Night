@@ -1567,13 +1567,8 @@ MonoBehaviour:
   - {fileID: 1276441280}
   - {fileID: 869053197}
   - {fileID: 1895655450}
-  portraitCanvasGroups:
-  - {fileID: 1369122231}
-  - {fileID: 1276441282}
-  - {fileID: 869053199}
-  - {fileID: 1895655452}
   inactiveAlpha: 0.4
-  hoverAlpha: 0.7
+  hoverAlpha: 0.8
   selectedAlpha: 1
 --- !u!4 &1486696452
 Transform:

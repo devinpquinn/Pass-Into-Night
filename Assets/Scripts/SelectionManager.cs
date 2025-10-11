@@ -23,6 +23,17 @@ public class SelectionManager : MonoBehaviour
     // Character names for logging
     private string[] characterNames = { "Waif", "Priestess", "Warder", "Pilot" };
     
+    string GetNumberWord(int number)
+    {
+        switch (number)
+        {
+            case 1: return "one";
+            case 2: return "two";
+            case 3: return "three";
+            default: return number.ToString(); // Fallback to digit if not handled
+        }
+    }
+    
     void Start()
     {
         // Initialize all portraits as inactive
@@ -51,10 +62,11 @@ public class SelectionManager : MonoBehaviour
         selectedCharacters.Clear();
         hoveredCharacter = -1;
         
-        // Set prompt text
+        // Set prompt text with written numbers
+        string numberWord = GetNumberWord(characterCount);
         string promptMessage = characterCount == 1 ? 
-            "Select 1 character:" : 
-            $"Select {characterCount} characters:";
+            $"Select {numberWord} character." : 
+            $"Select {numberWord} characters.";
         
         if (promptText != null)
             promptText.text = promptMessage;
