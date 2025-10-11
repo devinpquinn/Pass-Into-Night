@@ -304,13 +304,16 @@ public class SelectionManager : MonoBehaviour
             return;
         }
         
+        // Apply easing to the progress (ease-out cubic for smooth deceleration)
+        float easedProgress = 1f - Mathf.Pow(1f - progress, 3f);
+        
         // Animate unselected portraits
         for (int i = 0; i < characterPortraits.Length; i++)
         {
             if (!selectedCharacters.Contains(i))
             {
                 RectTransform rectTransform = characterPortraits[i].GetComponent<RectTransform>();
-                float currentWidth = Mathf.Lerp(originalWidths[i], -25f, progress);
+                float currentWidth = Mathf.Lerp(originalWidths[i], -25f, easedProgress);
                 rectTransform.sizeDelta = new Vector2(currentWidth, rectTransform.sizeDelta.y);
             }
         }
