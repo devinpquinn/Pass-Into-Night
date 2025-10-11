@@ -496,6 +496,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c396d4b3fd13bd84db8462540536d0a2, type: 3}
   - {fileID: 21300000, guid: f158fd32f6b7612409350aafd9175c9e, type: 3}
   - {fileID: 21300000, guid: 07dbc3afed7051e409a82aba6979ddcb, type: 3}
+  enablePortraitScaling: 1
 --- !u!4 &419666009
 Transform:
   m_ObjectHideFlags: 0

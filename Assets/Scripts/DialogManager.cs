@@ -22,6 +22,8 @@ public class DialogManager : MonoBehaviour
     public Sprite[] characterSpritesInactive;
     public Sprite[] characterSpritesActive;
 
+    [Header("Portrait Scaling")]
+    public bool enablePortraitScaling = true;
     private float activePortraitScale = 1.125f;
     private float portraitScaleTime = 0.1f;
 
@@ -56,7 +58,6 @@ public class DialogManager : MonoBehaviour
         uiCamera = Camera.main;
         
         // Debug dialog lines
-        /*
         dialogQueue.Enqueue("Waif: Hello, I am Waif.");
         dialogQueue.Enqueue("Interesting. Here is some descriptive text.");
         dialogQueue.Enqueue("Priestess: Now Priestess is speaking.");
@@ -64,7 +65,6 @@ public class DialogManager : MonoBehaviour
         dialogQueue.Enqueue("Warder: I am still speaking.");
         dialogQueue.Enqueue("Pilot waits patiently.");
         dialogQueue.Enqueue("Pilot: Ok, now it's my turn!");
-        */
 
         portraitScaleTimers = new float[characterPortraits.Length];
         portraitStartScales = new float[characterPortraits.Length];
@@ -78,7 +78,7 @@ public class DialogManager : MonoBehaviour
             portraitTargetScales[i] = 1f;
         }
 
-        //ShowNextDialog();
+        ShowNextDialog();
     }
 
     void Update()
@@ -224,6 +224,12 @@ public class DialogManager : MonoBehaviour
 
     void StartPortraitScale(int prev, int curr)
     {
+        if (!enablePortraitScaling)
+        {
+            isScaling = false;
+            return;
+        }
+
         // Reset all timers and set targets
         for (int i = 0; i < characterPortraits.Length; i++)
         {

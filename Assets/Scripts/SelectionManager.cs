@@ -50,9 +50,9 @@ public class SelectionManager : MonoBehaviour
         }
         
         // Initialize all portraits as inactive
-        SetAllPortraitsInactive();
+        //SetAllPortraitsInactive();
         
-        StartSelection(2); // Example: start selection for 2 characters
+        //StartSelection(2); // Example: start selection for 2 characters
     }
     
     void Update()
