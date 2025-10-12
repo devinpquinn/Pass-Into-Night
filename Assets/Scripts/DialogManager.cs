@@ -3,13 +3,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 
 public class DialogManager : MonoBehaviour
 {
-    [Header("Conversation Settings")]
-    public string conversationFileName = "Conversations.txt";
+    private string conversationFileName = "Events/Conversations";
     
     public RectTransform dialogPanel;
     private float shrinkAmount = 0.967f;
@@ -287,17 +284,21 @@ public class DialogManager : MonoBehaviour
     private List<string> LoadConversationFromFile(string sectionName)
     {
         List<string> conversationLines = new List<string>();
-        string filePath = Path.Combine(Application.dataPath, conversationFileName);
         
-        if (!File.Exists(filePath))
+        // Load text file from Resources folder
+        TextAsset conversationFile = Resources.Load<TextAsset>(conversationFileName);
+        
+        if (conversationFile == null)
         {
-            Debug.LogError($"Conversation file not found at: {filePath}");
+            Debug.LogError($"Conversation file not found in Resources folder at: '{conversationFileName}'");
             return conversationLines;
         }
         
+        Debug.Log($"Successfully loaded conversation file: '{conversationFileName}'");
+        
         try
         {
-            string[] allLines = File.ReadAllLines(filePath);
+            string[] allLines = conversationFile.text.Split('\n');
             bool inTargetSection = false;
             
             foreach (string line in allLines)

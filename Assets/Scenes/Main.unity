@@ -476,7 +476,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 091740787516f92419c940db262a646d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DialogManager
-  conversationFileName: Conversations.txt
   dialogPanel: {fileID: 948208859}
   dialogText: {fileID: 1395434257}
   speechBubble: {fileID: 970933595}
