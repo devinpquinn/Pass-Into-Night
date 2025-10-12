@@ -14,6 +14,11 @@ public class SelectionManager : MonoBehaviour
     public float hoverAlpha = 0.7f;
     public float selectedAlpha = 1.0f;
     
+    [Header("Portrait Scaling")]
+    public float inactiveScale = 0.9f;
+    public float hoverScale = 0.95f;
+    public float selectedScale = 1.0f;
+    
     // Selection state
     private bool isSelectionActive = false;
     private int targetSelectionCount = 0;
@@ -179,21 +184,26 @@ public class SelectionManager : MonoBehaviour
         if (canvasGroup == null) return;
         
         float targetAlpha;
+        float targetScale;
         
         if (selectedCharacters.Contains(characterIndex))
         {
             targetAlpha = selectedAlpha;
+            targetScale = selectedScale;
         }
         else if (characterIndex == hoveredCharacter)
         {
             targetAlpha = hoverAlpha;
+            targetScale = hoverScale;
         }
         else
         {
             targetAlpha = inactiveAlpha;
+            targetScale = inactiveScale;
         }
         
         canvasGroup.alpha = targetAlpha;
+        characterPortraits[characterIndex].transform.localScale = Vector3.one * targetScale;
     }
     
     void SetAllPortraitsInactive()
