@@ -3,9 +3,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 public class DialogManager : MonoBehaviour
 {
+    [Header("Conversation Settings")]
+    public string conversationFileName = "Conversations.txt";
+    
     public RectTransform dialogPanel;
     private float shrinkAmount = 0.967f;
     private Vector3 dialogPanelOriginalScale;
@@ -56,17 +61,6 @@ public class DialogManager : MonoBehaviour
             dialogPanelOriginalScale = dialogPanel.localScale;
         }
         uiCamera = Camera.main;
-        
-        // Debug dialog lines
-        /*
-        dialogQueue.Enqueue("Waif: Hello, I am Waif.");
-        dialogQueue.Enqueue("Interesting. Here is some descriptive text.");
-        dialogQueue.Enqueue("Priestess: Now Priestess is speaking.");
-        dialogQueue.Enqueue("Warder: And now Warder is speaking.");
-        dialogQueue.Enqueue("Warder: I am still speaking.");
-        dialogQueue.Enqueue("Pilot waits patiently.");
-        dialogQueue.Enqueue("Pilot: Ok, now it's my turn!");
-        */
 
         portraitScaleTimers = new float[characterPortraits.Length];
         portraitStartScales = new float[characterPortraits.Length];
@@ -79,8 +73,6 @@ public class DialogManager : MonoBehaviour
             portraitStartScales[i] = 1f;
             portraitTargetScales[i] = 1f;
         }
-
-        //ShowNextDialog();
     }
 
     void Update()
@@ -251,5 +243,111 @@ public class DialogManager : MonoBehaviour
             }
         }
         isScaling = true;
+    }
+    
+    // Conversation Loading Methods
+    public void LoadConversationForCharacters(List<string> selectedCharacterNames)
+    {
+        // Sort names to ensure consistent lookup (Waif-Warder vs Warder-Waif)
+        List<string> sortedNames = new List<string>(selectedCharacterNames);
+        sortedNames.Sort();
+        
+        string sectionName = "[" + string.Join("-", sortedNames) + "]";
+        Debug.Log($"Looking for conversation section: {sectionName}");
+        
+        List<string> conversation = LoadConversationFromFile(sectionName);
+        
+        if (conversation.Count > 0)
+        {
+            // Clear existing dialog and load new conversation
+            dialogQueue.Clear();
+            foreach (string line in conversation)
+            {
+                dialogQueue.Enqueue(line);
+            }
+            Debug.Log($"Loaded conversation with {conversation.Count} lines for: {string.Join(", ", sortedNames)}");
+            
+            // Automatically start the dialog
+            StartDialog();
+        }
+        else
+        {
+            Debug.LogWarning($"No conversation found for character combination: {sectionName}");
+        }
+    }
+    
+    public void StartDialog()
+    {
+        if (dialogQueue.Count > 0)
+        {
+            ShowNextDialog();
+        }
+    }
+    
+    private List<string> LoadConversationFromFile(string sectionName)
+    {
+        List<string> conversationLines = new List<string>();
+        string filePath = Path.Combine(Application.dataPath, conversationFileName);
+        
+        if (!File.Exists(filePath))
+        {
+            Debug.LogError($"Conversation file not found at: {filePath}");
+            return conversationLines;
+        }
+        
+        try
+        {
+            string[] allLines = File.ReadAllLines(filePath);
+            bool inTargetSection = false;
+            
+            foreach (string line in allLines)
+            {
+                string trimmedLine = line.Trim();
+                
+                // Check if we're starting a new section
+                if (trimmedLine.StartsWith("[") && trimmedLine.EndsWith("]"))
+                {
+                    // If this is our target section, start capturing
+                    if (trimmedLine.Equals(sectionName))
+                    {
+                        inTargetSection = true;
+                        Debug.Log($"Found section: {sectionName}");
+                    }
+                    else
+                    {
+                        // We've hit a different section, stop capturing if we were in target section
+                        inTargetSection = false;
+                    }
+                }
+                else if (inTargetSection && !string.IsNullOrEmpty(trimmedLine))
+                {
+                    // We're in the target section and this is a dialog line
+                    conversationLines.Add(trimmedLine);
+                }
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error reading conversation file: {e.Message}");
+        }
+        
+        return conversationLines;
+    }
+    
+    // Helper method to get character names from indices (for SelectionManager integration)
+    public List<string> GetCharacterNames(HashSet<int> selectedIndices)
+    {
+        string[] characterNames = { "Waif", "Priestess", "Warder", "Pilot" };
+        List<string> names = new List<string>();
+        
+        foreach (int index in selectedIndices)
+        {
+            if (index >= 0 && index < characterNames.Length)
+            {
+                names.Add(characterNames[index]);
+            }
+        }
+        
+        return names;
     }
 }

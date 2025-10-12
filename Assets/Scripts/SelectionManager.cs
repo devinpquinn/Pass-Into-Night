@@ -8,6 +8,7 @@ public class SelectionManager : MonoBehaviour
     [Header("UI References")]
     public TextMeshProUGUI promptText;
     public Image[] characterPortraits = new Image[4]; // Waif, Priestess, Warder, Pilot (must have CanvasGroup components)
+    public DialogManager dialogManager;
     
     [Header("Visual Settings")]
     public float inactiveAlpha = 0.4f;
@@ -234,6 +235,12 @@ public class SelectionManager : MonoBehaviour
         }
         
         Debug.Log($"Selection complete! Selected characters: {string.Join(", ", selectedNames)}");
+        
+        // Load the appropriate conversation in DialogManager
+        if (dialogManager != null)
+        {
+            dialogManager.LoadConversationForCharacters(selectedNames);
+        }
         
         // Clear prompt text
         if (promptText != null)

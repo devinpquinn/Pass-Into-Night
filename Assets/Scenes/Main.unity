@@ -476,6 +476,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 091740787516f92419c940db262a646d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DialogManager
+  conversationFileName: Conversations.txt
   dialogPanel: {fileID: 948208859}
   dialogText: {fileID: 1395434257}
   speechBubble: {fileID: 970933595}
@@ -1568,9 +1569,13 @@ MonoBehaviour:
   - {fileID: 1276441280}
   - {fileID: 869053197}
   - {fileID: 1895655450}
+  dialogManager: {fileID: 419666008}
   inactiveAlpha: 0.4
   hoverAlpha: 0.8
   selectedAlpha: 1
+  inactiveScale: 0.9
+  hoverScale: 0.95
+  selectedScale: 1
 --- !u!4 &1486696452
 Transform:
   m_ObjectHideFlags: 0

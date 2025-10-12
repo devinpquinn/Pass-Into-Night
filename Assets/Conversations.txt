@@ -1,0 +1,70 @@
+[Waif-Priestess]
+Waif: I never thought I'd see the stars from here.
+Priestess: The void holds many mysteries, child. Some are beautiful, others... dangerous.
+Waif: Do you think we'll make it home?
+Priestess: Home is not always a place we return to. Sometimes, it's a place we create.
+
+[Waif-Warder]
+Waif: You're always so serious, Warder. Don't you ever smile?
+Warder: Survival requires focus. Smiles are a luxury we can't afford.
+Waif: Maybe that's why we need them most.
+Warder: ...Perhaps you have a point.
+
+[Waif-Pilot]
+Waif: How do you keep so calm when everything's falling apart?
+Pilot: Years of practice. Plus, panicking never fixed a broken engine.
+Waif: I wish I had your confidence.
+Pilot: Confidence comes with time, kid. You're doing better than you think.
+
+[Priestess-Warder]
+Priestess: Your devotion to duty is admirable, but what about devotion to yourself?
+Warder: The mission comes first. Personal needs are secondary.
+Priestess: A guardian who neglects their own spirit cannot protect others for long.
+Warder: I... hadn't considered that perspective.
+
+[Priestess-Pilot]
+Priestess: The engines sing a different song than I'm used to.
+Pilot: Every ship has its own rhythm. You just have to learn to listen.
+Priestess: In my faith, we believe all things have a voice. Even machines.
+Pilot: Then maybe you understand ships better than most engineers.
+
+[Warder-Pilot]
+Warder: Status report on our trajectory.
+Pilot: We're holding steady, but fuel reserves are lower than I'd like.
+Warder: Options?
+Pilot: We push forward and hope, or we find somewhere to refuel and risk losing time.
+Warder: What would you do?
+Pilot: Sometimes hope is all we've got.
+
+[Waif-Priestess-Warder]
+Waif: Is it strange that being lost feels like freedom?
+Priestess: Freedom and captivity often wear each other's faces.
+Warder: This isn't freedom. This is chaos barely held in check.
+Waif: Maybe that's what freedom really is.
+Priestess: From the mouths of babes...
+Warder: I... see your point.
+
+[Waif-Priestess-Pilot]
+Waif: Do you think the stars have names?
+Priestess: In my order, we believe each star holds the memory of a life.
+Pilot: Navigational charts give them designations, but that's not the same as names.
+Waif: I'd like to name them all someday.
+Priestess: A worthy aspiration.
+Pilot: Just don't interfere with my navigation system.
+
+[Waif-Warder-Pilot]
+Waif: How long until we reach... wherever we're going?
+Pilot: Hard to say with these readings.
+Warder: We need certainties, not estimates.
+Waif: Sometimes uncertainty is more honest than false certainties.
+Pilot: The kid's got a point, Warder.
+Warder: I suppose... flexibility has its place.
+
+[Priestess-Warder-Pilot]
+Priestess: Each of you carries such weight in your hearts.
+Warder: Weight keeps us grounded. Focused.
+Pilot: Some weight is necessary. Some just slows you down.
+Priestess: Wisdom lies in knowing the difference.
+Warder: And how do we learn that difference?
+Pilot: Trial and error, mostly.
+Priestess: And forgiveness. Mostly forgiveness.
