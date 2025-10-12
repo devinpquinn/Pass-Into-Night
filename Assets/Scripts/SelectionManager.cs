@@ -335,6 +335,67 @@ public class SelectionManager : MonoBehaviour
         }
     }
     
+    // Reset method for starting new selection after dialog completion
+    public void ResetForNewSelection(int characterCount = 2)
+    {
+        // Stop any ongoing animations
+        isAnimatingCompletion = false;
+        completionTimer = 0f;
+        
+        // Reset selection state
+        isSelectionActive = false;
+        selectedCharacters.Clear();
+        hoveredCharacter = -1;
+        
+        // Reset all portraits to visible and inactive state
+        for (int i = 0; i < characterPortraits.Length; i++)
+        {
+            if (characterPortraits[i] != null)
+            {
+                // Make sure portraits are active and visible
+                characterPortraits[i].gameObject.SetActive(true);
+                
+                // Reset image color (in case it was set to clear during animation)
+                Image portrait = characterPortraits[i].GetComponent<Image>();
+                if (portrait != null)
+                {
+                    portrait.color = Color.white;
+                }
+                
+                // Reset to original width
+                if (originalWidths != null && i < originalWidths.Length)
+                {
+                    RectTransform rectTransform = characterPortraits[i].GetComponent<RectTransform>();
+                    if (rectTransform != null)
+                    {
+                        rectTransform.sizeDelta = new Vector2(originalWidths[i], rectTransform.sizeDelta.y);
+                    }
+                }
+                
+                // Set to inactive visual state
+                CanvasGroup canvasGroup = characterPortraits[i].GetComponent<CanvasGroup>();
+                if (canvasGroup != null)
+                {
+                    canvasGroup.alpha = inactiveAlpha;
+                }
+                
+                // Reset scale to inactive state
+                characterPortraits[i].transform.localScale = Vector3.one * inactiveScale;
+            }
+        }
+        
+        // Clear prompt text
+        if (promptText != null)
+        {
+            promptText.text = "";
+        }
+        
+        Debug.Log($"Selection system reset. Ready for new selection of {characterCount} characters.");
+        
+        // Automatically start a new selection
+        StartSelection(characterCount);
+    }
+    
     // Test methods - remove these in production
     [ContextMenu("Test: Select 1 Character")]
     void TestSelect1() { StartSelection(1); }

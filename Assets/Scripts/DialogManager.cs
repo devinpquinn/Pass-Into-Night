@@ -6,7 +6,12 @@ using System.Collections.Generic;
 
 public class DialogManager : MonoBehaviour
 {
-    private string conversationFileName = "Events/Conversations";
+    [Header("Conversation Settings")]
+    public string conversationFileName = "Events/Conversations";
+    public SelectionManager selectionManager;
+    
+    [Header("Selection Reset Settings")]
+    public int nextSelectionCharacterCount = 2;
     
     public RectTransform dialogPanel;
     private float shrinkAmount = 0.967f;
@@ -145,6 +150,13 @@ public class DialogManager : MonoBehaviour
             // Smoothly scale last speaker's portrait parent back to 1
             StartPortraitScale(currentSpeaker, -1);
             currentSpeaker = -1;
+            
+            // Reset the selection system for a new selection phase
+            if (selectionManager != null)
+            {
+                selectionManager.ResetForNewSelection(nextSelectionCharacterCount);
+            }
+            
             return;
         }
 
