@@ -13,6 +13,15 @@ public class DialogManager : MonoBehaviour
     [Header("Selection Reset Settings")]
     public int nextSelectionCharacterCount = 2;
     
+    [Header("Dialog Timing")]
+    public float dialogStartDelay = 0.8f; // Delay before starting dialog after selection
+    public string waitingPlaceholderText = "...";
+    
+    // Dialog delay state
+    private bool isWaitingToStartDialog = false;
+    private float dialogDelayTimer = 0f;
+    private Queue<string> pendingDialogQueue = new Queue<string>();
+    
     public RectTransform dialogPanel;
     private float shrinkAmount = 0.967f;
     private Vector3 dialogPanelOriginalScale;
@@ -112,6 +121,26 @@ public class DialogManager : MonoBehaviour
             {
                 isScaling = false;
             }
+        }
+
+        // Handle dialog start delay
+        if (isWaitingToStartDialog)
+        {
+            dialogDelayTimer += Time.deltaTime;
+            if (dialogDelayTimer >= dialogStartDelay)
+            {
+                // Delay complete - start the actual dialog
+                isWaitingToStartDialog = false;
+                dialogQueue.Clear();
+                foreach (string line in pendingDialogQueue)
+                {
+                    dialogQueue.Enqueue(line);
+                }
+                pendingDialogQueue.Clear();
+                Debug.Log("Dialog delay complete. Starting conversation.");
+                StartDialog();
+            }
+            return; // Don't process input while waiting
         }
 
         bool advance = false;
@@ -278,16 +307,16 @@ public class DialogManager : MonoBehaviour
         
         if (conversation.Count > 0)
         {
-            // Clear existing dialog and load new conversation
-            dialogQueue.Clear();
+            // Store conversation in pending queue for delayed start
+            pendingDialogQueue.Clear();
             foreach (string line in conversation)
             {
-                dialogQueue.Enqueue(line);
+                pendingDialogQueue.Enqueue(line);
             }
             Debug.Log($"Successfully loaded conversation from section: {foundSectionName}");
             
-            // Automatically start the dialog
-            StartDialog();
+            // Start the delay timer and show placeholder text
+            StartDialogWithDelay();
         }
         else
         {
@@ -360,6 +389,24 @@ public class DialogManager : MonoBehaviour
         }
         
         return true;
+    }
+    
+    private void StartDialogWithDelay()
+    {
+        // Clear any existing dialog and show placeholder
+        dialogQueue.Clear();
+        dialogText.text = waitingPlaceholderText;
+        dialogText.color = textUnspoken;
+        
+        // Hide speech bubble during waiting
+        if (speechBubble != null) 
+            speechBubble.SetActive(false);
+        
+        // Start delay timer
+        isWaitingToStartDialog = true;
+        dialogDelayTimer = 0f;
+        
+        Debug.Log($"Starting dialog delay ({dialogStartDelay}s) with placeholder text: '{waitingPlaceholderText}'");
     }
     
     public void StartDialog()
@@ -439,5 +486,17 @@ public class DialogManager : MonoBehaviour
         }
         
         return names;
+    }
+    
+    // Test method for delay functionality
+    [ContextMenu("Test Dialog Delay")]
+    public void TestDialogDelay()
+    {
+        // Simulate a simple conversation for testing
+        pendingDialogQueue.Clear();
+        pendingDialogQueue.Enqueue("Waif: This is a test conversation.");
+        pendingDialogQueue.Enqueue("Priestess: Testing the delay system.");
+        
+        StartDialogWithDelay();
     }
 }
