@@ -14,6 +14,7 @@ public class SelectionManager : MonoBehaviour
     public float inactiveAlpha = 0.4f;
     public float hoverAlpha = 0.7f;
     public float selectedAlpha = 1.0f;
+    public Color promptTextColor = Color.white;
     
     [Header("Portrait Scaling")]
     public float inactiveScale = 0.9f;
@@ -94,7 +95,10 @@ public class SelectionManager : MonoBehaviour
             $"Select {numberWord} characters.";
         
         if (promptText != null)
+        {
+            promptText.color = promptTextColor;
             promptText.text = promptMessage;
+        }
         
         // Set all portraits to inactive state
         SetAllPortraitsInactive();
@@ -384,9 +388,10 @@ public class SelectionManager : MonoBehaviour
             }
         }
         
-        // Clear prompt text
+        // Reset prompt text color and clear text
         if (promptText != null)
         {
+            promptText.color = promptTextColor;
             promptText.text = "";
         }
         
