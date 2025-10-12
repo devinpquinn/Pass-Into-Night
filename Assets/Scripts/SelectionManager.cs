@@ -242,10 +242,6 @@ public class SelectionManager : MonoBehaviour
             dialogManager.LoadConversationForCharacters(selectedNames);
         }
         
-        // Clear prompt text
-        if (promptText != null)
-            promptText.text = "...";
-        
         // Set selected portraits to full alpha and keep them active
         for (int i = 0; i < characterPortraits.Length; i++)
         {

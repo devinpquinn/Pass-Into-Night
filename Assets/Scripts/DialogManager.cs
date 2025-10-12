@@ -245,14 +245,24 @@ public class DialogManager : MonoBehaviour
     // Conversation Loading Methods
     public void LoadConversationForCharacters(List<string> selectedCharacterNames)
     {
-        // Sort names to ensure consistent lookup (Waif-Warder vs Warder-Waif)
-        List<string> sortedNames = new List<string>(selectedCharacterNames);
-        sortedNames.Sort();
+        List<string> conversation = new List<string>();
+        string foundSectionName = "";
         
-        string sectionName = "[" + string.Join("-", sortedNames) + "]";
-        Debug.Log($"Looking for conversation section: {sectionName}");
+        // Try multiple name orderings to find the conversation
+        List<List<string>> namePermutations = GenerateNamePermutations(selectedCharacterNames);
         
-        List<string> conversation = LoadConversationFromFile(sectionName);
+        foreach (List<string> nameOrder in namePermutations)
+        {
+            string sectionName = "[" + string.Join("-", nameOrder) + "]";
+            Debug.Log($"Trying conversation section: {sectionName}");
+            
+            conversation = LoadConversationFromFile(sectionName);
+            if (conversation.Count > 0)
+            {
+                foundSectionName = sectionName;
+                break;
+            }
+        }
         
         if (conversation.Count > 0)
         {
@@ -262,15 +272,82 @@ public class DialogManager : MonoBehaviour
             {
                 dialogQueue.Enqueue(line);
             }
-            Debug.Log($"Loaded conversation with {conversation.Count} lines for: {string.Join(", ", sortedNames)}");
+            Debug.Log($"Successfully loaded conversation from section: {foundSectionName}");
             
             // Automatically start the dialog
             StartDialog();
         }
         else
         {
-            Debug.LogWarning($"No conversation found for character combination: {sectionName}");
+            Debug.LogWarning($"No conversation found for character combination: {string.Join(", ", selectedCharacterNames)}");
         }
+    }
+    
+    private List<List<string>> GenerateNamePermutations(List<string> names)
+    {
+        List<List<string>> permutations = new List<List<string>>();
+        
+        if (names.Count == 1)
+        {
+            // Single character - only one possibility
+            permutations.Add(new List<string>(names));
+        }
+        else if (names.Count == 2)
+        {
+            // Two characters - use character hierarchy order (Waif, Priestess, Warder, Pilot)
+            List<string> orderedNames = OrderByCharacterHierarchy(names);
+            permutations.Add(orderedNames);
+            
+            // Also try the reverse order as backup
+            List<string> reversedNames = new List<string>(orderedNames);
+            reversedNames.Reverse();
+            permutations.Add(reversedNames);
+        }
+        else if (names.Count == 3)
+        {
+            // Three characters - try hierarchy order and alphabetical
+            List<string> hierarchyOrder = OrderByCharacterHierarchy(names);
+            permutations.Add(hierarchyOrder);
+            
+            List<string> alphabeticalOrder = new List<string>(names);
+            alphabeticalOrder.Sort();
+            if (!AreListsEqual(hierarchyOrder, alphabeticalOrder))
+            {
+                permutations.Add(alphabeticalOrder);
+            }
+        }
+        
+        return permutations;
+    }
+    
+    private List<string> OrderByCharacterHierarchy(List<string> names)
+    {
+        // Define the character hierarchy order
+        string[] characterOrder = { "Waif", "Priestess", "Warder", "Pilot" };
+        
+        List<string> orderedNames = new List<string>();
+        
+        foreach (string character in characterOrder)
+        {
+            if (names.Contains(character))
+            {
+                orderedNames.Add(character);
+            }
+        }
+        
+        return orderedNames;
+    }
+    
+    private bool AreListsEqual(List<string> list1, List<string> list2)
+    {
+        if (list1.Count != list2.Count) return false;
+        
+        for (int i = 0; i < list1.Count; i++)
+        {
+            if (list1[i] != list2[i]) return false;
+        }
+        
+        return true;
     }
     
     public void StartDialog()
