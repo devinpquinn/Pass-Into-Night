@@ -346,6 +346,12 @@ public class SelectionManager : MonoBehaviour
         isAnimatingCompletion = false;
         completionTimer = 0f;
         
+        // Reset DialogManager's portrait scaling system
+        if (dialogManager != null)
+        {
+            dialogManager.ResetPortraitScaling();
+        }
+        
         // Reset selection state
         isSelectionActive = false;
         selectedCharacters.Clear();

@@ -491,6 +491,32 @@ public class DialogManager : MonoBehaviour
         return names;
     }
     
+    // Reset portrait scaling system (called when transitioning back to selection)
+    public void ResetPortraitScaling()
+    {
+        // Stop any ongoing scaling animations
+        isScaling = false;
+        
+        // Reset all portrait parent scales to 1.0 (neutral)
+        for (int i = 0; i < characterPortraits.Length; i++)
+        {
+            if (characterPortraits[i] != null && characterPortraits[i].transform.parent != null)
+            {
+                characterPortraits[i].transform.parent.localScale = Vector3.one;
+            }
+            
+            // Reset timer values
+            if (portraitScaleTimers != null && i < portraitScaleTimers.Length)
+            {
+                portraitScaleTimers[i] = 0f;
+                portraitStartScales[i] = 1f;
+                portraitTargetScales[i] = 1f;
+            }
+        }
+        
+        Debug.Log("DialogManager portrait scaling system reset");
+    }
+    
     // Test method for delay functionality
     [ContextMenu("Test Dialog Delay")]
     public void TestDialogDelay()
