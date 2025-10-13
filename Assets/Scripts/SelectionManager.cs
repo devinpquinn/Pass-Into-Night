@@ -21,6 +21,10 @@ public class SelectionManager : MonoBehaviour
     public float hoverScale = 0.95f;
     public float selectedScale = 1.0f;
     
+    [Header("Portrait Frames")]
+    public Sprite dashedFrameSprite;
+    public Sprite solidFrameSprite;
+    
     // Selection state
     private bool isSelectionActive = false;
     private int targetSelectionCount = 0;
@@ -211,6 +215,24 @@ public class SelectionManager : MonoBehaviour
         
         canvasGroup.alpha = targetAlpha;
         characterPortraits[characterIndex].transform.localScale = Vector3.one * targetScale;
+        
+        // Update frame sprite based on selection state
+        Image portrait = characterPortraits[characterIndex].GetComponent<Image>();
+        if (portrait != null)
+        {
+            if (selectedCharacters.Contains(characterIndex))
+            {
+                // Selected: use solid frame
+                if (solidFrameSprite != null)
+                    portrait.sprite = solidFrameSprite;
+            }
+            else
+            {
+                // Not selected: use dashed frame
+                if (dashedFrameSprite != null)
+                    portrait.sprite = dashedFrameSprite;
+            }
+        }
     }
     
     void SetAllPortraitsInactive()
@@ -227,6 +249,13 @@ public class SelectionManager : MonoBehaviour
                 
                 // Set inactive scale
                 characterPortraits[i].transform.localScale = Vector3.one * inactiveScale;
+                
+                // Set dashed frame for inactive state
+                Image portrait = characterPortraits[i].GetComponent<Image>();
+                if (portrait != null && dashedFrameSprite != null)
+                {
+                    portrait.sprite = dashedFrameSprite;
+                }
             }
         }
     }
@@ -370,11 +399,14 @@ public class SelectionManager : MonoBehaviour
                 // Make sure portraits are active and visible
                 characterPortraits[i].gameObject.SetActive(true);
                 
-                // Reset image color (in case it was set to clear during animation)
+                // Reset image color and sprite (in case it was set to clear during animation)
                 Image portrait = characterPortraits[i].GetComponent<Image>();
                 if (portrait != null)
                 {
                     portrait.color = Color.white;
+                    // Reset to dashed frame for new selection phase
+                    if (dashedFrameSprite != null)
+                        portrait.sprite = dashedFrameSprite;
                 }
                 
                 // Reset to original width

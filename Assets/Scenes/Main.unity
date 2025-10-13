@@ -478,7 +478,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DialogManager
   conversationFileName: Events/Conversations
   selectionManager: {fileID: 1486696451}
-  nextSelectionCharacterCount: 2
+  dialogStartDelay: 0.8
+  waitingPlaceholderText: ...
   dialogPanel: {fileID: 948208859}
   dialogText: {fileID: 1395434257}
   speechBubble: {fileID: 970933595}
@@ -1579,6 +1580,8 @@ MonoBehaviour:
   inactiveScale: 0.9
   hoverScale: 0.95
   selectedScale: 1
+  dashedFrameSprite: {fileID: 21300000, guid: 5d972123b93cf0245b66e5df6041b593, type: 3}
+  solidFrameSprite: {fileID: 21300000, guid: eb7baf99c2a2b6a458a1b1bc74be7283, type: 3}
 --- !u!4 &1486696452
 Transform:
   m_ObjectHideFlags: 0
