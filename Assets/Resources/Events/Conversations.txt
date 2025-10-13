@@ -1,3 +1,27 @@
+[Waif]
+Waif: The stars... they're so different from down here.
+I used to think I knew what freedom meant.
+Waif: But maybe freedom isn't about escaping something.
+Maybe it's about choosing what to carry with you.
+
+[Priestess]
+Priestess: In the silence, I hear echoes of old prayers.
+Words spoken by voices that have long since faded.
+Priestess: Faith... what does it mean when everything familiar is gone?
+Perhaps faith is not about certainty, but about continuing to hope when certainty fails.
+
+[Warder]
+Warder: Duty. It's a word I've carried like armor.
+But armor can become a cage if you never take it off.
+Warder: What am I protecting now? What am I protecting from?
+Sometimes the greatest courage is admitting when the old ways no longer serve.
+
+[Pilot]
+Pilot: Every ship has its own heartbeat. This one's rhythm is... different.
+Lost, maybe. Or maybe just looking for a new song to sing.
+Pilot: I've always been good at reading the signs, following the paths.
+But what happens when the path leads somewhere you've never imagined?
+
 [Waif-Priestess]
 Waif: I never thought I'd see the stars from here.
 Priestess: The void holds many mysteries, child. Some are beautiful, others... dangerous.

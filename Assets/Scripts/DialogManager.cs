@@ -10,8 +10,7 @@ public class DialogManager : MonoBehaviour
     public string conversationFileName = "Events/Conversations";
     public SelectionManager selectionManager;
     
-    [Header("Selection Reset Settings")]
-    public int nextSelectionCharacterCount = 2;
+
     
     [Header("Dialog Timing")]
     public float dialogStartDelay = 0.8f; // Delay before starting dialog after selection
@@ -186,7 +185,7 @@ public class DialogManager : MonoBehaviour
             // Reset the selection system for a new selection phase
             if (selectionManager != null)
             {
-                selectionManager.ResetForNewSelection(nextSelectionCharacterCount);
+                selectionManager.ResetForNewSelection();
             }
             
             return;

@@ -59,7 +59,9 @@ public class SelectionManager : MonoBehaviour
         // Initialize all portraits as inactive
         SetAllPortraitsInactive();
         
-        StartSelection(2); // Example: start selection for 2 characters
+        // Start with random character count for testing
+        int randomCount = Random.Range(1, 4); // 1, 2, or 3 characters
+        StartSelection(randomCount);
     }
     
     void Update()
@@ -343,7 +345,7 @@ public class SelectionManager : MonoBehaviour
     }
     
     // Reset method for starting new selection after dialog completion
-    public void ResetForNewSelection(int characterCount = 2)
+    public void ResetForNewSelection()
     {
         // Stop any ongoing animations
         isAnimatingCompletion = false;
@@ -404,10 +406,12 @@ public class SelectionManager : MonoBehaviour
             promptText.text = "";
         }
         
-        Debug.Log($"Selection system reset. Ready for new selection of {characterCount} characters.");
+        // Choose random character count for next selection (testing purposes)
+        int randomCharacterCount = Random.Range(1, 4); // 1, 2, or 3 characters
+        Debug.Log($"Selection system reset. Ready for new selection of {randomCharacterCount} characters.");
         
         // Automatically start a new selection
-        StartSelection(characterCount);
+        StartSelection(randomCharacterCount);
     }
     
     // Test methods - remove these in production
