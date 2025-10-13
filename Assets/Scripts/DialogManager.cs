@@ -143,12 +143,15 @@ public class DialogManager : MonoBehaviour
             return; // Don't process input while waiting
         }
 
+        // Only allow dialog advancement if we're not in selection phase
+        bool canAdvanceDialog = selectionManager == null || !selectionManager.IsSelectionActive();
+        
         bool advance = false;
-        if (!isScaling && Input.GetKeyDown(KeyCode.Space))
+        if (canAdvanceDialog && !isScaling && Input.GetKeyDown(KeyCode.Space))
         {
             advance = true;
         }
-        else if (!isScaling && Input.GetMouseButtonDown(0))
+        else if (canAdvanceDialog && !isScaling && Input.GetMouseButtonDown(0))
         {
             Vector2 mousePos = Input.mousePosition;
             if (RectTransformUtility.RectangleContainsScreenPoint(dialogPanel, mousePos, uiCamera))
