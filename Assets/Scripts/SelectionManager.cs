@@ -222,6 +222,9 @@ public class SelectionManager : MonoBehaviour
                 {
                     canvasGroup.alpha = inactiveAlpha;
                 }
+                
+                // Set inactive scale
+                characterPortraits[i].transform.localScale = Vector3.one * inactiveScale;
             }
         }
     }
