@@ -48,8 +48,9 @@ public class DialogManager : MonoBehaviour
 
     private bool isScaling = false;
     private float[] portraitScaleTimers;
-    private float[] portraitStartScales;
-    private float[] portraitTargetScales;
+    private Vector2[] portraitStartSizes;
+    private Vector2[] portraitTargetSizes;
+    private Vector2[] portraitBaseSizes;
 
     // Character name to index mapping
     private int GetCharacterIndex(string characterName)
@@ -73,15 +74,23 @@ public class DialogManager : MonoBehaviour
         uiCamera = Camera.main;
 
         portraitScaleTimers = new float[characterPortraits.Length];
-        portraitStartScales = new float[characterPortraits.Length];
-        portraitTargetScales = new float[characterPortraits.Length];
+        portraitStartSizes = new Vector2[characterPortraits.Length];
+        portraitTargetSizes = new Vector2[characterPortraits.Length];
+        portraitBaseSizes = new Vector2[characterPortraits.Length];
+        
         for (int i = 0; i < characterPortraits.Length; i++)
         {
-            if (characterPortraits[i].transform.parent != null)
-                characterPortraits[i].transform.parent.localScale = Vector3.one;
+            if (characterPortraits[i] != null && characterPortraits[i].transform.parent != null)
+            {
+                RectTransform parentRectTransform = characterPortraits[i].transform.parent.GetComponent<RectTransform>();
+                if (parentRectTransform != null)
+                {
+                    portraitBaseSizes[i] = parentRectTransform.sizeDelta;
+                    portraitStartSizes[i] = parentRectTransform.sizeDelta;
+                    portraitTargetSizes[i] = parentRectTransform.sizeDelta;
+                }
+            }
             portraitScaleTimers[i] = 0f;
-            portraitStartScales[i] = 1f;
-            portraitTargetScales[i] = 1f;
         }
     }
 
@@ -100,19 +109,25 @@ public class DialogManager : MonoBehaviour
                 isDialogPanelPunching = false;
             }
         }
-        // Handle portrait scaling
+        // Handle portrait sizing
         if (isScaling)
         {
             bool allDone = true;
             for (int i = 0; i < characterPortraits.Length; i++)
             {
-                if (portraitScaleTimers[i] < portraitScaleTime)
+                if (portraitScaleTimers[i] < portraitScaleTime && characterPortraits[i] != null)
                 {
                     portraitScaleTimers[i] += Time.deltaTime;
                     float t = Mathf.Clamp01(portraitScaleTimers[i] / portraitScaleTime);
-                    float scale = Mathf.Lerp(portraitStartScales[i], portraitTargetScales[i], t);
+                    Vector2 currentSize = Vector2.Lerp(portraitStartSizes[i], portraitTargetSizes[i], t);
+                    
                     if (characterPortraits[i].transform.parent != null)
-                        characterPortraits[i].transform.parent.localScale = new Vector3(scale, scale, 1f);
+                    {
+                        RectTransform parentRectTransform = characterPortraits[i].transform.parent.GetComponent<RectTransform>();
+                        if (parentRectTransform != null)
+                            parentRectTransform.sizeDelta = currentSize;
+                    }
+                        
                     if (t < 1f) allDone = false;
                 }
             }
@@ -267,19 +282,26 @@ public class DialogManager : MonoBehaviour
         // Reset all timers and set targets
         for (int i = 0; i < characterPortraits.Length; i++)
         {
-            float currentScale = 1f;
-            if (characterPortraits[i].transform.parent != null)
-                currentScale = characterPortraits[i].transform.parent.localScale.x;
-            portraitStartScales[i] = currentScale;
-            if (i == curr)
+            if (characterPortraits[i] != null && characterPortraits[i].transform.parent != null)
             {
-                portraitTargetScales[i] = activePortraitScale;
-                portraitScaleTimers[i] = 0f;
-            }
-            else
-            {
-                portraitTargetScales[i] = 1f;
-                portraitScaleTimers[i] = 0f;
+                RectTransform parentRectTransform = characterPortraits[i].transform.parent.GetComponent<RectTransform>();
+                if (parentRectTransform != null)
+                {
+                    portraitStartSizes[i] = parentRectTransform.sizeDelta;
+                    
+                    if (i == curr)
+                    {
+                        // Scale up by activePortraitScale factor
+                        portraitTargetSizes[i] = portraitBaseSizes[i] * activePortraitScale;
+                        portraitScaleTimers[i] = 0f;
+                    }
+                    else
+                    {
+                        // Return to base size
+                        portraitTargetSizes[i] = portraitBaseSizes[i];
+                        portraitScaleTimers[i] = 0f;
+                    }
+                }
             }
         }
         isScaling = true;
@@ -496,20 +518,26 @@ public class DialogManager : MonoBehaviour
         // Stop any ongoing scaling animations
         isScaling = false;
         
-        // Reset all portrait parent scales to 1.0 (neutral)
+        // Reset all portrait sizes to base size
         for (int i = 0; i < characterPortraits.Length; i++)
         {
             if (characterPortraits[i] != null && characterPortraits[i].transform.parent != null)
             {
-                characterPortraits[i].transform.parent.localScale = Vector3.one;
+                RectTransform parentRectTransform = characterPortraits[i].transform.parent.GetComponent<RectTransform>();
+                if (parentRectTransform != null && portraitBaseSizes != null && i < portraitBaseSizes.Length)
+                {
+                    parentRectTransform.sizeDelta = portraitBaseSizes[i];
+                }
             }
             
             // Reset timer values
             if (portraitScaleTimers != null && i < portraitScaleTimers.Length)
             {
                 portraitScaleTimers[i] = 0f;
-                portraitStartScales[i] = 1f;
-                portraitTargetScales[i] = 1f;
+                if (portraitStartSizes != null && i < portraitStartSizes.Length)
+                    portraitStartSizes[i] = portraitBaseSizes[i];
+                if (portraitTargetSizes != null && i < portraitTargetSizes.Length)
+                    portraitTargetSizes[i] = portraitBaseSizes[i];
             }
         }
         
