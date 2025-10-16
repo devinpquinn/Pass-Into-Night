@@ -500,6 +500,16 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c396d4b3fd13bd84db8462540536d0a2, type: 3}
   - {fileID: 21300000, guid: f158fd32f6b7612409350aafd9175c9e, type: 3}
   - {fileID: 21300000, guid: 07dbc3afed7051e409a82aba6979ddcb, type: 3}
+  characterSpritesEyesClosed:
+  - {fileID: 21300000, guid: ec4dc6be6bd71d9408f89df0e6fe2041, type: 3}
+  - {fileID: 21300000, guid: 1d046ba827d0f614499230a9ab84b74f, type: 3}
+  - {fileID: 21300000, guid: 6fe8896e74d10d3439d2b562b0c044cf, type: 3}
+  - {fileID: 21300000, guid: b7ce1d167e52f2b4ca1042e660ad7be5, type: 3}
+  characterSpritesEyesOpen:
+  - {fileID: 21300000, guid: 88ca2fe3036c0e445ae6088abc3ad5fe, type: 3}
+  - {fileID: 21300000, guid: b5981955173e6aa4bab86d7d3d2e270d, type: 3}
+  - {fileID: 21300000, guid: 3841c37c868efd94ab4b33733893ad76, type: 3}
+  - {fileID: 21300000, guid: 6f85c018fce920647bed6ec6cc16e61a, type: 3}
   enablePortraitScaling: 1
 --- !u!4 &419666009
 Transform:

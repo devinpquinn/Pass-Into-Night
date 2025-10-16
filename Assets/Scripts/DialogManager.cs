@@ -36,6 +36,10 @@ public class DialogManager : MonoBehaviour
     public Image[] characterPortraits;
     public Sprite[] characterSpritesInactive;
     public Sprite[] characterSpritesActive;
+    
+    [Header("Selection Phase Sprites")]
+    public Sprite[] characterSpritesEyesClosed; // Used when not selected/hovered during selection
+    public Sprite[] characterSpritesEyesOpen;   // Used when hovered during selection
 
     [Header("Portrait Scaling")]
     public bool enablePortraitScaling = true;
@@ -151,6 +155,10 @@ public class DialogManager : MonoBehaviour
                     dialogQueue.Enqueue(line);
                 }
                 pendingDialogQueue.Clear();
+                
+                // Reset character sprites to normal dialog sprites
+                ResetCharacterSpritesToNormal();
+                
                 Debug.Log("Dialog delay complete. Starting conversation.");
                 StartDialog();
             }
@@ -542,6 +550,50 @@ public class DialogManager : MonoBehaviour
         }
         
         Debug.Log("DialogManager portrait scaling system reset");
+    }
+    
+    // Methods for selection phase sprite management
+    public void SetCharacterToEyesClosed(int characterIndex)
+    {
+        if (characterIndex >= 0 && characterIndex < characterPortraits.Length && 
+            characterPortraits[characterIndex] != null &&
+            characterIndex < characterSpritesEyesClosed.Length &&
+            characterSpritesEyesClosed[characterIndex] != null)
+        {
+            characterPortraits[characterIndex].sprite = characterSpritesEyesClosed[characterIndex];
+        }
+    }
+    
+    public void SetCharacterToEyesOpen(int characterIndex)
+    {
+        if (characterIndex >= 0 && characterIndex < characterPortraits.Length && 
+            characterPortraits[characterIndex] != null &&
+            characterIndex < characterSpritesEyesOpen.Length &&
+            characterSpritesEyesOpen[characterIndex] != null)
+        {
+            characterPortraits[characterIndex].sprite = characterSpritesEyesOpen[characterIndex];
+        }
+    }
+    
+    public void SetAllCharactersToEyesClosed()
+    {
+        for (int i = 0; i < characterPortraits.Length; i++)
+        {
+            SetCharacterToEyesClosed(i);
+        }
+    }
+    
+    public void ResetCharacterSpritesToNormal()
+    {
+        // Reset all character portraits to their normal dialog sprites (inactive by default)
+        for (int i = 0; i < characterPortraits.Length; i++)
+        {
+            if (i < characterSpritesInactive.Length && characterSpritesInactive[i] != null &&
+                characterPortraits[i] != null)
+            {
+                characterPortraits[i].sprite = characterSpritesInactive[i];
+            }
+        }
     }
     
     // Test method for delay functionality

@@ -233,6 +233,21 @@ public class SelectionManager : MonoBehaviour
                     portrait.sprite = dashedFrameSprite;
             }
         }
+        
+        // Update character sprite based on hover/selection state
+        if (dialogManager != null)
+        {
+            if (selectedCharacters.Contains(characterIndex) || characterIndex == hoveredCharacter)
+            {
+                // Selected or hovered: eyes open
+                dialogManager.SetCharacterToEyesOpen(characterIndex);
+            }
+            else
+            {
+                // Not selected and not hovered: eyes closed
+                dialogManager.SetCharacterToEyesClosed(characterIndex);
+            }
+        }
     }
     
     void SetAllPortraitsInactive()
@@ -257,6 +272,12 @@ public class SelectionManager : MonoBehaviour
                     portrait.sprite = dashedFrameSprite;
                 }
             }
+        }
+        
+        // Set all characters to eyes-closed during selection phase
+        if (dialogManager != null)
+        {
+            dialogManager.SetAllCharactersToEyesClosed();
         }
     }
     
