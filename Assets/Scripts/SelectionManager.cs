@@ -321,6 +321,19 @@ public class SelectionManager : MonoBehaviour
         }
         
         // Start completion animation for unselected portraits
+        // Immediately set non-selected portraits to alpha 0
+        for (int i = 0; i < characterPortraits.Length; i++)
+        {
+            if (!selectedCharacters.Contains(i))
+            {
+                CanvasGroup canvasGroup = characterPortraits[i].GetComponent<CanvasGroup>();
+                if (canvasGroup != null)
+                {
+                    canvasGroup.alpha = 0f;
+                }
+            }
+        }
+        
         isAnimatingCompletion = true;
         completionTimer = 0f;
     }
@@ -371,11 +384,7 @@ public class SelectionManager : MonoBehaviour
         // Apply easing to the progress (ease-out cubic for smooth deceleration)
         float easedProgress = 1f - Mathf.Pow(1f - progress, 3f);
         
-        // Calculate alpha progress (completes in half the time)
-        float alphaProgress = Mathf.Clamp01(progress * 2f);
-        float easedAlphaProgress = 1f - Mathf.Pow(1f - alphaProgress, 3f);
-        
-        // Animate unselected portraits
+        // Animate unselected portraits (width shrinking only, alpha was set immediately)
         for (int i = 0; i < characterPortraits.Length; i++)
         {
             if (!selectedCharacters.Contains(i))
@@ -383,13 +392,6 @@ public class SelectionManager : MonoBehaviour
                 RectTransform rectTransform = characterPortraits[i].GetComponent<RectTransform>();
                 float currentWidth = Mathf.Lerp(originalWidths[i], -25f, easedProgress);
                 rectTransform.sizeDelta = new Vector2(currentWidth, rectTransform.sizeDelta.y);
-                
-                // Fade alpha over half the duration
-                CanvasGroup canvasGroup = characterPortraits[i].GetComponent<CanvasGroup>();
-                if (canvasGroup != null)
-                {
-                    canvasGroup.alpha = Mathf.Lerp(selectedAlpha, 0f, easedAlphaProgress);
-                }
             }
         }
     }
