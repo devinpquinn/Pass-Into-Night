@@ -97,8 +97,8 @@ public class SelectionManager : MonoBehaviour
         // Set prompt text with written numbers
         string numberWord = GetNumberWord(characterCount);
         string promptMessage = characterCount == 1 ? 
-            $"Select {numberWord} character." : 
-            $"Select {numberWord} characters.";
+            $"Select {numberWord} traveler." : 
+            $"Select {numberWord} travelers.";
         
         if (promptText != null)
         {
