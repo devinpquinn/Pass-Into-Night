@@ -5,8 +5,10 @@ Waif: But maybe freedom isn't about escaping something.
 {IF: Waif.arc >= 2}
 Maybe it's about choosing what to carry with you and what to leave behind.
 Waif: I'm starting to understand who I really am beneath all the fear.
+{SET: Waif.arc +1}
 {ELSE}
 Maybe it's about choosing what to carry with you.
+{SET: Waif.arc +1}
 {ENDIF}
 
 [Priestess]
@@ -49,8 +51,12 @@ Waif: Do you think we'll make it home?
 {IF: Waif->Priestess >= 3}
 Priestess: Home is not always a place we return to. Sometimes, it's a place we create together.
 Waif: Together... I like the sound of that.
+{SET: Waif->Priestess +1}
+{SET: Priestess->Waif +1}
 {ELSE}
 Priestess: Home is not always a place we return to. Sometimes, it's a place we create.
+Waif: That's... actually comforting.
+{SET: Waif->Priestess +1}
 {ENDIF}
 
 [Waif-Warder]
@@ -60,8 +66,12 @@ Waif: Maybe that's why we need them most.
 {IF: Waif->Warder >= 2}
 Warder: ...You know, you might be right about that. *a small smile crosses their face*
 Waif: There it is! I knew you had it in you.
+{SET: Waif->Warder +1}
+{SET: Warder->Waif +2}
+{SET: Warder.arc +1}
 {ELSE}
 Warder: ...Perhaps you have a point.
+{SET: Waif->Warder +1}
 {ENDIF}
 
 [Waif-Pilot]
@@ -82,8 +92,13 @@ Priestess: A guardian who neglects their own spirit cannot protect others for lo
 {IF: Priestess->Warder >= 2}
 Warder: I... you speak with wisdom. Perhaps I have been too rigid in my thinking.
 Priestess: Flexibility is not weakness, it's another form of strength.
+{SET: Warder.arc +2}
+{SET: Priestess->Warder +1}
+{SET: Warder->Priestess +1}
 {ELSE}
 Warder: I... hadn't considered that perspective.
+{SET: Priestess->Warder +1}
+{SET: Warder.arc +1}
 {ENDIF}
 
 [Priestess-Pilot]
@@ -118,10 +133,15 @@ Waif: Maybe that's what freedom really is.
 {IF: Waif->Priestess >= 2}
 Priestess: From the mouths of babes... wisdom often comes from unexpected places.
 Waif: I learned that from watching you both.
+{SET: Waif.arc +1}
+{SET: Waif->Priestess +1}
+{SET: Waif->Warder +1}
 {ELSE}
 Priestess: From the mouths of babes...
+{SET: Waif.arc +1}
 {ENDIF}
 Warder: I... see your point.
+{SET: Warder.arc +1}
 
 [Waif-Priestess-Pilot]
 Waif: Do you think the stars have names?

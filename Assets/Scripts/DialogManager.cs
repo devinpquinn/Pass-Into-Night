@@ -520,74 +520,84 @@ public class DialogManager : MonoBehaviour
             string line = rawConversation[i];
             Debug.Log($"Processing line {i}: '{line}'");
             
-            // Check if this is a conditional line
-            if (line.StartsWith("{IF:") && line.EndsWith("}"))
+            // Check if this is a command line
+            if (line.StartsWith("{") && line.EndsWith("}") && line.Contains(":"))
             {
-                Debug.Log($"Found condition: {line}");
-                bool conditionMet = EvaluateCondition(line);
-                Debug.Log($"Condition result: {conditionMet}");
-                
-                i++; // Move to next line after condition
-                
-                // Process the conditional block
-                List<string> conditionalBlock = new List<string>();
-                List<string> elseBlock = new List<string>();
-                bool inElseBlock = false;
-                bool foundEndif = false;
-                
-                // Collect lines until we hit {ENDIF} or {ELSE}
-                while (i < rawConversation.Count)
+                if (line.StartsWith("{IF:"))
                 {
-                    string currentLine = rawConversation[i];
-                    Debug.Log($"  Conditional block line {i}: '{currentLine}'");
+                    // Handle conditional logic
+                    Debug.Log($"Found condition: {line}");
+                    bool conditionMet = EvaluateCondition(line);
+                    Debug.Log($"Condition result: {conditionMet}");
                     
-                    if (currentLine.Equals("{ENDIF}"))
+                    i++; // Move to next line after condition
+                    
+                    // Process the conditional block
+                    List<string> conditionalBlock = new List<string>();
+                    List<string> elseBlock = new List<string>();
+                    bool inElseBlock = false;
+                    bool foundEndif = false;
+                    
+                    // Collect lines until we hit {ENDIF} or {ELSE}
+                    while (i < rawConversation.Count)
                     {
-                        foundEndif = true;
-                        Debug.Log("  Found {ENDIF}");
-                        break; // End of conditional block
-                    }
-                    else if (currentLine.Equals("{ELSE}"))
-                    {
-                        inElseBlock = true;
-                        Debug.Log("  Found {ELSE}, switching to else block");
+                        string currentLine = rawConversation[i];
+                        Debug.Log($"  Conditional block line {i}: '{currentLine}'");
+                        
+                        if (currentLine.Equals("{ENDIF}"))
+                        {
+                            foundEndif = true;
+                            Debug.Log("  Found {ENDIF}");
+                            break; // End of conditional block
+                        }
+                        else if (currentLine.Equals("{ELSE}"))
+                        {
+                            inElseBlock = true;
+                            Debug.Log("  Found {ELSE}, switching to else block");
+                            i++;
+                            continue;
+                        }
+                        
+                        if (inElseBlock)
+                        {
+                            elseBlock.Add(currentLine);
+                            Debug.Log($"    Added to else block: '{currentLine}'");
+                        }
+                        else
+                        {
+                            conditionalBlock.Add(currentLine);
+                            Debug.Log($"    Added to if block: '{currentLine}'");
+                        }
+                        
                         i++;
-                        continue;
                     }
                     
-                    if (inElseBlock)
+                    if (!foundEndif)
                     {
-                        elseBlock.Add(currentLine);
-                        Debug.Log($"    Added to else block: '{currentLine}'");
+                        Debug.LogWarning("Conditional block missing {ENDIF} - reached end of conversation");
+                    }
+                    
+                    // Add the appropriate block based on condition result
+                    if (conditionMet)
+                    {
+                        Debug.Log($"Condition met, adding IF block ({conditionalBlock.Count} lines)");
+                        processedConversation.AddRange(ProcessConversationWithConditions(conditionalBlock));
+                    }
+                    else if (elseBlock.Count > 0)
+                    {
+                        Debug.Log($"Condition not met, adding ELSE block ({elseBlock.Count} lines)");
+                        processedConversation.AddRange(ProcessConversationWithConditions(elseBlock));
                     }
                     else
                     {
-                        conditionalBlock.Add(currentLine);
-                        Debug.Log($"    Added to if block: '{currentLine}'");
+                        Debug.Log("Condition not met, no ELSE block");
                     }
-                    
-                    i++;
-                }
-                
-                if (!foundEndif)
-                {
-                    Debug.LogWarning("Conditional block missing {ENDIF} - reached end of conversation");
-                }
-                
-                // Add the appropriate block based on condition result
-                if (conditionMet)
-                {
-                    Debug.Log($"Condition met, adding IF block ({conditionalBlock.Count} lines)");
-                    processedConversation.AddRange(conditionalBlock);
-                }
-                else if (elseBlock.Count > 0)
-                {
-                    Debug.Log($"Condition not met, adding ELSE block ({elseBlock.Count} lines)");
-                    processedConversation.AddRange(elseBlock);
                 }
                 else
                 {
-                    Debug.Log("Condition not met, no ELSE block");
+                    // Handle command (relationship/arc modification)
+                    ProcessCommand(line);
+                    // Commands don't add dialog lines, they just execute
                 }
             }
             else
@@ -602,6 +612,170 @@ public class DialogManager : MonoBehaviour
         
         Debug.Log($"Finished processing. Result: {processedConversation.Count} lines");
         return processedConversation;
+    }
+    
+    // Process command lines for relationship/arc modifications
+    private void ProcessCommand(string commandLine)
+    {
+        if (characterManager == null)
+        {
+            Debug.LogWarning("CharacterManager not assigned, cannot process command");
+            return;
+        }
+        
+        Debug.Log($"Processing command: '{commandLine}'");
+        
+        // Remove the curly brackets and trim
+        string command = commandLine.Replace("{", "").Replace("}", "").Trim();
+        
+        try
+        {
+            // Parse relationship commands: "SET: Waif->Priestess +2" or "SET: Waif->Priestess = 5"
+            if (command.StartsWith("SET:"))
+            {
+                string setCommand = command.Substring(4).Trim(); // Remove "SET:"
+                
+                if (setCommand.Contains("->"))
+                {
+                    ProcessRelationshipCommand(setCommand);
+                }
+                else if (setCommand.Contains(".arc"))
+                {
+                    ProcessArcCommand(setCommand);
+                }
+                else
+                {
+                    Debug.LogWarning($"Unknown SET command format: {setCommand}");
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"Unknown command type: {command}");
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error processing command '{commandLine}': {e.Message}");
+        }
+    }
+    
+    private void ProcessRelationshipCommand(string command)
+    {
+        try
+        {
+            Debug.Log($"Processing relationship command: '{command}'");
+            
+            // Parse format: "Waif->Priestess +2" or "Waif->Priestess = 5"
+            string[] parts = command.Split(new string[] { "->" }, System.StringSplitOptions.None);
+            string fromChar = parts[0].Trim();
+            
+            string rightPart = parts[1].Trim();
+            char operation = rightPart[0];
+            
+            if (operation == '+' || operation == '-' || operation == '=')
+            {
+                string toChar = "";
+                int value = 0;
+                
+                if (operation == '=')
+                {
+                    string[] equalParts = rightPart.Split('=');
+                    toChar = equalParts[0].Trim();
+                    value = int.Parse(equalParts[1].Trim());
+                }
+                else
+                {
+                    // Find where the number starts
+                    int numberIndex = 1; // Skip the + or - sign
+                    while (numberIndex < rightPart.Length && char.IsWhiteSpace(rightPart[numberIndex]))
+                        numberIndex++;
+                    
+                    toChar = rightPart.Substring(0, numberIndex).Replace("+", "").Replace("-", "").Trim();
+                    value = int.Parse(rightPart.Substring(numberIndex));
+                    
+                    if (operation == '-')
+                        value = -value;
+                }
+                
+                CharacterManager.CharacterID fromID = GetCharacterID(fromChar);
+                CharacterManager.CharacterID toID = GetCharacterID(toChar);
+                
+                if (operation == '=')
+                {
+                    characterManager.SetRelationship(fromID, toID, value);
+                    Debug.Log($"Set relationship {fromID}->{toID} = {value}");
+                }
+                else
+                {
+                    int currentValue = characterManager.GetRelationship(fromID, toID);
+                    int newValue = currentValue + value;
+                    characterManager.SetRelationship(fromID, toID, newValue);
+                    Debug.Log($"Modified relationship {fromID}->{toID}: {currentValue} + {value} = {newValue}");
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"Unknown relationship operation: {operation}");
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error processing relationship command '{command}': {e.Message}");
+        }
+    }
+    
+    private void ProcessArcCommand(string command)
+    {
+        try
+        {
+            Debug.Log($"Processing arc command: '{command}'");
+            
+            // Parse format: "Waif.arc +1" or "Waif.arc = 3"
+            string[] parts = command.Split(new string[] { ".arc" }, System.StringSplitOptions.None);
+            string charName = parts[0].Trim();
+            
+            string rightPart = parts[1].Trim();
+            char operation = rightPart[0];
+            
+            if (operation == '+' || operation == '-' || operation == '=')
+            {
+                int value = 0;
+                
+                if (operation == '=')
+                {
+                    value = int.Parse(rightPart.Substring(1).Trim());
+                }
+                else
+                {
+                    value = int.Parse(rightPart.Substring(1).Trim());
+                    if (operation == '-')
+                        value = -value;
+                }
+                
+                CharacterManager.CharacterID charID = GetCharacterID(charName);
+                
+                if (operation == '=')
+                {
+                    characterManager.SetCharacterArc(charID, value);
+                    Debug.Log($"Set arc {charID} = {value}");
+                }
+                else
+                {
+                    int currentValue = characterManager.GetCharacterArc(charID);
+                    int newValue = currentValue + value;
+                    characterManager.SetCharacterArc(charID, newValue);
+                    Debug.Log($"Modified arc {charID}: {currentValue} + {value} = {newValue}");
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"Unknown arc operation: {operation}");
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error processing arc command '{command}': {e.Message}");
+        }
     }
     
     // Helper method to get character names from indices (for SelectionManager integration)
@@ -859,21 +1033,29 @@ public class DialogManager : MonoBehaviour
             return;
         }
         
-        // Create a test conversation with conditions
+        // Create a test conversation with conditions and commands
         List<string> testConversation = new List<string>
         {
             "Waif: Let's see how our relationship affects this conversation.",
             "{IF: Waif->Priestess >= 3}",
             "Priestess: Our bond has grown strong, Waif.",
             "Waif: Indeed, I feel we understand each other well.",
+            "{SET: Waif->Priestess +1}",
+            "Priestess: I feel even closer to you now.",
             "{ELSE}",
             "Priestess: We still have much to learn about each other.",
             "Waif: Perhaps in time we will grow closer.",
+            "{SET: Waif->Priestess +2}",
+            "Priestess: This conversation has been... enlightening.",
             "{ENDIF}",
             "{IF: Waif.arc >= 2}",
             "Waif: My journey has taught me much about myself.",
+            "{SET: Waif.arc +1}",
+            "{ELSE}",
+            "Waif: I'm still learning about who I am.",
+            "{SET: Waif.arc +1}",
             "{ENDIF}",
-            "Priestess: The future holds many possibilities."
+            "Priestess: The future holds many possibilities for both of us."
         };
         
         // Process and load the test conversation
