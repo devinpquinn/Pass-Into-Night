@@ -670,52 +670,62 @@ public class DialogManager : MonoBehaviour
             string fromChar = parts[0].Trim();
             
             string rightPart = parts[1].Trim();
-            char operation = rightPart[0];
             
-            if (operation == '+' || operation == '-' || operation == '=')
+            // Find the operation character and split accordingly
+            char operation = ' ';
+            string toChar = "";
+            int value = 0;
+            
+            if (rightPart.Contains(" ="))
             {
-                string toChar = "";
-                int value = 0;
-                
-                if (operation == '=')
-                {
-                    string[] equalParts = rightPart.Split('=');
-                    toChar = equalParts[0].Trim();
-                    value = int.Parse(equalParts[1].Trim());
-                }
-                else
-                {
-                    // Find where the number starts
-                    int numberIndex = 1; // Skip the + or - sign
-                    while (numberIndex < rightPart.Length && char.IsWhiteSpace(rightPart[numberIndex]))
-                        numberIndex++;
-                    
-                    toChar = rightPart.Substring(0, numberIndex).Replace("+", "").Replace("-", "").Trim();
-                    value = int.Parse(rightPart.Substring(numberIndex));
-                    
-                    if (operation == '-')
-                        value = -value;
-                }
-                
-                CharacterManager.CharacterID fromID = GetCharacterID(fromChar);
-                CharacterManager.CharacterID toID = GetCharacterID(toChar);
-                
-                if (operation == '=')
-                {
-                    characterManager.SetRelationship(fromID, toID, value);
-                    Debug.Log($"Set relationship {fromID}->{toID} = {value}");
-                }
-                else
-                {
-                    int currentValue = characterManager.GetRelationship(fromID, toID);
-                    int newValue = currentValue + value;
-                    characterManager.SetRelationship(fromID, toID, newValue);
-                    Debug.Log($"Modified relationship {fromID}->{toID}: {currentValue} + {value} = {newValue}");
-                }
+                operation = '=';
+                string[] equalParts = rightPart.Split(new char[] { '=' }, 2);
+                toChar = equalParts[0].Trim();
+                value = int.Parse(equalParts[1].Trim());
+            }
+            else if (rightPart.Contains(" +"))
+            {
+                operation = '+';
+                string[] plusParts = rightPart.Split(new char[] { '+' }, 2);
+                toChar = plusParts[0].Trim();
+                value = int.Parse(plusParts[1].Trim());
+            }
+            else if (rightPart.Contains(" -"))
+            {
+                operation = '-';
+                string[] minusParts = rightPart.Split(new char[] { '-' }, 2);
+                toChar = minusParts[0].Trim();
+                value = int.Parse(minusParts[1].Trim());
             }
             else
             {
-                Debug.LogWarning($"Unknown relationship operation: {operation}");
+                Debug.LogWarning($"No valid operation found in: {rightPart}");
+                return;
+            }
+            
+            Debug.Log($"Parsed: {fromChar} -> {toChar}, operation: {operation}, value: {value}");
+            
+            CharacterManager.CharacterID fromID = GetCharacterID(fromChar);
+            CharacterManager.CharacterID toID = GetCharacterID(toChar);
+            
+            if (operation == '=')
+            {
+                characterManager.SetRelationship(fromID, toID, value);
+                Debug.Log($"Set relationship {fromID}->{toID} = {value}");
+            }
+            else if (operation == '+')
+            {
+                int currentValue = characterManager.GetRelationship(fromID, toID);
+                int newValue = currentValue + value;
+                characterManager.SetRelationship(fromID, toID, newValue);
+                Debug.Log($"Modified relationship {fromID}->{toID}: {currentValue} + {value} = {newValue}");
+            }
+            else if (operation == '-')
+            {
+                int currentValue = characterManager.GetRelationship(fromID, toID);
+                int newValue = currentValue - value;
+                characterManager.SetRelationship(fromID, toID, newValue);
+                Debug.Log($"Modified relationship {fromID}->{toID}: {currentValue} - {value} = {newValue}");
             }
         }
         catch (System.Exception e)
