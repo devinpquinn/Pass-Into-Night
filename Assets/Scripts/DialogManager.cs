@@ -216,6 +216,36 @@ public class DialogManager : MonoBehaviour
         }
 
         string line = dialogQueue.Dequeue();
+        
+        // Check if this line is a command that should be executed
+        if (line.StartsWith("{") && line.EndsWith("}") && line.Contains(":"))
+        {
+            Debug.Log($"Executing command during dialog: {line}");
+            ProcessCommand(line);
+            
+            // After executing command, immediately show next dialog (don't display the command)
+            if (dialogQueue.Count > 0)
+            {
+                ShowNextDialog();
+                return;
+            }
+            else
+            {
+                // No more dialog after command, end conversation
+                dialogText.text = "";
+                HighlightSpeaker(-1);
+                speechBubble.SetActive(false);
+                StartPortraitScale(currentSpeaker, -1);
+                currentSpeaker = -1;
+                
+                if (selectionManager != null)
+                {
+                    selectionManager.ResetForNewSelection();
+                }
+                return;
+            }
+        }
+        
         int colonIndex = line.IndexOf(":");
         if (colonIndex > 0)
         {
@@ -596,8 +626,9 @@ public class DialogManager : MonoBehaviour
                 else
                 {
                     // Handle command (relationship/arc modification)
-                    ProcessCommand(line);
-                    // Commands don't add dialog lines, they just execute
+                    // Instead of executing immediately, preserve the command for later execution
+                    Debug.Log($"Preserving command for later execution: '{line}'");
+                    processedConversation.Add(line);
                 }
             }
             else
