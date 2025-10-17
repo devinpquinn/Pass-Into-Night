@@ -635,7 +635,11 @@ public class DialogManager : MonoBehaviour
             {
                 string setCommand = command.Substring(4).Trim(); // Remove "SET:"
                 
-                if (setCommand.Contains("->"))
+                if (setCommand.Contains("<->"))
+                {
+                    ProcessMutualRelationshipCommand(setCommand);
+                }
+                else if (setCommand.Contains("->"))
                 {
                     ProcessRelationshipCommand(setCommand);
                 }
@@ -731,6 +735,93 @@ public class DialogManager : MonoBehaviour
         catch (System.Exception e)
         {
             Debug.LogError($"Error processing relationship command '{command}': {e.Message}");
+        }
+    }
+    
+    private void ProcessMutualRelationshipCommand(string command)
+    {
+        try
+        {
+            Debug.Log($"Processing mutual relationship command: '{command}'");
+            
+            // Parse format: "CharacterA<->CharacterB +2" or "CharacterA<->CharacterB = 5"
+            string[] parts = command.Split(new string[] { "<->" }, System.StringSplitOptions.None);
+            string char1 = parts[0].Trim();
+            
+            string rightPart = parts[1].Trim();
+            
+            // Find the operation character and split accordingly
+            char operation = ' ';
+            string char2 = "";
+            int value = 0;
+            
+            if (rightPart.Contains(" ="))
+            {
+                operation = '=';
+                string[] equalParts = rightPart.Split(new char[] { '=' }, 2);
+                char2 = equalParts[0].Trim();
+                value = int.Parse(equalParts[1].Trim());
+            }
+            else if (rightPart.Contains(" +"))
+            {
+                operation = '+';
+                string[] plusParts = rightPart.Split(new char[] { '+' }, 2);
+                char2 = plusParts[0].Trim();
+                value = int.Parse(plusParts[1].Trim());
+            }
+            else if (rightPart.Contains(" -"))
+            {
+                operation = '-';
+                string[] minusParts = rightPart.Split(new char[] { '-' }, 2);
+                char2 = minusParts[0].Trim();
+                value = int.Parse(minusParts[1].Trim());
+            }
+            else
+            {
+                Debug.LogWarning($"No valid operation found in mutual relationship: {rightPart}");
+                return;
+            }
+            
+            Debug.Log($"Parsed mutual: {char1} <-> {char2}, operation: {operation}, value: {value}");
+            
+            CharacterManager.CharacterID char1ID = GetCharacterID(char1);
+            CharacterManager.CharacterID char2ID = GetCharacterID(char2);
+            
+            // Apply the operation to both directions
+            if (operation == '=')
+            {
+                characterManager.SetRelationship(char1ID, char2ID, value);
+                characterManager.SetRelationship(char2ID, char1ID, value);
+                Debug.Log($"Set mutual relationship {char1ID}<->{char2ID} = {value}");
+            }
+            else if (operation == '+')
+            {
+                int currentValue1 = characterManager.GetRelationship(char1ID, char2ID);
+                int newValue1 = currentValue1 + value;
+                characterManager.SetRelationship(char1ID, char2ID, newValue1);
+                
+                int currentValue2 = characterManager.GetRelationship(char2ID, char1ID);
+                int newValue2 = currentValue2 + value;
+                characterManager.SetRelationship(char2ID, char1ID, newValue2);
+                
+                Debug.Log($"Modified mutual relationship {char1ID}<->{char2ID}: {currentValue1}/{currentValue2} + {value} = {newValue1}/{newValue2}");
+            }
+            else if (operation == '-')
+            {
+                int currentValue1 = characterManager.GetRelationship(char1ID, char2ID);
+                int newValue1 = currentValue1 - value;
+                characterManager.SetRelationship(char1ID, char2ID, newValue1);
+                
+                int currentValue2 = characterManager.GetRelationship(char2ID, char1ID);
+                int newValue2 = currentValue2 - value;
+                characterManager.SetRelationship(char2ID, char1ID, newValue2);
+                
+                Debug.Log($"Modified mutual relationship {char1ID}<->{char2ID}: {currentValue1}/{currentValue2} - {value} = {newValue1}/{newValue2}");
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error processing mutual relationship command '{command}': {e.Message}");
         }
     }
     
@@ -1129,19 +1220,19 @@ public class DialogManager : MonoBehaviour
             return;
         }
         
-        // Create a test conversation with conditions and commands
+        // Create a test conversation with conditions and commands (including mutual relationships)
         List<string> testConversation = new List<string>
         {
             "Waif: Let's see how our relationship affects this conversation.",
             "{IF: Waif->Priestess >= 3}",
             "Priestess: Our bond has grown strong, Waif.",
             "Waif: Indeed, I feel we understand each other well.",
-            "{SET: Waif->Priestess +1}",
+            "{SET: Waif<->Priestess +1}",
             "Priestess: I feel even closer to you now.",
             "{ELSE}",
             "Priestess: We still have much to learn about each other.",
             "Waif: Perhaps in time we will grow closer.",
-            "{SET: Waif->Priestess +2}",
+            "{SET: Waif<->Priestess +2}",
             "Priestess: This conversation has been... enlightening.",
             "{ENDIF}",
             "{IF: Waif.arc >= 2}",
