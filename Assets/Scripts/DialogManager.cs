@@ -9,6 +9,7 @@ public class DialogManager : MonoBehaviour
     [Header("Conversation Settings")]
     public string conversationFileName = "Events/Conversations";
     public SelectionManager selectionManager;
+    public CharacterManager characterManager;
     
 
     
@@ -339,13 +340,16 @@ public class DialogManager : MonoBehaviour
         
         if (conversation.Count > 0)
         {
-            // Store conversation in pending queue for delayed start
+            // Process conversation for conditional forks
+            List<string> processedConversation = ProcessConversationWithConditions(conversation);
+            
+            // Store processed conversation in pending queue for delayed start
             pendingDialogQueue.Clear();
-            foreach (string line in conversation)
+            foreach (string line in processedConversation)
             {
                 pendingDialogQueue.Enqueue(line);
             }
-            Debug.Log($"Successfully loaded conversation from section: {foundSectionName}");
+            Debug.Log($"Successfully loaded and processed conversation from section: {foundSectionName} ({processedConversation.Count} lines after processing)");
             
             // Start the delay timer and show placeholder text
             StartDialogWithDelay();
@@ -503,6 +507,103 @@ public class DialogManager : MonoBehaviour
         return conversationLines;
     }
     
+    // Process conversation with conditional forks
+    private List<string> ProcessConversationWithConditions(List<string> rawConversation)
+    {
+        List<string> processedConversation = new List<string>();
+        int i = 0;
+        
+        Debug.Log($"Processing conversation with {rawConversation.Count} lines");
+        
+        while (i < rawConversation.Count)
+        {
+            string line = rawConversation[i];
+            Debug.Log($"Processing line {i}: '{line}'");
+            
+            // Check if this is a conditional line
+            if (line.StartsWith("{IF:") && line.EndsWith("}"))
+            {
+                Debug.Log($"Found condition: {line}");
+                bool conditionMet = EvaluateCondition(line);
+                Debug.Log($"Condition result: {conditionMet}");
+                
+                i++; // Move to next line after condition
+                
+                // Process the conditional block
+                List<string> conditionalBlock = new List<string>();
+                List<string> elseBlock = new List<string>();
+                bool inElseBlock = false;
+                bool foundEndif = false;
+                
+                // Collect lines until we hit {ENDIF} or {ELSE}
+                while (i < rawConversation.Count)
+                {
+                    string currentLine = rawConversation[i];
+                    Debug.Log($"  Conditional block line {i}: '{currentLine}'");
+                    
+                    if (currentLine.Equals("{ENDIF}"))
+                    {
+                        foundEndif = true;
+                        Debug.Log("  Found {ENDIF}");
+                        break; // End of conditional block
+                    }
+                    else if (currentLine.Equals("{ELSE}"))
+                    {
+                        inElseBlock = true;
+                        Debug.Log("  Found {ELSE}, switching to else block");
+                        i++;
+                        continue;
+                    }
+                    
+                    if (inElseBlock)
+                    {
+                        elseBlock.Add(currentLine);
+                        Debug.Log($"    Added to else block: '{currentLine}'");
+                    }
+                    else
+                    {
+                        conditionalBlock.Add(currentLine);
+                        Debug.Log($"    Added to if block: '{currentLine}'");
+                    }
+                    
+                    i++;
+                }
+                
+                if (!foundEndif)
+                {
+                    Debug.LogWarning("Conditional block missing {ENDIF} - reached end of conversation");
+                }
+                
+                // Add the appropriate block based on condition result
+                if (conditionMet)
+                {
+                    Debug.Log($"Condition met, adding IF block ({conditionalBlock.Count} lines)");
+                    processedConversation.AddRange(conditionalBlock);
+                }
+                else if (elseBlock.Count > 0)
+                {
+                    Debug.Log($"Condition not met, adding ELSE block ({elseBlock.Count} lines)");
+                    processedConversation.AddRange(elseBlock);
+                }
+                else
+                {
+                    Debug.Log("Condition not met, no ELSE block");
+                }
+            }
+            else
+            {
+                // Regular dialog line, add it directly
+                Debug.Log($"Adding regular line: '{line}'");
+                processedConversation.Add(line);
+            }
+            
+            i++;
+        }
+        
+        Debug.Log($"Finished processing. Result: {processedConversation.Count} lines");
+        return processedConversation;
+    }
+    
     // Helper method to get character names from indices (for SelectionManager integration)
     public List<string> GetCharacterNames(HashSet<int> selectedIndices)
     {
@@ -596,6 +697,146 @@ public class DialogManager : MonoBehaviour
         }
     }
     
+    // Conditional dialog system
+    private bool EvaluateCondition(string conditionLine)
+    {
+        Debug.Log($"Evaluating condition: '{conditionLine}'");
+        
+        if (characterManager == null)
+        {
+            Debug.LogWarning("CharacterManager not assigned, condition evaluation failed");
+            return false;
+        }
+        
+        // Remove the condition markers and trim
+        string condition = conditionLine.Replace("{IF:", "").Replace("}", "").Trim();
+        Debug.Log($"Parsed condition: '{condition}'");
+        
+        // Parse relationship conditions: "Waif->Priestess >= 3"
+        if (condition.Contains("->"))
+        {
+            Debug.Log("Detected relationship condition");
+            return EvaluateRelationshipCondition(condition);
+        }
+        // Parse arc conditions: "Waif.arc >= 2"
+        else if (condition.Contains(".arc"))
+        {
+            Debug.Log("Detected arc condition");
+            return EvaluateArcCondition(condition);
+        }
+        
+        Debug.LogWarning($"Unknown condition format: {condition}");
+        return false;
+    }
+    
+    private bool EvaluateRelationshipCondition(string condition)
+    {
+        try
+        {
+            Debug.Log($"Parsing relationship condition: '{condition}'");
+            
+            // Parse format: "Waif->Priestess >= 3"
+            string[] parts = condition.Split(new string[] { "->" }, System.StringSplitOptions.None);
+            string fromChar = parts[0].Trim();
+            Debug.Log($"From character: '{fromChar}'");
+            
+            string[] rightParts = parts[1].Split(new char[] { '<', '>', '=', '!' }, System.StringSplitOptions.RemoveEmptyEntries);
+            string toChar = rightParts[0].Trim();
+            int targetValue = int.Parse(rightParts[1].Trim());
+            Debug.Log($"To character: '{toChar}', Target value: {targetValue}");
+            
+            // Get operator
+            string op = condition.Substring(condition.IndexOf(toChar) + toChar.Length).Replace(targetValue.ToString(), "").Trim();
+            Debug.Log($"Operator: '{op}'");
+            
+            // Convert character names to IDs
+            CharacterManager.CharacterID fromID = GetCharacterID(fromChar);
+            CharacterManager.CharacterID toID = GetCharacterID(toChar);
+            Debug.Log($"Character IDs: {fromID} -> {toID}");
+            
+            int currentValue = characterManager.GetRelationship(fromID, toID);
+            Debug.Log($"Current relationship value: {currentValue}");
+            
+            bool result = EvaluateComparison(currentValue, op, targetValue);
+            Debug.Log($"Comparison result: {currentValue} {op} {targetValue} = {result}");
+            
+            return result;
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error parsing relationship condition '{condition}': {e.Message}");
+            return false;
+        }
+    }
+    
+    private bool EvaluateArcCondition(string condition)
+    {
+        try
+        {
+            Debug.Log($"Parsing arc condition: '{condition}'");
+            
+            // Parse format: "Waif.arc >= 2"
+            string[] parts = condition.Split(new string[] { ".arc" }, System.StringSplitOptions.None);
+            string charName = parts[0].Trim();
+            Debug.Log($"Character: '{charName}'");
+            
+            string[] rightParts = parts[1].Split(new char[] { '<', '>', '=', '!' }, System.StringSplitOptions.RemoveEmptyEntries);
+            int targetValue = int.Parse(rightParts[0].Trim());
+            Debug.Log($"Target value: {targetValue}");
+            
+            // Get operator
+            string op = condition.Substring(condition.IndexOf(".arc") + 4).Replace(targetValue.ToString(), "").Trim();
+            Debug.Log($"Operator: '{op}'");
+            
+            // Convert character name to ID
+            CharacterManager.CharacterID charID = GetCharacterID(charName);
+            Debug.Log($"Character ID: {charID}");
+            
+            int currentValue = characterManager.GetCharacterArc(charID);
+            Debug.Log($"Current arc value: {currentValue}");
+            
+            bool result = EvaluateComparison(currentValue, op, targetValue);
+            Debug.Log($"Comparison result: {currentValue} {op} {targetValue} = {result}");
+            
+            return result;
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error parsing arc condition '{condition}': {e.Message}");
+            return false;
+        }
+    }
+    
+    private bool EvaluateComparison(int currentValue, string op, int targetValue)
+    {
+        switch (op)
+        {
+            case ">=": return currentValue >= targetValue;
+            case "<=": return currentValue <= targetValue;
+            case ">": return currentValue > targetValue;
+            case "<": return currentValue < targetValue;
+            case "==": return currentValue == targetValue;
+            case "!=": return currentValue != targetValue;
+            default:
+                Debug.LogWarning($"Unknown operator: {op}");
+                return false;
+        }
+    }
+    
+    private CharacterManager.CharacterID GetCharacterID(string characterName)
+    {
+        switch (characterName.ToLower())
+        {
+            case "waif": return CharacterManager.CharacterID.Waif;
+            case "priestess": return CharacterManager.CharacterID.Priestess;
+            case "warder": return CharacterManager.CharacterID.Warder;
+            case "pilot": return CharacterManager.CharacterID.Pilot;
+            default:
+                Debug.LogError($"Unknown character name: {characterName}");
+                return CharacterManager.CharacterID.Waif; // Default fallback
+        }
+    }
+    
     // Test method for delay functionality
     [ContextMenu("Test Dialog Delay")]
     public void TestDialogDelay()
@@ -605,6 +846,46 @@ public class DialogManager : MonoBehaviour
         pendingDialogQueue.Enqueue("Waif: This is a test conversation.");
         pendingDialogQueue.Enqueue("Priestess: Testing the delay system.");
         
+        StartDialogWithDelay();
+    }
+    
+    // Test method for conditional system
+    [ContextMenu("Test Conditional Dialog")]
+    public void TestConditionalDialog()
+    {
+        if (characterManager == null)
+        {
+            Debug.LogError("CharacterManager not assigned, cannot test conditionals");
+            return;
+        }
+        
+        // Create a test conversation with conditions
+        List<string> testConversation = new List<string>
+        {
+            "Waif: Let's see how our relationship affects this conversation.",
+            "{IF: Waif->Priestess >= 3}",
+            "Priestess: Our bond has grown strong, Waif.",
+            "Waif: Indeed, I feel we understand each other well.",
+            "{ELSE}",
+            "Priestess: We still have much to learn about each other.",
+            "Waif: Perhaps in time we will grow closer.",
+            "{ENDIF}",
+            "{IF: Waif.arc >= 2}",
+            "Waif: My journey has taught me much about myself.",
+            "{ENDIF}",
+            "Priestess: The future holds many possibilities."
+        };
+        
+        // Process and load the test conversation
+        List<string> processedConversation = ProcessConversationWithConditions(testConversation);
+        
+        pendingDialogQueue.Clear();
+        foreach (string line in processedConversation)
+        {
+            pendingDialogQueue.Enqueue(line);
+        }
+        
+        Debug.Log($"Test conversation processed: {processedConversation.Count} lines");
         StartDialogWithDelay();
     }
 }

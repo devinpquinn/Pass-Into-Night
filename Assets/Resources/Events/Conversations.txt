@@ -2,55 +2,100 @@
 Waif: The stars... they're so different from down here.
 I used to think I knew what freedom meant.
 Waif: But maybe freedom isn't about escaping something.
+{IF: Waif.arc >= 2}
+Maybe it's about choosing what to carry with you and what to leave behind.
+Waif: I'm starting to understand who I really am beneath all the fear.
+{ELSE}
 Maybe it's about choosing what to carry with you.
+{ENDIF}
 
 [Priestess]
 Priestess: In the silence, I hear echoes of old prayers.
 Words spoken by voices that have long since faded.
 Priestess: Faith... what does it mean when everything familiar is gone?
+{IF: Priestess.arc >= 3}
 Perhaps faith is not about certainty, but about continuing to hope when certainty fails.
+Priestess: I've learned that doubt can strengthen faith, not weaken it.
+{ELSE}
+Perhaps faith is not about certainty, but about continuing to hope when certainty fails.
+{ENDIF}
 
 [Warder]
 Warder: Duty. It's a word I've carried like armor.
 But armor can become a cage if you never take it off.
 Warder: What am I protecting now? What am I protecting from?
+{IF: Warder.arc >= 2}
 Sometimes the greatest courage is admitting when the old ways no longer serve.
+Warder: I'm learning that protecting others means protecting their right to choose.
+{ELSE}
+Sometimes the greatest courage is admitting when the old ways no longer serve.
+{ENDIF}
 
 [Pilot]
 Pilot: Every ship has its own heartbeat. This one's rhythm is... different.
 Lost, maybe. Or maybe just looking for a new song to sing.
 Pilot: I've always been good at reading the signs, following the paths.
+{IF: Pilot.arc >= 2}
 But what happens when the path leads somewhere you've never imagined?
+Pilot: I'm learning that sometimes the best destinations are the ones you never planned for.
+{ELSE}
+But what happens when the path leads somewhere you've never imagined?
+{ENDIF}
 
 [Waif-Priestess]
 Waif: I never thought I'd see the stars from here.
 Priestess: The void holds many mysteries, child. Some are beautiful, others... dangerous.
 Waif: Do you think we'll make it home?
+{IF: Waif->Priestess >= 3}
+Priestess: Home is not always a place we return to. Sometimes, it's a place we create together.
+Waif: Together... I like the sound of that.
+{ELSE}
 Priestess: Home is not always a place we return to. Sometimes, it's a place we create.
+{ENDIF}
 
 [Waif-Warder]
 Waif: You're always so serious, Warder. Don't you ever smile?
 Warder: Survival requires focus. Smiles are a luxury we can't afford.
 Waif: Maybe that's why we need them most.
+{IF: Waif->Warder >= 2}
+Warder: ...You know, you might be right about that. *a small smile crosses their face*
+Waif: There it is! I knew you had it in you.
+{ELSE}
 Warder: ...Perhaps you have a point.
+{ENDIF}
 
 [Waif-Pilot]
 Waif: How do you keep so calm when everything's falling apart?
 Pilot: Years of practice. Plus, panicking never fixed a broken engine.
 Waif: I wish I had your confidence.
+{IF: Waif->Pilot >= 3}
+Pilot: Confidence comes with time, kid. And you've got more of it than you realize.
+Waif: Thanks... that really means a lot coming from you.
+{ELSE}
 Pilot: Confidence comes with time, kid. You're doing better than you think.
+{ENDIF}
 
 [Priestess-Warder]
 Priestess: Your devotion to duty is admirable, but what about devotion to yourself?
 Warder: The mission comes first. Personal needs are secondary.
 Priestess: A guardian who neglects their own spirit cannot protect others for long.
+{IF: Priestess->Warder >= 2}
+Warder: I... you speak with wisdom. Perhaps I have been too rigid in my thinking.
+Priestess: Flexibility is not weakness, it's another form of strength.
+{ELSE}
 Warder: I... hadn't considered that perspective.
+{ENDIF}
 
 [Priestess-Pilot]
 Priestess: The engines sing a different song than I'm used to.
 Pilot: Every ship has its own rhythm. You just have to learn to listen.
 Priestess: In my faith, we believe all things have a voice. Even machines.
+{IF: Priestess->Pilot >= 2}
+Pilot: Then maybe you understand ships better than most engineers do.
+Priestess: And perhaps you understand faith better than most priests.
+{ELSE}
 Pilot: Then maybe you understand ships better than most engineers.
+{ENDIF}
 
 [Warder-Pilot]
 Warder: Status report on our trajectory.
@@ -58,14 +103,24 @@ Pilot: We're holding steady, but fuel reserves are lower than I'd like.
 Warder: Options?
 Pilot: We push forward and hope, or we find somewhere to refuel and risk losing time.
 Warder: What would you do?
+{IF: Warder->Pilot >= 3}
+Pilot: Sometimes hope is all we've got. But with you watching our backs, I'd say our odds are better than most.
+Warder: Your faith in me is... appreciated, Pilot.
+{ELSE}
 Pilot: Sometimes hope is all we've got.
+{ENDIF}
 
 [Waif-Priestess-Warder]
 Waif: Is it strange that being lost feels like freedom?
 Priestess: Freedom and captivity often wear each other's faces.
 Warder: This isn't freedom. This is chaos barely held in check.
 Waif: Maybe that's what freedom really is.
+{IF: Waif->Priestess >= 2}
+Priestess: From the mouths of babes... wisdom often comes from unexpected places.
+Waif: I learned that from watching you both.
+{ELSE}
 Priestess: From the mouths of babes...
+{ENDIF}
 Warder: I... see your point.
 
 [Waif-Priestess-Pilot]
@@ -74,7 +129,12 @@ Priestess: In my order, we believe each star holds the memory of a life.
 Pilot: Navigational charts give them designations, but that's not the same as names.
 Waif: I'd like to name them all someday.
 Priestess: A worthy aspiration.
+{IF: Waif->Pilot >= 2}
+Pilot: Just don't interfere with my navigation system... though I wouldn't mind helping you name a few.
+Waif: Really? That would be amazing!
+{ELSE}
 Pilot: Just don't interfere with my navigation system.
+{ENDIF}
 
 [Waif-Warder-Pilot]
 Waif: How long until we reach... wherever we're going?
@@ -82,7 +142,12 @@ Pilot: Hard to say with these readings.
 Warder: We need certainties, not estimates.
 Waif: Sometimes uncertainty is more honest than false certainties.
 Pilot: The kid's got a point, Warder.
+{IF: Warder->Pilot >= 2}
+Warder: I suppose... flexibility has its place. Your experience has taught me that.
+Pilot: And your discipline has kept us all grounded. We make a good team.
+{ELSE}
 Warder: I suppose... flexibility has its place.
+{ENDIF}
 
 [Priestess-Warder-Pilot]
 Priestess: Each of you carries such weight in your hearts.
@@ -90,5 +155,11 @@ Warder: Weight keeps us grounded. Focused.
 Pilot: Some weight is necessary. Some just slows you down.
 Priestess: Wisdom lies in knowing the difference.
 Warder: And how do we learn that difference?
+{IF: Priestess->Warder >= 3}
+Pilot: Trial and error, mostly.
+Priestess: And forgiveness. Mostly forgiveness... for ourselves and each other.
+Warder: I'm beginning to understand the value of both.
+{ELSE}
 Pilot: Trial and error, mostly.
 Priestess: And forgiveness. Mostly forgiveness.
+{ENDIF}
