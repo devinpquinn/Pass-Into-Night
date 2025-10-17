@@ -924,14 +924,63 @@ public class DialogManager : MonoBehaviour
             string fromChar = parts[0].Trim();
             Debug.Log($"From character: '{fromChar}'");
             
-            string[] rightParts = parts[1].Split(new char[] { '<', '>', '=', '!' }, System.StringSplitOptions.RemoveEmptyEntries);
-            string toChar = rightParts[0].Trim();
-            int targetValue = int.Parse(rightParts[1].Trim());
-            Debug.Log($"To character: '{toChar}', Target value: {targetValue}");
+            string rightPart = parts[1].Trim(); // "Priestess >= 3"
+            Debug.Log($"Right part: '{rightPart}'");
             
-            // Get operator
-            string op = condition.Substring(condition.IndexOf(toChar) + toChar.Length).Replace(targetValue.ToString(), "").Trim();
-            Debug.Log($"Operator: '{op}'");
+            // Find the operator and extract character name and value
+            string op = "";
+            string toChar = "";
+            int targetValue = 0;
+            
+            if (rightPart.Contains(" >="))
+            {
+                op = ">=";
+                string[] opParts = rightPart.Split(new string[] { " >=" }, System.StringSplitOptions.None);
+                toChar = opParts[0].Trim();
+                targetValue = int.Parse(opParts[1].Trim());
+            }
+            else if (rightPart.Contains(" <="))
+            {
+                op = "<=";
+                string[] opParts = rightPart.Split(new string[] { " <=" }, System.StringSplitOptions.None);
+                toChar = opParts[0].Trim();
+                targetValue = int.Parse(opParts[1].Trim());
+            }
+            else if (rightPart.Contains(" =="))
+            {
+                op = "==";
+                string[] opParts = rightPart.Split(new string[] { " ==" }, System.StringSplitOptions.None);
+                toChar = opParts[0].Trim();
+                targetValue = int.Parse(opParts[1].Trim());
+            }
+            else if (rightPart.Contains(" !="))
+            {
+                op = "!=";
+                string[] opParts = rightPart.Split(new string[] { " !=" }, System.StringSplitOptions.None);
+                toChar = opParts[0].Trim();
+                targetValue = int.Parse(opParts[1].Trim());
+            }
+            else if (rightPart.Contains(" >"))
+            {
+                op = ">";
+                string[] opParts = rightPart.Split(new string[] { " >" }, System.StringSplitOptions.None);
+                toChar = opParts[0].Trim();
+                targetValue = int.Parse(opParts[1].Trim());
+            }
+            else if (rightPart.Contains(" <"))
+            {
+                op = "<";
+                string[] opParts = rightPart.Split(new string[] { " <" }, System.StringSplitOptions.None);
+                toChar = opParts[0].Trim();
+                targetValue = int.Parse(opParts[1].Trim());
+            }
+            else
+            {
+                Debug.LogWarning($"Unknown operator in relationship condition: {rightPart}");
+                return false;
+            }
+            
+            Debug.Log($"To character: '{toChar}', Operator: '{op}', Target value: {targetValue}");
             
             // Convert character names to IDs
             CharacterManager.CharacterID fromID = GetCharacterID(fromChar);
@@ -964,13 +1013,50 @@ public class DialogManager : MonoBehaviour
             string charName = parts[0].Trim();
             Debug.Log($"Character: '{charName}'");
             
-            string[] rightParts = parts[1].Split(new char[] { '<', '>', '=', '!' }, System.StringSplitOptions.RemoveEmptyEntries);
-            int targetValue = int.Parse(rightParts[0].Trim());
-            Debug.Log($"Target value: {targetValue}");
+            string rightPart = parts[1].Trim(); // " >= 2"
+            Debug.Log($"Right part: '{rightPart}'");
             
-            // Get operator
-            string op = condition.Substring(condition.IndexOf(".arc") + 4).Replace(targetValue.ToString(), "").Trim();
-            Debug.Log($"Operator: '{op}'");
+            // Find the operator and value
+            string op = "";
+            int targetValue = 0;
+            
+            if (rightPart.StartsWith(">="))
+            {
+                op = ">=";
+                targetValue = int.Parse(rightPart.Substring(2).Trim());
+            }
+            else if (rightPart.StartsWith("<="))
+            {
+                op = "<=";
+                targetValue = int.Parse(rightPart.Substring(2).Trim());
+            }
+            else if (rightPart.StartsWith("=="))
+            {
+                op = "==";
+                targetValue = int.Parse(rightPart.Substring(2).Trim());
+            }
+            else if (rightPart.StartsWith("!="))
+            {
+                op = "!=";
+                targetValue = int.Parse(rightPart.Substring(2).Trim());
+            }
+            else if (rightPart.StartsWith(">"))
+            {
+                op = ">";
+                targetValue = int.Parse(rightPart.Substring(1).Trim());
+            }
+            else if (rightPart.StartsWith("<"))
+            {
+                op = "<";
+                targetValue = int.Parse(rightPart.Substring(1).Trim());
+            }
+            else
+            {
+                Debug.LogWarning($"Unknown operator in arc condition: {rightPart}");
+                return false;
+            }
+            
+            Debug.Log($"Operator: '{op}', Target value: {targetValue}");
             
             // Convert character name to ID
             CharacterManager.CharacterID charID = GetCharacterID(charName);
