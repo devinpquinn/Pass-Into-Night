@@ -97,8 +97,8 @@ public class SelectionManager : MonoBehaviour
         // Set prompt text with written numbers
         string numberWord = GetNumberWord(characterCount);
         string promptMessage = characterCount == 1 ? 
-            $"Select {numberWord} traveler." : 
-            $"Select {numberWord} travelers.";
+            $"Select <u>{numberWord}</u> traveler." : 
+            $"Select <u>{numberWord}</u> travelers.";
         
         if (promptText != null)
         {
@@ -468,14 +468,4 @@ public class SelectionManager : MonoBehaviour
         // Automatically start a new selection
         StartSelection(randomCharacterCount);
     }
-    
-    // Test methods - remove these in production
-    [ContextMenu("Test: Select 1 Character")]
-    void TestSelect1() { StartSelection(1); }
-    
-    [ContextMenu("Test: Select 2 Characters")]
-    void TestSelect2() { StartSelection(2); }
-    
-    [ContextMenu("Test: Select 3 Characters")]
-    void TestSelect3() { StartSelection(3); }
 }
