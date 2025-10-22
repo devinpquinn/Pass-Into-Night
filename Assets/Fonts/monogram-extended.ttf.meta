@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 07ae869e67e564a4db4aca5f6bedef5c
+guid: 31074622560491d42bb70175ecc7a002
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -9,7 +9,7 @@ TrueTypeFontImporter:
   characterPadding: 1
   includeFontData: 1
   fontNames:
-  - Munro Small
+  - monogram
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0
