@@ -29,7 +29,11 @@ public class DialogManager : MonoBehaviour
     private float dialogPanelPunchTimer = 0f;
     private Camera uiCamera;
     public TextMeshProUGUI dialogText;
-    public GameObject speechBubble;
+    
+    [Header("Dialog Panel Sprites")]
+    public Image dialogPanelImage; // The Image component on DialogPanel
+    public Sprite narrativeSprite; // Sprite for narration/thoughts
+    public Sprite speechSprite;    // Sprite for speaking
 
     public Color textSpoken;
     public Color textUnspoken;
@@ -201,7 +205,7 @@ public class DialogManager : MonoBehaviour
         {
             dialogText.text = "";
             HighlightSpeaker(-1);
-            speechBubble.SetActive(false);
+            SetDialogPanelSprite(false); // Set to narrative sprite
             // Smoothly scale last speaker's portrait parent back to 1
             StartPortraitScale(currentSpeaker, -1);
             currentSpeaker = -1;
@@ -234,7 +238,7 @@ public class DialogManager : MonoBehaviour
                 // No more dialog after command, end conversation
                 dialogText.text = "";
                 HighlightSpeaker(-1);
-                speechBubble.SetActive(false);
+                SetDialogPanelSprite(false); // Set to narrative sprite
                 StartPortraitScale(currentSpeaker, -1);
                 currentSpeaker = -1;
                 
@@ -271,7 +275,7 @@ public class DialogManager : MonoBehaviour
                 dialogText.text = $"\"{dialog}\""; // Add quotation marks
                 dialogText.color = textSpoken;
                 HighlightSpeaker(currentSpeaker);
-                if (speechBubble != null) speechBubble.SetActive(true);
+                SetDialogPanelSprite(true); // Set to speech sprite
                 StartPortraitScale(previousSpeaker, currentSpeaker);
             }
             else
@@ -280,7 +284,7 @@ public class DialogManager : MonoBehaviour
                 dialogText.text = line;
                 dialogText.color = textUnspoken;
                 HighlightSpeaker(-1);
-                if (speechBubble != null) speechBubble.SetActive(false);
+                SetDialogPanelSprite(false); // Set to narrative sprite
                 StartPortraitScale(currentSpeaker, -1);
             }
         }
@@ -290,7 +294,7 @@ public class DialogManager : MonoBehaviour
             dialogText.text = line;
             dialogText.color = textUnspoken;
             HighlightSpeaker(-1);
-            if (speechBubble != null) speechBubble.SetActive(false);
+            SetDialogPanelSprite(false); // Set to narrative sprite
             StartPortraitScale(currentSpeaker, -1);
         }
     }
@@ -306,6 +310,21 @@ public class DialogManager : MonoBehaviour
             else if (i < characterSpritesInactive.Length)
             {
                 characterPortraits[i].sprite = characterSpritesInactive[i];
+            }
+        }
+    }
+    
+    void SetDialogPanelSprite(bool isSpeaking)
+    {
+        if (dialogPanelImage != null)
+        {
+            if (isSpeaking && speechSprite != null)
+            {
+                dialogPanelImage.sprite = speechSprite;
+            }
+            else if (!isSpeaking && narrativeSprite != null)
+            {
+                dialogPanelImage.sprite = narrativeSprite;
             }
         }
     }
@@ -464,9 +483,8 @@ public class DialogManager : MonoBehaviour
         dialogText.text = waitingPlaceholderText;
         dialogText.color = textUnspoken;
         
-        // Hide speech bubble during waiting
-        if (speechBubble != null) 
-            speechBubble.SetActive(false);
+        // Set dialog panel to narrative sprite during waiting
+        SetDialogPanelSprite(false);
         
         // Start delay timer
         isWaitingToStartDialog = true;

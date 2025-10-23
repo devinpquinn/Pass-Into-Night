@@ -483,9 +483,11 @@ MonoBehaviour:
   waitingPlaceholderText: ...
   dialogPanel: {fileID: 948208859}
   dialogText: {fileID: 1395434257}
-  speechBubble: {fileID: 970933595}
+  dialogPanelImage: {fileID: 948208860}
+  narrativeSprite: {fileID: 21300000, guid: eb7baf99c2a2b6a458a1b1bc74be7283, type: 3}
+  speechSprite: {fileID: 21300000, guid: 78848611d8f1a78438ceee4defa62b49, type: 3}
   textSpoken: {r: 0.9450981, g: 0.9450981, b: 0.89019614, a: 1}
-  textUnspoken: {r: 0.19215688, g: 0.1254902, b: 0.21960786, a: 1}
+  textUnspoken: {r: 0.1882353, g: 0.13333334, b: 0.23921569, a: 1}
   characterPortraits:
   - {fileID: 127503010}
   - {fileID: 1471344122}
@@ -1405,8 +1407,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4281868337
-  m_fontColor: {r: 0.19215688, g: 0.1254902, b: 0.21960786, a: 1}
+    rgba: 4282196528
+  m_fontColor: {r: 0.1882353, g: 0.13333334, b: 0.23921569, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
