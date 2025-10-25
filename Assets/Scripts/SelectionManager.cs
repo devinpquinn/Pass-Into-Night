@@ -17,6 +17,7 @@ public class SelectionManager : MonoBehaviour
     public Color promptTextColor = Color.white;
     
     [Header("Portrait Scaling")]
+    public bool enablePortraitScaling = true;
     public float inactiveScale = 0.9f;
     public float hoverScale = 0.95f;
     public float selectedScale = 1.0f;
@@ -195,22 +196,22 @@ public class SelectionManager : MonoBehaviour
         if (canvasGroup == null) return;
         
         float targetAlpha;
-        float targetScale;
+        float targetScale = 1.0f; // Default scale when scaling is disabled
         
         if (selectedCharacters.Contains(characterIndex))
         {
             targetAlpha = selectedAlpha;
-            targetScale = selectedScale;
+            if (enablePortraitScaling) targetScale = selectedScale;
         }
         else if (characterIndex == hoveredCharacter)
         {
             targetAlpha = hoverAlpha;
-            targetScale = hoverScale;
+            if (enablePortraitScaling) targetScale = hoverScale;
         }
         else
         {
             targetAlpha = inactiveAlpha;
-            targetScale = inactiveScale;
+            if (enablePortraitScaling) targetScale = inactiveScale;
         }
         
         canvasGroup.alpha = targetAlpha;
@@ -262,8 +263,9 @@ public class SelectionManager : MonoBehaviour
                     canvasGroup.alpha = inactiveAlpha;
                 }
                 
-                // Set inactive scale
-                characterPortraits[i].transform.localScale = Vector3.one * inactiveScale;
+                // Set inactive scale (if scaling is enabled)
+                float scale = enablePortraitScaling ? inactiveScale : 1.0f;
+                characterPortraits[i].transform.localScale = Vector3.one * scale;
                 
                 // Set dashed frame for inactive state
                 Image portrait = characterPortraits[i].GetComponent<Image>();
@@ -449,8 +451,9 @@ public class SelectionManager : MonoBehaviour
                     canvasGroup.alpha = inactiveAlpha;
                 }
                 
-                // Reset scale to inactive state
-                characterPortraits[i].transform.localScale = Vector3.one * inactiveScale;
+                // Reset scale to inactive state (if scaling is enabled)
+                float scale = enablePortraitScaling ? inactiveScale : 1.0f;
+                characterPortraits[i].transform.localScale = Vector3.one * scale;
             }
         }
         
