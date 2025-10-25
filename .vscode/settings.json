@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Pass-Into-Night.sln"
+    "dotnet.defaultSolution": "Pass-Into-Night.slnx"
 }
