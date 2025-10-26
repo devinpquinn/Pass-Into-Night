@@ -96,9 +96,6 @@ public class SelectionManager : MonoBehaviour
         
         // Set prompt text with written numbers and blurb
         string numberWord = GetNumberWord(characterCount);
-        string selectionText = characterCount == 1 ? 
-            $"Select <u>{numberWord}</u> traveler." : 
-            $"Select <u>{numberWord}</u> travelers.";
         
         // Get blurb from current conversation
         string blurb = "";
@@ -107,11 +104,13 @@ public class SelectionManager : MonoBehaviour
             Conversation currentConversation = dialogManager.GetCurrentConversation();
             if (currentConversation != null && !string.IsNullOrEmpty(currentConversation.Blurb))
             {
-                blurb = currentConversation.Blurb + "\n\n";
+                blurb = " " + currentConversation.Blurb;
             }
         }
         
-        string promptMessage = blurb + selectionText;
+        string promptMessage = characterCount == 1 ? 
+            $"Select <u>{numberWord}</u> traveler{blurb}." : 
+            $"Select <u>{numberWord}</u> travelers{blurb}.";
         
         if (promptText != null)
         {
