@@ -16,4 +16,5 @@ MonoBehaviour:
   participantCount: 1
   conversationName: Template 1
   description: Auto-generated from Template 1
+  blurb: Blurb for test event.
   isAvailable: 1

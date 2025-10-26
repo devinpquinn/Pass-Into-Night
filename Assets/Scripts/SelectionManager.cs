@@ -107,7 +107,7 @@ public class SelectionManager : MonoBehaviour
             Conversation currentConversation = dialogManager.GetCurrentConversation();
             if (currentConversation != null && !string.IsNullOrEmpty(currentConversation.Blurb))
             {
-                blurb = currentConversation.Blurb + " ";
+                blurb = currentConversation.Blurb + "\n\n";
             }
         }
         
