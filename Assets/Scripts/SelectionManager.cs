@@ -293,7 +293,7 @@ public class SelectionManager : MonoBehaviour
             dialogManager.LoadConversationForCharacters(selectedNames);
         }
         
-        // Keep selected portraits active
+        // Keep selected portraits active and hide unselected ones
         for (int i = 0; i < characterPortraits.Length; i++)
         {
             if (selectedCharacters.Contains(i))
@@ -302,8 +302,12 @@ public class SelectionManager : MonoBehaviour
             }
             else
             {
-                Image portrait = characterPortraits[i].GetComponent<Image>();
-                portrait.color = Color.clear; // Make invisible but still interactable during animation
+                // Hide unselected portraits by setting alpha to 0
+                CanvasGroup canvasGroup = characterPortraits[i].GetComponent<CanvasGroup>();
+                if (canvasGroup != null)
+                {
+                    canvasGroup.alpha = 0f;
+                }
             }
         }
         
@@ -427,6 +431,13 @@ public class SelectionManager : MonoBehaviour
                     // Reset to dashed frame for new selection phase
                     if (dashedFrameSprite != null)
                         portrait.sprite = dashedFrameSprite;
+                }
+                
+                // Reset alpha to fully visible
+                CanvasGroup canvasGroup = characterPortraits[i].GetComponent<CanvasGroup>();
+                if (canvasGroup != null)
+                {
+                    canvasGroup.alpha = 1.0f;
                 }
                 
                 // Reset to original width
