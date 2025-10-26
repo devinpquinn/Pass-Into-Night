@@ -1517,7 +1517,7 @@ MonoBehaviour:
   hoverAlpha: 1
   selectedAlpha: 1
   promptTextColor: {r: 0.19215687, g: 0.1254902, b: 0.21960784, a: 1}
-  enablePortraitScaling: 0
+  enablePortraitScaling: 1
   inactiveScale: 0.95
   hoverScale: 0.975
   selectedScale: 1
