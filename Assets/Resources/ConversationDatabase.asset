@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3035cfeaf2281164c94644b57a54d02e, type: 3}
   m_Name: ConversationDatabase
   m_EditorClassIdentifier: Assembly-CSharp::ConversationDatabase
-  allConversations: []
+  allConversations:
+  - {fileID: 11400000, guid: a732571c3d779fc4581b7f3f600daecb, type: 2}
   usedConversations: []
-  availableConversations: []
-  prioritizeHigherPriority: 1
+  availableConversations:
+  - {fileID: 11400000, guid: a732571c3d779fc4581b7f3f600daecb, type: 2}
   resetPoolWhenEmpty: 1

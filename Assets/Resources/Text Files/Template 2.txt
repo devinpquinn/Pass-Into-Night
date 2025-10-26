@@ -1,0 +1,80 @@
+[Waif-Priestess]
+Waif: I never thought I'd see the stars from here.
+Priestess: The void holds many mysteries, child. Some are beautiful, others... dangerous.
+Waif: Do you think we'll make it home?
+{IF: Waif->Priestess >= 3}
+Priestess: Home is not always a place we return to. Sometimes, it's a place we create together.
+Waif: Together... I like the sound of that.
+{SET: Waif<->Priestess +1}
+{ELSE}
+Priestess: Home is not always a place we return to. Sometimes, it's a place we create.
+Waif: That's... actually comforting.
+{SET: Waif<->Priestess +1}
+{ENDIF}
+
+[Waif-Warder]
+Waif: You're always so serious, Warder. Don't you ever smile?
+Warder: Survival requires focus. Smiles are a luxury we can't afford.
+Waif: Maybe that's why we need them most.
+{IF: Waif->Warder >= 2}
+Warder: ...You know, you might be right about that. *a small smile crosses their face*
+Waif: There it is! I knew you had it in you.
+{SET: Waif<->Warder +1}
+{ELSE}
+Warder: ...Perhaps you have a point.
+{SET: Waif<->Warder +1}
+{ENDIF}
+
+[Waif-Pilot]
+Waif: How do you keep so calm when everything's falling apart?
+Pilot: Years of practice. Plus, panicking never fixed a broken engine.
+Waif: I wish I had your confidence.
+{IF: Waif->Pilot >= 3}
+Pilot: Confidence comes with time, kid. And you've got more of it than you realize.
+Waif: Thanks... that really means a lot coming from you.
+{SET: Waif<->Pilot +1}
+{ELSE}
+Pilot: Confidence comes with time, kid. You're doing better than you think.
+{SET: Waif<->Pilot +1}
+{ENDIF}
+
+[Priestess-Warder]
+Priestess: Your devotion to duty is admirable, but what about devotion to yourself?
+Warder: The mission comes first. Personal needs are secondary.
+Priestess: A guardian who neglects their own spirit cannot protect others for long.
+{IF: Priestess->Warder >= 2}
+Warder: I... you speak with wisdom. Perhaps I have been too rigid in my thinking.
+Priestess: Flexibility is not weakness, it's another form of strength.
+{SET: Priestess<->Warder +1}
+{ELSE}
+Warder: I... hadn't considered that perspective.
+{SET: Priestess<->Warder +1}
+{ENDIF}
+
+[Priestess-Pilot]
+Priestess: The engines sing a different song than I'm used to.
+Pilot: Every ship has its own rhythm. You just have to learn to listen.
+Priestess: In my faith, we believe all things have a voice. Even machines.
+{IF: Priestess->Pilot >= 2}
+Pilot: Then maybe you understand ships better than most engineers do.
+Priestess: And perhaps you understand faith better than most priests.
+{SET: Priestess<->Pilot +1}
+{ELSE}
+Pilot: Then maybe you understand ships better than most engineers.
+{SET: Priestess<->Pilot +1}
+{ENDIF}
+
+[Warder-Pilot]
+Warder: Status report on our trajectory.
+Pilot: We're holding steady, but fuel reserves are lower than I'd like.
+Warder: Options?
+Pilot: We push forward and hope, or we find somewhere to refuel and risk losing time.
+Warder: What would you do?
+{IF: Warder->Pilot >= 3}
+Pilot: Sometimes hope is all we've got. But with you watching our backs, I'd say our odds are better than most.
+Warder: Your faith in me is... appreciated, Pilot.
+{SET: Warder<->Pilot +1}
+{ELSE}
+Pilot: Sometimes hope is all we've got.
+{SET: Warder<->Pilot +1}
+{ENDIF}

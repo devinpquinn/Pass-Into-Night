@@ -1,0 +1,51 @@
+[Waif]
+Waif: The stars... they're so different from down here.
+I used to think I knew what freedom meant.
+Waif: But maybe freedom isn't about escaping something.
+{IF: Waif.arc >= 2}
+Maybe it's about choosing what to carry with you and what to leave behind.
+Waif: I'm starting to understand who I really am beneath all the fear.
+{SET: Waif.arc +1}
+{ELSE}
+Maybe it's about choosing what to carry with you.
+{SET: Waif.arc +1}
+{ENDIF}
+
+[Priestess]
+Priestess: In the silence, I hear echoes of old prayers.
+Words spoken by voices that have long since faded.
+Priestess: Faith... what does it mean when everything familiar is gone?
+{IF: Priestess.arc >= 3}
+Perhaps faith is not about certainty, but about continuing to hope when certainty fails.
+Priestess: I've learned that doubt can strengthen faith, not weaken it.
+{SET: Priestess.arc +1}
+{ELSE}
+Perhaps faith is not about certainty, but about continuing to hope when certainty fails.
+{SET: Priestess.arc +1}
+{ENDIF}
+
+[Warder]
+Warder: Duty. It's a word I've carried like armor.
+But armor can become a cage if you never take it off.
+Warder: What am I protecting now? What am I protecting from?
+{IF: Warder.arc >= 2}
+Sometimes the greatest courage is admitting when the old ways no longer serve.
+Warder: I'm learning that protecting others means protecting their right to choose.
+{SET: Warder.arc +1}
+{ELSE}
+Sometimes the greatest courage is admitting when the old ways no longer serve.
+{SET: Warder.arc +1}
+{ENDIF}
+
+[Pilot]
+Pilot: Every ship has its own heartbeat. This one's rhythm is... different.
+Lost, maybe. Or maybe just looking for a new song to sing.
+Pilot: I've always been good at reading the signs, following the paths.
+{IF: Pilot.arc >= 2}
+But what happens when the path leads somewhere you've never imagined?
+Pilot: I'm learning that sometimes the best destinations are the ones you never planned for.
+{SET: Pilot.arc +1}
+{ELSE}
+But what happens when the path leads somewhere you've never imagined?
+{SET: Pilot.arc +1}
+{ENDIF}
