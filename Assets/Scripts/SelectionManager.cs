@@ -10,12 +10,6 @@ public class SelectionManager : MonoBehaviour
     public Image[] characterPortraits = new Image[4]; // Waif, Priestess, Warder, Pilot (must have CanvasGroup components)
     public DialogManager dialogManager;
     
-    [Header("Visual Settings")]
-    public float inactiveAlpha = 0.4f;
-    public float hoverAlpha = 0.7f;
-    public float selectedAlpha = 1.0f;
-    public Color promptTextColor = Color.white;
-    
     [Header("Portrait Scaling")]
     public bool enablePortraitScaling = true;
     public float inactiveScale = 0.9f;
@@ -114,7 +108,7 @@ public class SelectionManager : MonoBehaviour
         
         if (promptText != null)
         {
-            promptText.color = promptTextColor;
+            promptText.color = dialogManager != null ? dialogManager.textUnspoken : Color.white;
             promptText.text = promptMessage;
         }
         
@@ -203,29 +197,20 @@ public class SelectionManager : MonoBehaviour
     {
         if (characterPortraits[characterIndex] == null) return;
         
-        CanvasGroup canvasGroup = characterPortraits[characterIndex].GetComponent<CanvasGroup>();
-        if (canvasGroup == null) return;
-        
-        float targetAlpha;
         float targetScale = 1.0f; // Default scale when scaling is disabled
         
         if (selectedCharacters.Contains(characterIndex))
         {
-            targetAlpha = selectedAlpha;
             if (enablePortraitScaling) targetScale = selectedScale;
         }
         else if (characterIndex == hoveredCharacter)
         {
-            targetAlpha = hoverAlpha;
             if (enablePortraitScaling) targetScale = hoverScale;
         }
         else
         {
-            targetAlpha = inactiveAlpha;
             if (enablePortraitScaling) targetScale = inactiveScale;
         }
-        
-        canvasGroup.alpha = targetAlpha;
         characterPortraits[characterIndex].transform.localScale = Vector3.one * targetScale;
         
         // Update frame sprite based on selection state
@@ -268,12 +253,6 @@ public class SelectionManager : MonoBehaviour
         {
             if (characterPortraits[i] != null)
             {
-                CanvasGroup canvasGroup = characterPortraits[i].GetComponent<CanvasGroup>();
-                if (canvasGroup != null)
-                {
-                    canvasGroup.alpha = inactiveAlpha;
-                }
-                
                 // Set inactive scale (if scaling is enabled)
                 float scale = enablePortraitScaling ? inactiveScale : 1.0f;
                 characterPortraits[i].transform.localScale = Vector3.one * scale;
@@ -314,16 +293,11 @@ public class SelectionManager : MonoBehaviour
             dialogManager.LoadConversationForCharacters(selectedNames);
         }
         
-        // Set selected portraits to full alpha and keep them active
+        // Keep selected portraits active
         for (int i = 0; i < characterPortraits.Length; i++)
         {
             if (selectedCharacters.Contains(i))
             {
-                CanvasGroup canvasGroup = characterPortraits[i].GetComponent<CanvasGroup>();
-                if (canvasGroup != null)
-                {
-                    canvasGroup.alpha = selectedAlpha;
-                }
                 characterPortraits[i].gameObject.SetActive(true);
             }
             else
@@ -334,18 +308,6 @@ public class SelectionManager : MonoBehaviour
         }
         
         // Start completion animation for unselected portraits
-        // Immediately set non-selected portraits to alpha 0
-        for (int i = 0; i < characterPortraits.Length; i++)
-        {
-            if (!selectedCharacters.Contains(i))
-            {
-                CanvasGroup canvasGroup = characterPortraits[i].GetComponent<CanvasGroup>();
-                if (canvasGroup != null)
-                {
-                    canvasGroup.alpha = 0f;
-                }
-            }
-        }
         
         isAnimatingCompletion = true;
         completionTimer = 0f;
@@ -397,7 +359,7 @@ public class SelectionManager : MonoBehaviour
         // Apply easing to the progress (ease-out cubic for smooth deceleration)
         float easedProgress = 1f - Mathf.Pow(1f - progress, 3f);
         
-        // Animate unselected portraits (width shrinking only, alpha was set immediately)
+        // Animate unselected portraits (width shrinking only)
         for (int i = 0; i < characterPortraits.Length; i++)
         {
             if (!selectedCharacters.Contains(i))
@@ -477,13 +439,6 @@ public class SelectionManager : MonoBehaviour
                     }
                 }
                 
-                // Set to inactive visual state
-                CanvasGroup canvasGroup = characterPortraits[i].GetComponent<CanvasGroup>();
-                if (canvasGroup != null)
-                {
-                    canvasGroup.alpha = inactiveAlpha;
-                }
-                
                 // Reset scale to inactive state (if scaling is enabled)
                 float scale = enablePortraitScaling ? inactiveScale : 1.0f;
                 characterPortraits[i].transform.localScale = Vector3.one * scale;
@@ -493,7 +448,7 @@ public class SelectionManager : MonoBehaviour
         // Reset prompt text color and clear text
         if (promptText != null)
         {
-            promptText.color = promptTextColor;
+            promptText.color = dialogManager != null ? dialogManager.textUnspoken : Color.white;
             promptText.text = "";
         }
         
