@@ -10,11 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3035cfeaf2281164c94644b57a54d02e, type: 3}
-  m_Name: ConversationDatabase
+  m_Name: _DATABASE
   m_EditorClassIdentifier: Assembly-CSharp::ConversationDatabase
   allConversations:
-  - {fileID: 11400000, guid: a732571c3d779fc4581b7f3f600daecb, type: 2}
+  - {fileID: 11400000, guid: fca5d389117221b468fa07e39c09f041, type: 2}
+  - {fileID: 11400000, guid: f2ab3ce06b5e9714fb672990fb237f7b, type: 2}
+  - {fileID: 11400000, guid: 2af63e4a8f01b234b8eca41a2ab636a8, type: 2}
   usedConversations: []
   availableConversations:
-  - {fileID: 11400000, guid: a732571c3d779fc4581b7f3f600daecb, type: 2}
+  - {fileID: 11400000, guid: fca5d389117221b468fa07e39c09f041, type: 2}
+  - {fileID: 11400000, guid: f2ab3ce06b5e9714fb672990fb237f7b, type: 2}
+  - {fileID: 11400000, guid: 2af63e4a8f01b234b8eca41a2ab636a8, type: 2}
   resetPoolWhenEmpty: 1

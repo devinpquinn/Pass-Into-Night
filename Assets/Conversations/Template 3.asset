@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b2a3292a3db4a924f9c460bfd425981e, type: 3}
-  m_Name: Test 1
+  m_Name: Template 3
   m_EditorClassIdentifier: Assembly-CSharp::Conversation
-  conversationFile: {fileID: 4900000, guid: 5f8dbb1deca8d1540895b45037aada29, type: 3}
-  participantCount: 1
-  conversationName: Template 1
-  description: 
+  conversationFile: {fileID: 4900000, guid: 0251fd469fa6e254fb611ffdce4199cd, type: 3}
+  participantCount: 3
+  conversationName: Template 3
+  description: Auto-generated from Template 3
   isAvailable: 1

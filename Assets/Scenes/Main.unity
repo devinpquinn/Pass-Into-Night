@@ -476,9 +476,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 091740787516f92419c940db262a646d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DialogManager
-  conversationFileName: Events/Conversations
+  conversationDatabase: {fileID: 11400000, guid: 7997f5cc25007354d95aa54d213c9059, type: 2}
   selectionManager: {fileID: 1486696451}
   characterManager: {fileID: 1728258052}
+  currentConversation: {fileID: 0}
   dialogStartDelay: 0.8
   waitingPlaceholderText: ...
   dialogPanel: {fileID: 948208859}

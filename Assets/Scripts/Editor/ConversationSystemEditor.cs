@@ -149,11 +149,6 @@ public class ConversationDatabaseEditor : Editor
             AutoPopulateFromResources();
         }
         
-        if (GUILayout.Button("Create Test Conversations"))
-        {
-            CreateTestConversations();
-        }
-        
         EditorGUILayout.EndHorizontal();
         
         EditorGUILayout.Space();
@@ -253,7 +248,7 @@ public class ConversationDatabaseEditor : Editor
                 if (IsConversationFile(textAsset))
                 {
                     // Create conversation scriptable object
-                    string conversationPath = path.Replace(".txt", "_Conversation.asset")
+                    string conversationPath = path.Replace(".txt", ".asset")
                                                  .Replace("Resources/", "");
                     
                     // Check if conversation already exists in database
@@ -267,7 +262,7 @@ public class ConversationDatabaseEditor : Editor
                         
                         // Create the conversation asset
                         Conversation newConversation = CreateInstance<Conversation>();
-                        newConversation.name = textAsset.name + "_Conversation";
+                        newConversation.name = textAsset.name;
                         
                         // Use reflection to set private fields
                         var conversationFileField = typeof(Conversation).GetField("conversationFile", 
@@ -285,7 +280,7 @@ public class ConversationDatabaseEditor : Editor
                         descriptionField?.SetValue(newConversation, $"Auto-generated from {textAsset.name}");
                         
                         // Save the asset
-                        string assetPath = $"Assets/Scripts/{newConversation.name}.asset";
+                        string assetPath = $"Assets/Conversations/{newConversation.name}.asset";
                         AssetDatabase.CreateAsset(newConversation, assetPath);
                         
                         // Add to database
@@ -338,43 +333,6 @@ public class ConversationDatabaseEditor : Editor
         
         return maxParticipants;
     }
-    
-    private void CreateTestConversations()
-    {
-        // Create sample conversation assets for testing
-        for (int participants = 1; participants <= 3; participants++)
-        {
-            Conversation testConversation = CreateInstance<Conversation>();
-            testConversation.name = $"Test_{participants}P";
-            
-            // Use reflection to set private fields for testing
-            var conversationFileField = typeof(Conversation).GetField("conversationFile", 
-                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            var participantCountField = typeof(Conversation).GetField("participantCount", 
-                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            var conversationNameField = typeof(Conversation).GetField("conversationName", 
-                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            var descriptionField = typeof(Conversation).GetField("description", 
-                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            
-            // Try to use the existing Conversations.txt file for testing
-            TextAsset existingFile = Resources.Load<TextAsset>("Events/Conversations");
-            
-            conversationFileField?.SetValue(testConversation, existingFile);
-            participantCountField?.SetValue(testConversation, participants);
-            conversationNameField?.SetValue(testConversation, testConversation.name);
-            descriptionField?.SetValue(testConversation, $"Test conversation for {participants} participants");
-            
-            string assetPath = $"Assets/Scripts/{testConversation.name}.asset";
-            AssetDatabase.CreateAsset(testConversation, assetPath);
-            
-            database.AddConversation(testConversation);
-        }
-        
-        AssetDatabase.SaveAssets();
-        EditorUtility.SetDirty(database);
-        Debug.Log("Created test conversations.");
-    }
 }
 
 // Menu items for easy setup
@@ -412,7 +370,7 @@ public class ConversationSystemMenu
             if (textAsset != null)
             {
                 Conversation conversation = ScriptableObject.CreateInstance<Conversation>();
-                conversation.name = textAsset.name + "_Conversation";
+                conversation.name = textAsset.name;
                 
                 // Use reflection to set private fields
                 var conversationFileField = typeof(Conversation).GetField("conversationFile", 
@@ -423,7 +381,7 @@ public class ConversationSystemMenu
                 conversationFileField?.SetValue(conversation, textAsset);
                 conversationNameField?.SetValue(conversation, textAsset.name);
                 
-                string assetPath = path.Replace(".txt", "_Conversation.asset");
+                string assetPath = path.Replace(".txt", ".asset");
                 AssetDatabase.CreateAsset(conversation, assetPath);
                 AssetDatabase.SaveAssets();
                 
