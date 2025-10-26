@@ -7,9 +7,12 @@ using System.Collections.Generic;
 public class DialogManager : MonoBehaviour
 {
     [Header("Conversation Settings")]
-    public string conversationFileName = "Events/Conversations";
+    public ConversationDatabase conversationDatabase;
     public SelectionManager selectionManager;
     public CharacterManager characterManager;
+    
+    [Header("Current Conversation")]
+    [SerializeField] private Conversation currentConversation;
     
 
     
@@ -368,6 +371,12 @@ public class DialogManager : MonoBehaviour
     // Conversation Loading Methods
     public void LoadConversationForCharacters(List<string> selectedCharacterNames)
     {
+        if (currentConversation == null)
+        {
+            Debug.LogError("No current conversation selected! Make sure to call SelectNextConversation() first.");
+            return;
+        }
+        
         List<string> conversation = new List<string>();
         string foundSectionName = "";
         
@@ -379,7 +388,7 @@ public class DialogManager : MonoBehaviour
             string sectionName = "[" + string.Join("-", nameOrder) + "]";
             Debug.Log($"Trying conversation section: {sectionName}");
             
-            conversation = LoadConversationFromFile(sectionName);
+            conversation = LoadConversationFromFile(sectionName, currentConversation.ConversationFile);
             if (conversation.Count > 0)
             {
                 foundSectionName = sectionName;
@@ -405,8 +414,35 @@ public class DialogManager : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning($"No conversation found for character combination: {string.Join(", ", selectedCharacterNames)}");
+            Debug.LogWarning($"No conversation found for character combination: {string.Join(", ", selectedCharacterNames)} in conversation '{currentConversation.ConversationName}'");
         }
+    }
+    
+    // Method to select the next conversation from the database
+    public Conversation SelectNextConversation()
+    {
+        if (conversationDatabase == null)
+        {
+            Debug.LogError("ConversationDatabase not assigned to DialogManager!");
+            return null;
+        }
+        
+        currentConversation = conversationDatabase.GetNextConversation();
+        
+        if (currentConversation == null)
+        {
+            Debug.LogWarning("No conversations available in database!");
+            return null;
+        }
+        
+        Debug.Log($"Selected conversation: {currentConversation.ConversationName} (Participants: {currentConversation.ParticipantCount})");
+        return currentConversation;
+    }
+    
+    // Method to get the current conversation
+    public Conversation GetCurrentConversation()
+    {
+        return currentConversation;
     }
     
     private List<List<string>> GenerateNamePermutations(List<string> names)
@@ -501,20 +537,17 @@ public class DialogManager : MonoBehaviour
         }
     }
     
-    private List<string> LoadConversationFromFile(string sectionName)
+    private List<string> LoadConversationFromFile(string sectionName, TextAsset conversationFile)
     {
         List<string> conversationLines = new List<string>();
         
-        // Load text file from Resources folder
-        TextAsset conversationFile = Resources.Load<TextAsset>(conversationFileName);
-        
         if (conversationFile == null)
         {
-            Debug.LogError($"Conversation file not found in Resources folder at: '{conversationFileName}'");
+            Debug.LogError($"Conversation file is null!");
             return conversationLines;
         }
         
-        Debug.Log($"Successfully loaded conversation file: '{conversationFileName}'");
+        Debug.Log($"Successfully loaded conversation file: '{conversationFile.name}'");
         
         try
         {

@@ -64,9 +64,8 @@ public class SelectionManager : MonoBehaviour
         // Initialize all portraits as inactive
         SetAllPortraitsInactive();
         
-        // Start with random character count for testing
-        int randomCount = Random.Range(1, 4); // 1, 2, or 3 characters
-        StartSelection(randomCount);
+        // Start the first conversation selection
+        StartNewRound();
     }
     
     void Update()
@@ -398,6 +397,28 @@ public class SelectionManager : MonoBehaviour
         }
     }
     
+    // Method to start a new round (selects next conversation and begins selection)
+    public void StartNewRound()
+    {
+        if (dialogManager == null)
+        {
+            Debug.LogError("DialogManager not assigned to SelectionManager!");
+            return;
+        }
+        
+        // Select the next conversation from the database
+        Conversation nextConversation = dialogManager.SelectNextConversation();
+        
+        if (nextConversation == null)
+        {
+            Debug.LogError("No conversation available! Cannot start new round.");
+            return;
+        }
+        
+        // Start selection with the participant count from the conversation
+        StartSelection(nextConversation.ParticipantCount);
+    }
+    
     // Reset method for starting new selection after dialog completion
     public void ResetForNewSelection()
     {
@@ -464,11 +485,9 @@ public class SelectionManager : MonoBehaviour
             promptText.text = "";
         }
         
-        // Choose random character count for next selection (testing purposes)
-        int randomCharacterCount = Random.Range(1, 4); // 1, 2, or 3 characters
-        Debug.Log($"Selection system reset. Ready for new selection of {randomCharacterCount} characters.");
+        Debug.Log("Selection system reset. Starting new round...");
         
-        // Automatically start a new selection
-        StartSelection(randomCharacterCount);
+        // Start a new round (selects next conversation and begins selection)
+        StartNewRound();
     }
 }
