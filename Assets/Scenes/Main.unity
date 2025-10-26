@@ -1512,13 +1512,13 @@ MonoBehaviour:
   - {fileID: 869053197}
   - {fileID: 1895655450}
   dialogManager: {fileID: 419666008}
-  inactiveAlpha: 0.4
-  hoverAlpha: 0.8
+  inactiveAlpha: 1
+  hoverAlpha: 1
   selectedAlpha: 1
   promptTextColor: {r: 0.19215687, g: 0.1254902, b: 0.21960784, a: 1}
   enablePortraitScaling: 1
-  inactiveScale: 0.95
-  hoverScale: 0.975
+  inactiveScale: 1
+  hoverScale: 1
   selectedScale: 1
   dashedFrameSprite: {fileID: 21300000, guid: 5d972123b93cf0245b66e5df6041b593, type: 3}
   solidFrameSprite: {fileID: 21300000, guid: eb7baf99c2a2b6a458a1b1bc74be7283, type: 3}
