@@ -94,11 +94,24 @@ public class SelectionManager : MonoBehaviour
         selectedCharacters.Clear();
         hoveredCharacter = -1;
         
-        // Set prompt text with written numbers
+        // Set prompt text with written numbers and blurb
         string numberWord = GetNumberWord(characterCount);
-        string promptMessage = characterCount == 1 ? 
+        string selectionText = characterCount == 1 ? 
             $"Select <u>{numberWord}</u> traveler." : 
             $"Select <u>{numberWord}</u> travelers.";
+        
+        // Get blurb from current conversation
+        string blurb = "";
+        if (dialogManager != null)
+        {
+            Conversation currentConversation = dialogManager.GetCurrentConversation();
+            if (currentConversation != null && !string.IsNullOrEmpty(currentConversation.Blurb))
+            {
+                blurb = currentConversation.Blurb + " ";
+            }
+        }
+        
+        string promptMessage = blurb + selectionText;
         
         if (promptText != null)
         {

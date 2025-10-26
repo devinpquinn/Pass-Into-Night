@@ -8,6 +8,7 @@ public class Conversation : ScriptableObject
     [SerializeField] private int participantCount = 1;
     [SerializeField] private string conversationName;
     [SerializeField, TextArea(3, 5)] private string description;
+    [SerializeField, TextArea(2, 3)] private string blurb;
     
     [Header("Metadata")]
     [SerializeField] private bool isAvailable = true;
@@ -16,6 +17,7 @@ public class Conversation : ScriptableObject
     public int ParticipantCount => participantCount;
     public string ConversationName => conversationName;
     public string Description => description;
+    public string Blurb => blurb;
     public bool IsAvailable => isAvailable;
     
     public void SetAvailable(bool available)

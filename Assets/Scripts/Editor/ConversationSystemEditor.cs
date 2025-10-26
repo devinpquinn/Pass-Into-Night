@@ -273,11 +273,14 @@ public class ConversationDatabaseEditor : Editor
                             System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
                         var descriptionField = typeof(Conversation).GetField("description", 
                             System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                        var blurbField = typeof(Conversation).GetField("blurb", 
+                            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
                         
                         conversationFileField?.SetValue(newConversation, textAsset);
                         participantCountField?.SetValue(newConversation, participantCount);
                         conversationNameField?.SetValue(newConversation, textAsset.name);
                         descriptionField?.SetValue(newConversation, $"Auto-generated from {textAsset.name}");
+                        blurbField?.SetValue(newConversation, "");
                         
                         // Save the asset
                         string assetPath = $"Assets/Conversations/{newConversation.name}.asset";
@@ -377,9 +380,12 @@ public class ConversationSystemMenu
                     System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
                 var conversationNameField = typeof(Conversation).GetField("conversationName", 
                     System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                var blurbField = typeof(Conversation).GetField("blurb", 
+                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
                 
                 conversationFileField?.SetValue(conversation, textAsset);
                 conversationNameField?.SetValue(conversation, textAsset.name);
+                blurbField?.SetValue(conversation, "");
                 
                 string assetPath = path.Replace(".txt", ".asset");
                 AssetDatabase.CreateAsset(conversation, assetPath);
