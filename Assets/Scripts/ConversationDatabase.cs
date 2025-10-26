@@ -13,7 +13,6 @@ public class ConversationDatabase : ScriptableObject
     [SerializeField] private List<Conversation> availableConversations = new List<Conversation>();
     
     [Header("Selection Settings")]
-    [SerializeField] private bool prioritizeHigherPriority = true;
     [SerializeField] private bool resetPoolWhenEmpty = true;
     
     public List<Conversation> AllConversations => allConversations;
@@ -41,12 +40,6 @@ public class ConversationDatabase : ScriptableObject
                 availableConversations.Add(conversation);
             }
         }
-        
-        // Sort by priority if enabled
-        if (prioritizeHigherPriority)
-        {
-            availableConversations = availableConversations.OrderByDescending(c => c.Priority).ToList();
-        }
     }
     
     /// <summary>
@@ -72,25 +65,8 @@ public class ConversationDatabase : ScriptableObject
             }
         }
         
-        // Select conversation based on priority or random selection
-        Conversation selectedConversation = null;
-        
-        if (prioritizeHigherPriority)
-        {
-            // Get all conversations with the highest priority
-            int highestPriority = availableConversations[0].Priority;
-            var highestPriorityConversations = availableConversations
-                .Where(c => c.Priority == highestPriority)
-                .ToList();
-            
-            // Random selection from highest priority conversations
-            selectedConversation = highestPriorityConversations[Random.Range(0, highestPriorityConversations.Count)];
-        }
-        else
-        {
-            // Pure random selection
-            selectedConversation = availableConversations[Random.Range(0, availableConversations.Count)];
-        }
+        // Random selection from available conversations
+        Conversation selectedConversation = availableConversations[Random.Range(0, availableConversations.Count)];
         
         // Mark as used
         MarkConversationAsUsed(selectedConversation);
@@ -121,22 +97,8 @@ public class ConversationDatabase : ScriptableObject
             return null;
         }
         
-        // Select from filtered list using same priority logic
-        Conversation selectedConversation = null;
-        
-        if (prioritizeHigherPriority)
-        {
-            int highestPriority = filteredConversations.Max(c => c.Priority);
-            var highestPriorityConversations = filteredConversations
-                .Where(c => c.Priority == highestPriority)
-                .ToList();
-            
-            selectedConversation = highestPriorityConversations[Random.Range(0, highestPriorityConversations.Count)];
-        }
-        else
-        {
-            selectedConversation = filteredConversations[Random.Range(0, filteredConversations.Count)];
-        }
+        // Random selection from filtered conversations
+        Conversation selectedConversation = filteredConversations[Random.Range(0, filteredConversations.Count)];
         
         MarkConversationAsUsed(selectedConversation);
         

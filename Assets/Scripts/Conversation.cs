@@ -11,14 +11,12 @@ public class Conversation : ScriptableObject
     
     [Header("Metadata")]
     [SerializeField] private bool isAvailable = true;
-    [SerializeField] private int priority = 0; // Higher priority conversations are preferred
     
     public TextAsset ConversationFile => conversationFile;
     public int ParticipantCount => participantCount;
     public string ConversationName => conversationName;
     public string Description => description;
     public bool IsAvailable => isAvailable;
-    public int Priority => priority;
     
     public void SetAvailable(bool available)
     {

@@ -204,7 +204,6 @@ public class ConversationDatabaseEditor : Editor
                 
                 EditorGUILayout.LabelField($"[{conversation.ParticipantCount}P]", GUILayout.Width(40));
                 EditorGUILayout.LabelField(conversation.ConversationName, GUILayout.ExpandWidth(true));
-                EditorGUILayout.LabelField($"Priority: {conversation.Priority}", GUILayout.Width(80));
                 
                 GUI.color = Color.white;
                 
@@ -345,37 +344,31 @@ public class ConversationDatabaseEditor : Editor
         // Create sample conversation assets for testing
         for (int participants = 1; participants <= 3; participants++)
         {
-            for (int priority = 0; priority <= 2; priority++)
-            {
-                Conversation testConversation = CreateInstance<Conversation>();
-                testConversation.name = $"Test_{participants}P_Priority{priority}";
-                
-                // Use reflection to set private fields for testing
-                var conversationFileField = typeof(Conversation).GetField("conversationFile", 
-                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                var participantCountField = typeof(Conversation).GetField("participantCount", 
-                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                var conversationNameField = typeof(Conversation).GetField("conversationName", 
-                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                var descriptionField = typeof(Conversation).GetField("description", 
-                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                var priorityField = typeof(Conversation).GetField("priority", 
-                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                
-                // Try to use the existing Conversations.txt file for testing
-                TextAsset existingFile = Resources.Load<TextAsset>("Events/Conversations");
-                
-                conversationFileField?.SetValue(testConversation, existingFile);
-                participantCountField?.SetValue(testConversation, participants);
-                priorityField?.SetValue(testConversation, priority);
-                conversationNameField?.SetValue(testConversation, testConversation.name);
-                descriptionField?.SetValue(testConversation, $"Test conversation for {participants} participants with priority {priority}");
-                
-                string assetPath = $"Assets/Scripts/{testConversation.name}.asset";
-                AssetDatabase.CreateAsset(testConversation, assetPath);
-                
-                database.AddConversation(testConversation);
-            }
+            Conversation testConversation = CreateInstance<Conversation>();
+            testConversation.name = $"Test_{participants}P";
+            
+            // Use reflection to set private fields for testing
+            var conversationFileField = typeof(Conversation).GetField("conversationFile", 
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            var participantCountField = typeof(Conversation).GetField("participantCount", 
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            var conversationNameField = typeof(Conversation).GetField("conversationName", 
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            var descriptionField = typeof(Conversation).GetField("description", 
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            
+            // Try to use the existing Conversations.txt file for testing
+            TextAsset existingFile = Resources.Load<TextAsset>("Events/Conversations");
+            
+            conversationFileField?.SetValue(testConversation, existingFile);
+            participantCountField?.SetValue(testConversation, participants);
+            conversationNameField?.SetValue(testConversation, testConversation.name);
+            descriptionField?.SetValue(testConversation, $"Test conversation for {participants} participants");
+            
+            string assetPath = $"Assets/Scripts/{testConversation.name}.asset";
+            AssetDatabase.CreateAsset(testConversation, assetPath);
+            
+            database.AddConversation(testConversation);
         }
         
         AssetDatabase.SaveAssets();
