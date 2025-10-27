@@ -1,4 +1,3 @@
-
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -26,10 +25,6 @@ public class DialogManager : MonoBehaviour
     private Queue<string> pendingDialogQueue = new Queue<string>();
     
     public RectTransform dialogPanel;
-    private float shrinkAmount = 0.967f;
-    private Vector3 dialogPanelOriginalScale;
-    private bool isDialogPanelPunching = false;
-    private float dialogPanelPunchTimer = 0f;
     private Camera uiCamera;
     public TextMeshProUGUI dialogText;
     
@@ -49,20 +44,9 @@ public class DialogManager : MonoBehaviour
     public Sprite[] characterSpritesEyesClosed; // Used when not selected/hovered during selection
     public Sprite[] characterSpritesEyesOpen;   // Used when hovered during selection
 
-    [Header("Portrait Scaling")]
-    public bool enablePortraitScaling = true;
-    private float activePortraitScale = 1.125f;
-    private float portraitScaleTime = 0.1f;
-
     private Queue<string> dialogQueue = new Queue<string>();
     private int currentSpeaker = -1;
     private int previousSpeaker = -1;
-
-    private bool isScaling = false;
-    private float[] portraitScaleTimers;
-    private Vector2[] portraitStartSizes;
-    private Vector2[] portraitTargetSizes;
-    private Vector2[] portraitBaseSizes;
 
     // Character name to index mapping
     private int GetCharacterIndex(string characterName)
@@ -79,75 +63,11 @@ public class DialogManager : MonoBehaviour
 
     void Start()
     {
-        if (dialogPanel != null)
-        {
-            dialogPanelOriginalScale = dialogPanel.localScale;
-        }
         uiCamera = Camera.main;
-
-        portraitScaleTimers = new float[characterPortraits.Length];
-        portraitStartSizes = new Vector2[characterPortraits.Length];
-        portraitTargetSizes = new Vector2[characterPortraits.Length];
-        portraitBaseSizes = new Vector2[characterPortraits.Length];
-        
-        for (int i = 0; i < characterPortraits.Length; i++)
-        {
-            if (characterPortraits[i] != null && characterPortraits[i].transform.parent != null)
-            {
-                RectTransform parentRectTransform = characterPortraits[i].transform.parent.GetComponent<RectTransform>();
-                if (parentRectTransform != null)
-                {
-                    portraitBaseSizes[i] = parentRectTransform.sizeDelta;
-                    portraitStartSizes[i] = parentRectTransform.sizeDelta;
-                    portraitTargetSizes[i] = parentRectTransform.sizeDelta;
-                }
-            }
-            portraitScaleTimers[i] = 0f;
-        }
     }
 
     void Update()
     {
-        // Handle dialog panel punch effect (scale)
-        if (isDialogPanelPunching && dialogPanel != null)
-        {
-            dialogPanelPunchTimer += Time.deltaTime;
-            float t = Mathf.Clamp01(dialogPanelPunchTimer / portraitScaleTime);
-            float punchT = Mathf.Sin(t * Mathf.PI * 0.5f);
-            dialogPanel.localScale = Vector3.Lerp(dialogPanelOriginalScale * shrinkAmount, dialogPanelOriginalScale, punchT);
-            if (t >= 1f)
-            {
-                dialogPanel.localScale = dialogPanelOriginalScale;
-                isDialogPanelPunching = false;
-            }
-        }
-        // Handle portrait sizing
-        if (isScaling)
-        {
-            bool allDone = true;
-            for (int i = 0; i < characterPortraits.Length; i++)
-            {
-                if (portraitScaleTimers[i] < portraitScaleTime && characterPortraits[i] != null)
-                {
-                    portraitScaleTimers[i] += Time.deltaTime;
-                    float t = Mathf.Clamp01(portraitScaleTimers[i] / portraitScaleTime);
-                    Vector2 currentSize = Vector2.Lerp(portraitStartSizes[i], portraitTargetSizes[i], t);
-                    
-                    if (characterPortraits[i].transform.parent != null)
-                    {
-                        RectTransform parentRectTransform = characterPortraits[i].transform.parent.GetComponent<RectTransform>();
-                        if (parentRectTransform != null)
-                            parentRectTransform.sizeDelta = currentSize;
-                    }
-                        
-                    if (t < 1f) allDone = false;
-                }
-            }
-            if (allDone)
-            {
-                isScaling = false;
-            }
-        }
 
         // Handle dialog start delay
         if (isWaitingToStartDialog)
@@ -177,11 +97,11 @@ public class DialogManager : MonoBehaviour
         bool canAdvanceDialog = selectionManager == null || !selectionManager.IsSelectionActive();
         
         bool advance = false;
-        if (canAdvanceDialog && !isScaling && Input.GetKeyDown(KeyCode.Space))
+        if (canAdvanceDialog && Input.GetKeyDown(KeyCode.Space))
         {
             advance = true;
         }
-        else if (canAdvanceDialog && !isScaling && Input.GetMouseButtonDown(0))
+        else if (canAdvanceDialog && Input.GetMouseButtonDown(0))
         {
             Vector2 mousePos = Input.mousePosition;
             if (RectTransformUtility.RectangleContainsScreenPoint(dialogPanel, mousePos, uiCamera))
@@ -197,20 +117,11 @@ public class DialogManager : MonoBehaviour
 
     void ShowNextDialog()
     {
-        // Start punch effect on dialog panel (scale)
-        if (dialogPanel != null)
-        {
-            dialogPanel.localScale = dialogPanelOriginalScale * shrinkAmount;
-            dialogPanelPunchTimer = 0f;
-            isDialogPanelPunching = true;
-        }
         if (dialogQueue.Count == 0)
         {
             dialogText.text = "";
             HighlightSpeaker(-1);
             SetDialogPanelSprite(false); // Set to narrative sprite
-            // Smoothly scale last speaker's portrait parent back to 1
-            StartPortraitScale(currentSpeaker, -1);
             currentSpeaker = -1;
             
             // Reset the selection system for a new selection phase
@@ -242,7 +153,6 @@ public class DialogManager : MonoBehaviour
                 dialogText.text = "";
                 HighlightSpeaker(-1);
                 SetDialogPanelSprite(false); // Set to narrative sprite
-                StartPortraitScale(currentSpeaker, -1);
                 currentSpeaker = -1;
                 
                 if (selectionManager != null)
@@ -279,7 +189,6 @@ public class DialogManager : MonoBehaviour
                 dialogText.color = textSpoken;
                 HighlightSpeaker(currentSpeaker);
                 SetDialogPanelSprite(true); // Set to speech sprite
-                StartPortraitScale(previousSpeaker, currentSpeaker);
             }
             else
             {
@@ -288,7 +197,6 @@ public class DialogManager : MonoBehaviour
                 dialogText.color = textUnspoken;
                 HighlightSpeaker(-1);
                 SetDialogPanelSprite(false); // Set to narrative sprite
-                StartPortraitScale(currentSpeaker, -1);
             }
         }
         else
@@ -298,7 +206,6 @@ public class DialogManager : MonoBehaviour
             dialogText.color = textUnspoken;
             HighlightSpeaker(-1);
             SetDialogPanelSprite(false); // Set to narrative sprite
-            StartPortraitScale(currentSpeaker, -1);
         }
     }
 
@@ -332,41 +239,7 @@ public class DialogManager : MonoBehaviour
         }
     }
 
-    void StartPortraitScale(int prev, int curr)
-    {
-        if (!enablePortraitScaling)
-        {
-            isScaling = false;
-            return;
-        }
 
-        // Reset all timers and set targets
-        for (int i = 0; i < characterPortraits.Length; i++)
-        {
-            if (characterPortraits[i] != null && characterPortraits[i].transform.parent != null)
-            {
-                RectTransform parentRectTransform = characterPortraits[i].transform.parent.GetComponent<RectTransform>();
-                if (parentRectTransform != null)
-                {
-                    portraitStartSizes[i] = parentRectTransform.sizeDelta;
-                    
-                    if (i == curr)
-                    {
-                        // Scale up by activePortraitScale factor
-                        portraitTargetSizes[i] = portraitBaseSizes[i] * activePortraitScale;
-                        portraitScaleTimers[i] = 0f;
-                    }
-                    else
-                    {
-                        // Return to base size
-                        portraitTargetSizes[i] = portraitBaseSizes[i];
-                        portraitScaleTimers[i] = 0f;
-                    }
-                }
-            }
-        }
-        isScaling = true;
-    }
     
     // Conversation Loading Methods
     public void LoadConversationForCharacters(List<string> selectedCharacterNames)
@@ -978,37 +851,7 @@ public class DialogManager : MonoBehaviour
         return names;
     }
     
-    // Reset portrait scaling system (called when transitioning back to selection)
-    public void ResetPortraitScaling()
-    {
-        // Stop any ongoing scaling animations
-        isScaling = false;
-        
-        // Reset all portrait sizes to base size
-        for (int i = 0; i < characterPortraits.Length; i++)
-        {
-            if (characterPortraits[i] != null && characterPortraits[i].transform.parent != null)
-            {
-                RectTransform parentRectTransform = characterPortraits[i].transform.parent.GetComponent<RectTransform>();
-                if (parentRectTransform != null && portraitBaseSizes != null && i < portraitBaseSizes.Length)
-                {
-                    parentRectTransform.sizeDelta = portraitBaseSizes[i];
-                }
-            }
-            
-            // Reset timer values
-            if (portraitScaleTimers != null && i < portraitScaleTimers.Length)
-            {
-                portraitScaleTimers[i] = 0f;
-                if (portraitStartSizes != null && i < portraitStartSizes.Length)
-                    portraitStartSizes[i] = portraitBaseSizes[i];
-                if (portraitTargetSizes != null && i < portraitTargetSizes.Length)
-                    portraitTargetSizes[i] = portraitBaseSizes[i];
-            }
-        }
-        
-        Debug.Log("DialogManager portrait scaling system reset");
-    }
+
     
     // Methods for selection phase sprite management
     public void SetCharacterToEyesClosed(int characterIndex)
@@ -1278,65 +1121,5 @@ public class DialogManager : MonoBehaviour
                 Debug.LogError($"Unknown character name: {characterName}");
                 return CharacterManager.CharacterID.Waif; // Default fallback
         }
-    }
-    
-    // Test method for delay functionality
-    [ContextMenu("Test Dialog Delay")]
-    public void TestDialogDelay()
-    {
-        // Simulate a simple conversation for testing
-        pendingDialogQueue.Clear();
-        pendingDialogQueue.Enqueue("Waif: This is a test conversation.");
-        pendingDialogQueue.Enqueue("Priestess: Testing the delay system.");
-        
-        StartDialogWithDelay();
-    }
-    
-    // Test method for conditional system
-    [ContextMenu("Test Conditional Dialog")]
-    public void TestConditionalDialog()
-    {
-        if (characterManager == null)
-        {
-            Debug.LogError("CharacterManager not assigned, cannot test conditionals");
-            return;
-        }
-        
-        // Create a test conversation with conditions and commands (including mutual relationships)
-        List<string> testConversation = new List<string>
-        {
-            "Waif: Let's see how our relationship affects this conversation.",
-            "{IF: Waif->Priestess >= 3}",
-            "Priestess: Our bond has grown strong, Waif.",
-            "Waif: Indeed, I feel we understand each other well.",
-            "{SET: Waif<->Priestess +1}",
-            "Priestess: I feel even closer to you now.",
-            "{ELSE}",
-            "Priestess: We still have much to learn about each other.",
-            "Waif: Perhaps in time we will grow closer.",
-            "{SET: Waif<->Priestess +2}",
-            "Priestess: This conversation has been... enlightening.",
-            "{ENDIF}",
-            "{IF: Waif.arc >= 2}",
-            "Waif: My journey has taught me much about myself.",
-            "{SET: Waif.arc +1}",
-            "{ELSE}",
-            "Waif: I'm still learning about who I am.",
-            "{SET: Waif.arc +1}",
-            "{ENDIF}",
-            "Priestess: The future holds many possibilities for both of us."
-        };
-        
-        // Process and load the test conversation
-        List<string> processedConversation = ProcessConversationWithConditions(testConversation);
-        
-        pendingDialogQueue.Clear();
-        foreach (string line in processedConversation)
-        {
-            pendingDialogQueue.Enqueue(line);
-        }
-        
-        Debug.Log($"Test conversation processed: {processedConversation.Count} lines");
-        StartDialogWithDelay();
     }
 }

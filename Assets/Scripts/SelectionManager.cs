@@ -10,12 +10,6 @@ public class SelectionManager : MonoBehaviour
     public Image[] characterPortraits = new Image[4]; // Waif, Priestess, Warder, Pilot (must have CanvasGroup components)
     public DialogManager dialogManager;
     
-    [Header("Portrait Scaling")]
-    public bool enablePortraitScaling = true;
-    public float inactiveScale = 0.9f;
-    public float hoverScale = 0.95f;
-    public float selectedScale = 1.0f;
-    
     [Header("Portrait Frames")]
     public Sprite dashedFrameSprite;
     public Sprite solidFrameSprite;
@@ -197,22 +191,6 @@ public class SelectionManager : MonoBehaviour
     {
         if (characterPortraits[characterIndex] == null) return;
         
-        float targetScale = 1.0f; // Default scale when scaling is disabled
-        
-        if (selectedCharacters.Contains(characterIndex))
-        {
-            if (enablePortraitScaling) targetScale = selectedScale;
-        }
-        else if (characterIndex == hoveredCharacter)
-        {
-            if (enablePortraitScaling) targetScale = hoverScale;
-        }
-        else
-        {
-            if (enablePortraitScaling) targetScale = inactiveScale;
-        }
-        characterPortraits[characterIndex].transform.localScale = Vector3.one * targetScale;
-        
         // Update frame sprite based on selection state
         Image portrait = characterPortraits[characterIndex].GetComponent<Image>();
         if (portrait != null)
@@ -253,10 +231,6 @@ public class SelectionManager : MonoBehaviour
         {
             if (characterPortraits[i] != null)
             {
-                // Set inactive scale (if scaling is enabled)
-                float scale = enablePortraitScaling ? inactiveScale : 1.0f;
-                characterPortraits[i].transform.localScale = Vector3.one * scale;
-                
                 // Set dashed frame for inactive state
                 Image portrait = characterPortraits[i].GetComponent<Image>();
                 if (portrait != null && dashedFrameSprite != null)
@@ -404,11 +378,7 @@ public class SelectionManager : MonoBehaviour
         isAnimatingCompletion = false;
         completionTimer = 0f;
         
-        // Reset DialogManager's portrait scaling system
-        if (dialogManager != null)
-        {
-            dialogManager.ResetPortraitScaling();
-        }
+
         
         // Reset selection state
         isSelectionActive = false;
@@ -450,9 +420,7 @@ public class SelectionManager : MonoBehaviour
                     }
                 }
                 
-                // Reset scale to inactive state (if scaling is enabled)
-                float scale = enablePortraitScaling ? inactiveScale : 1.0f;
-                characterPortraits[i].transform.localScale = Vector3.one * scale;
+
             }
         }
         
