@@ -20,12 +20,6 @@ public class SelectionManager : MonoBehaviour
     private HashSet<int> selectedCharacters = new HashSet<int>();
     private int hoveredCharacter = -1;
     
-    // Animation state for completion
-    private bool isAnimatingCompletion = false;
-    private float completionAnimationTime = 0.5f;
-    private float completionTimer = 0f;
-    private float[] originalWidths;
-    
     // Character names for logging
     private string[] characterNames = { "Waif", "Priestess", "Warder", "Pilot" };
     
@@ -42,13 +36,6 @@ public class SelectionManager : MonoBehaviour
     
     void Start()
     {
-        // Store original widths
-        originalWidths = new float[characterPortraits.Length];
-        for (int i = 0; i < characterPortraits.Length; i++)
-        {
-            originalWidths[i] = characterPortraits[i].GetComponent<RectTransform>().rect.width;
-        }
-        
         // Initialize all portraits as inactive
         SetAllPortraitsInactive();
         
@@ -58,12 +45,6 @@ public class SelectionManager : MonoBehaviour
     
     void Update()
     {
-        if (isAnimatingCompletion)
-        {
-            HandleCompletionAnimation();
-            return;
-        }
-        
         if (!isSelectionActive) return;
         
         HandleMouseInput();
@@ -266,7 +247,7 @@ public class SelectionManager : MonoBehaviour
             dialogManager.LoadConversationForCharacters(selectedNames);
         }
         
-        // Keep selected portraits active and hide unselected ones
+        // Keep selected portraits active and instantly deactivate unselected ones
         for (int i = 0; i < characterPortraits.Length; i++)
         {
             if (selectedCharacters.Contains(i))
@@ -275,19 +256,10 @@ public class SelectionManager : MonoBehaviour
             }
             else
             {
-                // Hide unselected portraits by setting alpha to 0
-                CanvasGroup canvasGroup = characterPortraits[i].GetComponent<CanvasGroup>();
-                if (canvasGroup != null)
-                {
-                    canvasGroup.alpha = 0f;
-                }
+                // Instantly deactivate unselected portraits
+                characterPortraits[i].gameObject.SetActive(false);
             }
         }
-        
-        // Start completion animation for unselected portraits
-        
-        isAnimatingCompletion = true;
-        completionTimer = 0f;
     }
     
     // Public methods for external use
@@ -311,41 +283,6 @@ public class SelectionManager : MonoBehaviour
             promptText.text = "";
         
         SetAllPortraitsInactive();
-    }
-    
-    void HandleCompletionAnimation()
-    {
-        completionTimer += Time.deltaTime;
-        float progress = completionTimer / completionAnimationTime;
-        
-        if (progress >= 1.0f)
-        {
-            // Animation complete - disable unselected portraits
-            for (int i = 0; i < characterPortraits.Length; i++)
-            {
-                if (!selectedCharacters.Contains(i))
-                {
-                    characterPortraits[i].gameObject.SetActive(false);
-                }
-            }
-            
-            isAnimatingCompletion = false;
-            return;
-        }
-        
-        // Apply easing to the progress (ease-out cubic for smooth deceleration)
-        float easedProgress = 1f - Mathf.Pow(1f - progress, 3f);
-        
-        // Animate unselected portraits (width shrinking only)
-        for (int i = 0; i < characterPortraits.Length; i++)
-        {
-            if (!selectedCharacters.Contains(i))
-            {
-                RectTransform rectTransform = characterPortraits[i].GetComponent<RectTransform>();
-                float currentWidth = Mathf.Lerp(originalWidths[i], -25f, easedProgress);
-                rectTransform.sizeDelta = new Vector2(currentWidth, rectTransform.sizeDelta.y);
-            }
-        }
     }
     
     // Method to start a new round (selects next conversation and begins selection)
@@ -373,12 +310,6 @@ public class SelectionManager : MonoBehaviour
     // Reset method for starting new selection after dialog completion
     public void ResetForNewSelection()
     {
-        // Stop any ongoing animations
-        isAnimatingCompletion = false;
-        completionTimer = 0f;
-        
-
-        
         // Reset selection state
         isSelectionActive = false;
         selectedCharacters.Clear();
@@ -408,18 +339,6 @@ public class SelectionManager : MonoBehaviour
                 {
                     canvasGroup.alpha = 1.0f;
                 }
-                
-                // Reset to original width
-                if (originalWidths != null && i < originalWidths.Length)
-                {
-                    RectTransform rectTransform = characterPortraits[i].GetComponent<RectTransform>();
-                    if (rectTransform != null)
-                    {
-                        rectTransform.sizeDelta = new Vector2(originalWidths[i], rectTransform.sizeDelta.y);
-                    }
-                }
-                
-
             }
         }
         
