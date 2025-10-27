@@ -28,14 +28,6 @@ public class DialogManager : MonoBehaviour
     private Camera uiCamera;
     public TextMeshProUGUI dialogText;
     
-    [Header("Dialog Panel Sprites")]
-    public Image dialogPanelImage; // The Image component on DialogPanel
-    public Sprite narrativeSprite; // Sprite for narration/thoughts
-    public Sprite speechSprite;    // Sprite for speaking
-
-    public Color textSpoken;
-    public Color textUnspoken;
-
     public Image[] characterPortraits;
     public Sprite[] characterSpritesInactive;
     public Sprite[] characterSpritesActive;
@@ -121,7 +113,6 @@ public class DialogManager : MonoBehaviour
         {
             dialogText.text = "";
             HighlightSpeaker(-1);
-            SetDialogPanelSprite(false); // Set to narrative sprite
             currentSpeaker = -1;
             
             // Reset the selection system for a new selection phase
@@ -152,7 +143,6 @@ public class DialogManager : MonoBehaviour
                 // No more dialog after command, end conversation
                 dialogText.text = "";
                 HighlightSpeaker(-1);
-                SetDialogPanelSprite(false); // Set to narrative sprite
                 currentSpeaker = -1;
                 
                 if (selectionManager != null)
@@ -186,26 +176,20 @@ public class DialogManager : MonoBehaviour
                 previousSpeaker = currentSpeaker;
                 currentSpeaker = speakerIndex;
                 dialogText.text = $"\"{dialog}\""; // Add quotation marks
-                dialogText.color = textSpoken;
                 HighlightSpeaker(currentSpeaker);
-                SetDialogPanelSprite(true); // Set to speech sprite
             }
             else
             {
                 // Unknown speaker: treat as unspoken text
                 dialogText.text = line;
-                dialogText.color = textUnspoken;
                 HighlightSpeaker(-1);
-                SetDialogPanelSprite(false); // Set to narrative sprite
             }
         }
         else
         {
             // Descriptive/unspoken text
             dialogText.text = line;
-            dialogText.color = textUnspoken;
             HighlightSpeaker(-1);
-            SetDialogPanelSprite(false); // Set to narrative sprite
         }
     }
 
@@ -223,23 +207,6 @@ public class DialogManager : MonoBehaviour
             }
         }
     }
-    
-    void SetDialogPanelSprite(bool isSpeaking)
-    {
-        if (dialogPanelImage != null)
-        {
-            if (isSpeaking && speechSprite != null)
-            {
-                dialogPanelImage.sprite = speechSprite;
-            }
-            else if (!isSpeaking && narrativeSprite != null)
-            {
-                dialogPanelImage.sprite = narrativeSprite;
-            }
-        }
-    }
-
-
     
     // Conversation Loading Methods
     public void LoadConversationForCharacters(List<string> selectedCharacterNames)
@@ -390,10 +357,6 @@ public class DialogManager : MonoBehaviour
         // Clear any existing dialog and show placeholder
         dialogQueue.Clear();
         dialogText.text = waitingPlaceholderText;
-        dialogText.color = textUnspoken;
-        
-        // Set dialog panel to narrative sprite during waiting
-        SetDialogPanelSprite(false);
         
         // Start delay timer
         isWaitingToStartDialog = true;

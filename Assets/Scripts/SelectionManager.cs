@@ -102,7 +102,6 @@ public class SelectionManager : MonoBehaviour
         
         if (promptText != null)
         {
-            promptText.color = dialogManager != null ? dialogManager.textUnspoken : Color.white;
             promptText.text = promptMessage;
         }
         
@@ -427,7 +426,6 @@ public class SelectionManager : MonoBehaviour
         // Reset prompt text color and clear text
         if (promptText != null)
         {
-            promptText.color = dialogManager != null ? dialogManager.textUnspoken : Color.white;
             promptText.text = "";
         }
         
