@@ -13,12 +13,10 @@ public class DialogManager : MonoBehaviour
     [Header("Current Conversation")]
     [SerializeField] private Conversation currentConversation;
     
-
-    
     [Header("Dialog Timing")]
-    public float dialogStartDelay = 0.8f; // Delay before starting dialog after selection
-    public string waitingPlaceholderText = "...";
-    
+    private float dialogStartDelay = 1f; // Delay before starting dialog after selection
+    private string waitingPlaceholderText = "Loading...";
+
     // Dialog delay state
     private bool isWaitingToStartDialog = false;
     private float dialogDelayTimer = 0f;
