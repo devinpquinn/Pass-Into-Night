@@ -482,31 +482,6 @@ MonoBehaviour:
   currentConversation: {fileID: 0}
   dialogPanel: {fileID: 948208859}
   dialogText: {fileID: 1395434257}
-  characterPortraits:
-  - {fileID: 127503010}
-  - {fileID: 1471344122}
-  - {fileID: 272330669}
-  - {fileID: 67896010}
-  characterSpritesInactive:
-  - {fileID: 21300000, guid: 88ca2fe3036c0e445ae6088abc3ad5fe, type: 3}
-  - {fileID: 21300000, guid: b5981955173e6aa4bab86d7d3d2e270d, type: 3}
-  - {fileID: 21300000, guid: 3841c37c868efd94ab4b33733893ad76, type: 3}
-  - {fileID: 21300000, guid: 6f85c018fce920647bed6ec6cc16e61a, type: 3}
-  characterSpritesActive:
-  - {fileID: 21300000, guid: a25b60d099e15274bbbc6af81bf916d9, type: 3}
-  - {fileID: 21300000, guid: c396d4b3fd13bd84db8462540536d0a2, type: 3}
-  - {fileID: 21300000, guid: f158fd32f6b7612409350aafd9175c9e, type: 3}
-  - {fileID: 21300000, guid: 07dbc3afed7051e409a82aba6979ddcb, type: 3}
-  characterSpritesEyesClosed:
-  - {fileID: 21300000, guid: ec4dc6be6bd71d9408f89df0e6fe2041, type: 3}
-  - {fileID: 21300000, guid: 1d046ba827d0f614499230a9ab84b74f, type: 3}
-  - {fileID: 21300000, guid: 6fe8896e74d10d3439d2b562b0c044cf, type: 3}
-  - {fileID: 21300000, guid: b7ce1d167e52f2b4ca1042e660ad7be5, type: 3}
-  characterSpritesEyesOpen:
-  - {fileID: 21300000, guid: 88ca2fe3036c0e445ae6088abc3ad5fe, type: 3}
-  - {fileID: 21300000, guid: b5981955173e6aa4bab86d7d3d2e270d, type: 3}
-  - {fileID: 21300000, guid: 3841c37c868efd94ab4b33733893ad76, type: 3}
-  - {fileID: 21300000, guid: 6f85c018fce920647bed6ec6cc16e61a, type: 3}
 --- !u!4 &419666009
 Transform:
   m_ObjectHideFlags: 0
@@ -1233,13 +1208,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SelectionManager
   promptText: {fileID: 1395434257}
   characterPortraits:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 127503010}
+  - {fileID: 1471344122}
+  - {fileID: 272330669}
+  - {fileID: 67896010}
   dialogManager: {fileID: 419666008}
-  dashedFrameSprite: {fileID: 21300000, guid: 5d972123b93cf0245b66e5df6041b593, type: 3}
-  solidFrameSprite: {fileID: 21300000, guid: eb7baf99c2a2b6a458a1b1bc74be7283, type: 3}
+  deselectedSprites:
+  - {fileID: 21300000, guid: 7f651a5b8b26f5443b992c4f4ed02a0a, type: 3}
+  - {fileID: 21300000, guid: 373a2c63e1474c94693ca0cd3d5dcee2, type: 3}
+  - {fileID: 21300000, guid: e957be3edb3c2fd48be68a1a044e6e70, type: 3}
+  - {fileID: 21300000, guid: 07d9cbae422227d43bc7b6c23e07c8fc, type: 3}
+  hoveredSprites:
+  - {fileID: 21300000, guid: d669c6c6232011540929985ba0d68bd0, type: 3}
+  - {fileID: 21300000, guid: 33d822120e6522e49944d969a82743ad, type: 3}
+  - {fileID: 21300000, guid: 4e56a2f5d486c90429c37f494435966d, type: 3}
+  - {fileID: 21300000, guid: e56ceeceba0eb5a44bca145afa29c1a2, type: 3}
+  selectedSprites:
+  - {fileID: 21300000, guid: e66cb0165e78b464ba38c93b7054c63e, type: 3}
+  - {fileID: 21300000, guid: 615ca42ce8b3ae24c82d571f29b80d2c, type: 3}
+  - {fileID: 21300000, guid: 9eec6bff22bd5a04ab75d9e14e26b5e7, type: 3}
+  - {fileID: 21300000, guid: 32a1e0ff102cc76438966ffb6d680113, type: 3}
+  speakingSprites:
+  - {fileID: 21300000, guid: e59358e7bd3a7bb49b9a322d466cab10, type: 3}
+  - {fileID: 21300000, guid: e7b9bc843a546944a861d7ab7f2cb079, type: 3}
+  - {fileID: 21300000, guid: 4844de221226ae24fa744dc0ca2412f8, type: 3}
+  - {fileID: 21300000, guid: ae92253dfd4c56e4e9c9ae5d1a8413f7, type: 3}
 --- !u!4 &1486696452
 Transform:
   m_ObjectHideFlags: 0

@@ -25,14 +25,6 @@ public class DialogManager : MonoBehaviour
     public RectTransform dialogPanel;
     private Camera uiCamera;
     public TextMeshProUGUI dialogText;
-    
-    public Image[] characterPortraits;
-    public Sprite[] characterSpritesInactive;
-    public Sprite[] characterSpritesActive;
-    
-    [Header("Selection Phase Sprites")]
-    public Sprite[] characterSpritesEyesClosed; // Used when not selected/hovered during selection
-    public Sprite[] characterSpritesEyesOpen;   // Used when hovered during selection
 
     private Queue<string> dialogQueue = new Queue<string>();
     private int currentSpeaker = -1;
@@ -74,8 +66,11 @@ public class DialogManager : MonoBehaviour
                 }
                 pendingDialogQueue.Clear();
                 
-                // Reset character sprites to normal dialog sprites
-                ResetCharacterSpritesToNormal();
+                // Reset character sprites to hovered state for dialog phase
+                if (selectionManager != null)
+                {
+                    selectionManager.SetAllCharactersToHovered();
+                }
                 
                 Debug.Log("Dialog delay complete. Starting conversation.");
                 StartDialog();
@@ -193,15 +188,15 @@ public class DialogManager : MonoBehaviour
 
     void HighlightSpeaker(int speakerIndex)
     {
-        for (int i = 0; i < characterPortraits.Length; i++)
+        if (selectionManager != null)
         {
-            if (i == speakerIndex && i < characterSpritesActive.Length)
+            // Set all characters to hovered state first
+            selectionManager.SetAllCharactersToHovered();
+            
+            // Set the current speaker to speaking state
+            if (speakerIndex >= 0)
             {
-                characterPortraits[i].sprite = characterSpritesActive[i];
-            }
-            else if (i < characterSpritesInactive.Length)
-            {
-                characterPortraits[i].sprite = characterSpritesInactive[i];
+                selectionManager.SetCharacterToSpeaking(speakerIndex);
             }
         }
     }
@@ -813,50 +808,7 @@ public class DialogManager : MonoBehaviour
     }
     
 
-    
-    // Methods for selection phase sprite management
-    public void SetCharacterToEyesClosed(int characterIndex)
-    {
-        if (characterIndex >= 0 && characterIndex < characterPortraits.Length && 
-            characterPortraits[characterIndex] != null &&
-            characterIndex < characterSpritesEyesClosed.Length &&
-            characterSpritesEyesClosed[characterIndex] != null)
-        {
-            characterPortraits[characterIndex].sprite = characterSpritesEyesClosed[characterIndex];
-        }
-    }
-    
-    public void SetCharacterToEyesOpen(int characterIndex)
-    {
-        if (characterIndex >= 0 && characterIndex < characterPortraits.Length && 
-            characterPortraits[characterIndex] != null &&
-            characterIndex < characterSpritesEyesOpen.Length &&
-            characterSpritesEyesOpen[characterIndex] != null)
-        {
-            characterPortraits[characterIndex].sprite = characterSpritesEyesOpen[characterIndex];
-        }
-    }
-    
-    public void SetAllCharactersToEyesClosed()
-    {
-        for (int i = 0; i < characterPortraits.Length; i++)
-        {
-            SetCharacterToEyesClosed(i);
-        }
-    }
-    
-    public void ResetCharacterSpritesToNormal()
-    {
-        // Reset all character portraits to their normal dialog sprites (inactive by default)
-        for (int i = 0; i < characterPortraits.Length; i++)
-        {
-            if (i < characterSpritesInactive.Length && characterSpritesInactive[i] != null &&
-                characterPortraits[i] != null)
-            {
-                characterPortraits[i].sprite = characterSpritesInactive[i];
-            }
-        }
-    }
+
     
     // Conditional dialog system
     private bool EvaluateCondition(string conditionLine)

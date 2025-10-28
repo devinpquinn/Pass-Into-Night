@@ -10,9 +10,11 @@ public class SelectionManager : MonoBehaviour
     public Image[] characterPortraits = new Image[4]; // Waif, Priestess, Warder, Pilot (must have CanvasGroup components)
     public DialogManager dialogManager;
     
-    [Header("Portrait Frames")]
-    public Sprite dashedFrameSprite;
-    public Sprite solidFrameSprite;
+    [Header("Portrait Sprites")]
+    public Sprite[] deselectedSprites = new Sprite[4]; // Default state during selection
+    public Sprite[] hoveredSprites = new Sprite[4];    // Mouse hover during selection
+    public Sprite[] selectedSprites = new Sprite[4];   // Selected during selection
+    public Sprite[] speakingSprites = new Sprite[4];   // Speaking during conversation
     
     // Selection state
     private bool isSelectionActive = false;
@@ -171,37 +173,26 @@ public class SelectionManager : MonoBehaviour
     {
         if (characterPortraits[characterIndex] == null) return;
         
-        // Update frame sprite based on selection state
-        Image portrait = characterPortraits[characterIndex].GetComponent<Image>();
-        if (portrait != null)
-        {
-            if (selectedCharacters.Contains(characterIndex))
-            {
-                // Selected: use solid frame
-                if (solidFrameSprite != null)
-                    portrait.sprite = solidFrameSprite;
-            }
-            else
-            {
-                // Not selected: use dashed frame
-                if (dashedFrameSprite != null)
-                    portrait.sprite = dashedFrameSprite;
-            }
-        }
+        Image portrait = characterPortraits[characterIndex];
         
-        // Update character sprite based on hover/selection state
-        if (dialogManager != null)
+        // Determine which sprite to use based on selection state
+        if (selectedCharacters.Contains(characterIndex))
         {
-            if (selectedCharacters.Contains(characterIndex) || characterIndex == hoveredCharacter)
-            {
-                // Selected or hovered: eyes open
-                dialogManager.SetCharacterToEyesOpen(characterIndex);
-            }
-            else
-            {
-                // Not selected and not hovered: eyes closed
-                dialogManager.SetCharacterToEyesClosed(characterIndex);
-            }
+            // Selected: use selected sprite
+            if (characterIndex < selectedSprites.Length && selectedSprites[characterIndex] != null)
+                portrait.sprite = selectedSprites[characterIndex];
+        }
+        else if (characterIndex == hoveredCharacter)
+        {
+            // Hovered but not selected: use hovered sprite
+            if (characterIndex < hoveredSprites.Length && hoveredSprites[characterIndex] != null)
+                portrait.sprite = hoveredSprites[characterIndex];
+        }
+        else
+        {
+            // Neither selected nor hovered: use deselected sprite
+            if (characterIndex < deselectedSprites.Length && deselectedSprites[characterIndex] != null)
+                portrait.sprite = deselectedSprites[characterIndex];
         }
     }
     
@@ -211,19 +202,12 @@ public class SelectionManager : MonoBehaviour
         {
             if (characterPortraits[i] != null)
             {
-                // Set dashed frame for inactive state
-                Image portrait = characterPortraits[i].GetComponent<Image>();
-                if (portrait != null && dashedFrameSprite != null)
+                // Set deselected sprite for inactive state
+                if (i < deselectedSprites.Length && deselectedSprites[i] != null)
                 {
-                    portrait.sprite = dashedFrameSprite;
+                    characterPortraits[i].sprite = deselectedSprites[i];
                 }
             }
-        }
-        
-        // Set all characters to eyes-closed during selection phase
-        if (dialogManager != null)
-        {
-            dialogManager.SetAllCharactersToEyesClosed();
         }
     }
     
@@ -253,6 +237,8 @@ public class SelectionManager : MonoBehaviour
             if (selectedCharacters.Contains(i))
             {
                 characterPortraits[i].gameObject.SetActive(true);
+                // Set to hovered state for conversation phase
+                SetCharacterToHovered(i);
             }
             else
             {
@@ -324,13 +310,13 @@ public class SelectionManager : MonoBehaviour
                 characterPortraits[i].gameObject.SetActive(true);
                 
                 // Reset image color and sprite (in case it was set to clear during animation)
-                Image portrait = characterPortraits[i].GetComponent<Image>();
+                Image portrait = characterPortraits[i];
                 if (portrait != null)
                 {
                     portrait.color = Color.white;
-                    // Reset to dashed frame for new selection phase
-                    if (dashedFrameSprite != null)
-                        portrait.sprite = dashedFrameSprite;
+                    // Reset to deselected sprite for new selection phase
+                    if (i < deselectedSprites.Length && deselectedSprites[i] != null)
+                        portrait.sprite = deselectedSprites[i];
                 }
                 
                 // Reset alpha to fully visible
@@ -352,5 +338,36 @@ public class SelectionManager : MonoBehaviour
         
         // Start a new round (selects next conversation and begins selection)
         StartNewRound();
+    }
+    
+    // Methods for managing portrait sprites during conversation phase
+    public void SetCharacterToHovered(int characterIndex)
+    {
+        if (characterIndex >= 0 && characterIndex < characterPortraits.Length && 
+            characterPortraits[characterIndex] != null &&
+            characterIndex < hoveredSprites.Length &&
+            hoveredSprites[characterIndex] != null)
+        {
+            characterPortraits[characterIndex].sprite = hoveredSprites[characterIndex];
+        }
+    }
+    
+    public void SetCharacterToSpeaking(int characterIndex)
+    {
+        if (characterIndex >= 0 && characterIndex < characterPortraits.Length && 
+            characterPortraits[characterIndex] != null &&
+            characterIndex < speakingSprites.Length &&
+            speakingSprites[characterIndex] != null)
+        {
+            characterPortraits[characterIndex].sprite = speakingSprites[characterIndex];
+        }
+    }
+    
+    public void SetAllCharactersToHovered()
+    {
+        for (int i = 0; i < characterPortraits.Length; i++)
+        {
+            SetCharacterToHovered(i);
+        }
     }
 }
