@@ -66,10 +66,10 @@ public class DialogManager : MonoBehaviour
                 }
                 pendingDialogQueue.Clear();
                 
-                // Reset character sprites to hovered state for dialog phase
+                // Reset character sprites to selected state for dialog phase
                 if (selectionManager != null)
                 {
-                    selectionManager.SetAllCharactersToHovered();
+                    selectionManager.SetAllCharactersToSelected();
                 }
                 
                 Debug.Log("Dialog delay complete. Starting conversation.");
@@ -190,8 +190,8 @@ public class DialogManager : MonoBehaviour
     {
         if (selectionManager != null)
         {
-            // Set all characters to hovered state first
-            selectionManager.SetAllCharactersToHovered();
+            // Set all characters to selected state first
+            selectionManager.SetAllCharactersToSelected();
             
             // Set the current speaker to speaking state
             if (speakerIndex >= 0)

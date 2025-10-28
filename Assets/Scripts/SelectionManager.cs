@@ -237,8 +237,8 @@ public class SelectionManager : MonoBehaviour
             if (selectedCharacters.Contains(i))
             {
                 characterPortraits[i].gameObject.SetActive(true);
-                // Set to hovered state for conversation phase
-                SetCharacterToHovered(i);
+                // Set to selected state for conversation phase
+                SetCharacterToSelected(i);
             }
             else
             {
@@ -352,6 +352,17 @@ public class SelectionManager : MonoBehaviour
         }
     }
     
+    public void SetCharacterToSelected(int characterIndex)
+    {
+        if (characterIndex >= 0 && characterIndex < characterPortraits.Length && 
+            characterPortraits[characterIndex] != null &&
+            characterIndex < selectedSprites.Length &&
+            selectedSprites[characterIndex] != null)
+        {
+            characterPortraits[characterIndex].sprite = selectedSprites[characterIndex];
+        }
+    }
+    
     public void SetCharacterToSpeaking(int characterIndex)
     {
         if (characterIndex >= 0 && characterIndex < characterPortraits.Length && 
@@ -368,6 +379,14 @@ public class SelectionManager : MonoBehaviour
         for (int i = 0; i < characterPortraits.Length; i++)
         {
             SetCharacterToHovered(i);
+        }
+    }
+    
+    public void SetAllCharactersToSelected()
+    {
+        for (int i = 0; i < characterPortraits.Length; i++)
+        {
+            SetCharacterToSelected(i);
         }
     }
 }
