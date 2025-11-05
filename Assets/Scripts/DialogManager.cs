@@ -505,7 +505,7 @@ public class DialogManager : MonoBehaviour
                 }
                 else
                 {
-                    // Handle command (relationship/arc modification)
+                    // Handle command (arc modification)
                     // Instead of executing immediately, preserve the command for later execution
                     Debug.Log($"Preserving command for later execution: '{line}'");
                     processedConversation.Add(line);
@@ -525,7 +525,7 @@ public class DialogManager : MonoBehaviour
         return processedConversation;
     }
     
-    // Process command lines for relationship/arc modifications
+    // Process command lines for arc modifications
     private void ProcessCommand(string commandLine)
     {
         if (characterManager == null)
@@ -541,26 +541,18 @@ public class DialogManager : MonoBehaviour
         
         try
         {
-            // Parse relationship commands: "SET: Waif->Priestess +2" or "SET: Waif->Priestess = 5"
+            // Parse arc commands: "SET: Waif.arc +2" or "SET: Waif.arc = 5"
             if (command.StartsWith("SET:"))
             {
                 string setCommand = command.Substring(4).Trim(); // Remove "SET:"
                 
-                if (setCommand.Contains("<->"))
-                {
-                    ProcessMutualRelationshipCommand(setCommand);
-                }
-                else if (setCommand.Contains("->"))
-                {
-                    ProcessRelationshipCommand(setCommand);
-                }
-                else if (setCommand.Contains(".arc"))
+                if (setCommand.Contains(".arc"))
                 {
                     ProcessArcCommand(setCommand);
                 }
                 else
                 {
-                    Debug.LogWarning($"Unknown SET command format: {setCommand}");
+                    Debug.LogWarning($"Unknown SET command format: {setCommand}. Only arc commands are supported.");
                 }
             }
             else
@@ -571,168 +563,6 @@ public class DialogManager : MonoBehaviour
         catch (System.Exception e)
         {
             Debug.LogError($"Error processing command '{commandLine}': {e.Message}");
-        }
-    }
-    
-    private void ProcessRelationshipCommand(string command)
-    {
-        try
-        {
-            Debug.Log($"Processing relationship command: '{command}'");
-            
-            // Parse format: "Waif->Priestess +2" or "Waif->Priestess = 5"
-            string[] parts = command.Split(new string[] { "->" }, System.StringSplitOptions.None);
-            string fromChar = parts[0].Trim();
-            
-            string rightPart = parts[1].Trim();
-            
-            // Find the operation character and split accordingly
-            char operation = ' ';
-            string toChar = "";
-            int value = 0;
-            
-            if (rightPart.Contains(" ="))
-            {
-                operation = '=';
-                string[] equalParts = rightPart.Split(new char[] { '=' }, 2);
-                toChar = equalParts[0].Trim();
-                value = int.Parse(equalParts[1].Trim());
-            }
-            else if (rightPart.Contains(" +"))
-            {
-                operation = '+';
-                string[] plusParts = rightPart.Split(new char[] { '+' }, 2);
-                toChar = plusParts[0].Trim();
-                value = int.Parse(plusParts[1].Trim());
-            }
-            else if (rightPart.Contains(" -"))
-            {
-                operation = '-';
-                string[] minusParts = rightPart.Split(new char[] { '-' }, 2);
-                toChar = minusParts[0].Trim();
-                value = int.Parse(minusParts[1].Trim());
-            }
-            else
-            {
-                Debug.LogWarning($"No valid operation found in: {rightPart}");
-                return;
-            }
-            
-            Debug.Log($"Parsed: {fromChar} -> {toChar}, operation: {operation}, value: {value}");
-            
-            CharacterManager.CharacterID fromID = GetCharacterID(fromChar);
-            CharacterManager.CharacterID toID = GetCharacterID(toChar);
-            
-            if (operation == '=')
-            {
-                characterManager.SetRelationship(fromID, toID, value);
-                Debug.Log($"Set relationship {fromID}->{toID} = {value}");
-            }
-            else if (operation == '+')
-            {
-                int currentValue = characterManager.GetRelationship(fromID, toID);
-                int newValue = currentValue + value;
-                characterManager.SetRelationship(fromID, toID, newValue);
-                Debug.Log($"Modified relationship {fromID}->{toID}: {currentValue} + {value} = {newValue}");
-            }
-            else if (operation == '-')
-            {
-                int currentValue = characterManager.GetRelationship(fromID, toID);
-                int newValue = currentValue - value;
-                characterManager.SetRelationship(fromID, toID, newValue);
-                Debug.Log($"Modified relationship {fromID}->{toID}: {currentValue} - {value} = {newValue}");
-            }
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError($"Error processing relationship command '{command}': {e.Message}");
-        }
-    }
-    
-    private void ProcessMutualRelationshipCommand(string command)
-    {
-        try
-        {
-            Debug.Log($"Processing mutual relationship command: '{command}'");
-            
-            // Parse format: "CharacterA<->CharacterB +2" or "CharacterA<->CharacterB = 5"
-            string[] parts = command.Split(new string[] { "<->" }, System.StringSplitOptions.None);
-            string char1 = parts[0].Trim();
-            
-            string rightPart = parts[1].Trim();
-            
-            // Find the operation character and split accordingly
-            char operation = ' ';
-            string char2 = "";
-            int value = 0;
-            
-            if (rightPart.Contains(" ="))
-            {
-                operation = '=';
-                string[] equalParts = rightPart.Split(new char[] { '=' }, 2);
-                char2 = equalParts[0].Trim();
-                value = int.Parse(equalParts[1].Trim());
-            }
-            else if (rightPart.Contains(" +"))
-            {
-                operation = '+';
-                string[] plusParts = rightPart.Split(new char[] { '+' }, 2);
-                char2 = plusParts[0].Trim();
-                value = int.Parse(plusParts[1].Trim());
-            }
-            else if (rightPart.Contains(" -"))
-            {
-                operation = '-';
-                string[] minusParts = rightPart.Split(new char[] { '-' }, 2);
-                char2 = minusParts[0].Trim();
-                value = int.Parse(minusParts[1].Trim());
-            }
-            else
-            {
-                Debug.LogWarning($"No valid operation found in mutual relationship: {rightPart}");
-                return;
-            }
-            
-            Debug.Log($"Parsed mutual: {char1} <-> {char2}, operation: {operation}, value: {value}");
-            
-            CharacterManager.CharacterID char1ID = GetCharacterID(char1);
-            CharacterManager.CharacterID char2ID = GetCharacterID(char2);
-            
-            // Apply the operation to both directions
-            if (operation == '=')
-            {
-                characterManager.SetRelationship(char1ID, char2ID, value);
-                characterManager.SetRelationship(char2ID, char1ID, value);
-                Debug.Log($"Set mutual relationship {char1ID}<->{char2ID} = {value}");
-            }
-            else if (operation == '+')
-            {
-                int currentValue1 = characterManager.GetRelationship(char1ID, char2ID);
-                int newValue1 = currentValue1 + value;
-                characterManager.SetRelationship(char1ID, char2ID, newValue1);
-                
-                int currentValue2 = characterManager.GetRelationship(char2ID, char1ID);
-                int newValue2 = currentValue2 + value;
-                characterManager.SetRelationship(char2ID, char1ID, newValue2);
-                
-                Debug.Log($"Modified mutual relationship {char1ID}<->{char2ID}: {currentValue1}/{currentValue2} + {value} = {newValue1}/{newValue2}");
-            }
-            else if (operation == '-')
-            {
-                int currentValue1 = characterManager.GetRelationship(char1ID, char2ID);
-                int newValue1 = currentValue1 - value;
-                characterManager.SetRelationship(char1ID, char2ID, newValue1);
-                
-                int currentValue2 = characterManager.GetRelationship(char2ID, char1ID);
-                int newValue2 = currentValue2 - value;
-                characterManager.SetRelationship(char2ID, char1ID, newValue2);
-                
-                Debug.Log($"Modified mutual relationship {char1ID}<->{char2ID}: {currentValue1}/{currentValue2} - {value} = {newValue1}/{newValue2}");
-            }
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError($"Error processing mutual relationship command '{command}': {e.Message}");
         }
     }
     
@@ -825,110 +655,15 @@ public class DialogManager : MonoBehaviour
         string condition = conditionLine.Replace("{IF:", "").Replace("}", "").Trim();
         Debug.Log($"Parsed condition: '{condition}'");
         
-        // Parse relationship conditions: "Waif->Priestess >= 3"
-        if (condition.Contains("->"))
-        {
-            Debug.Log("Detected relationship condition");
-            return EvaluateRelationshipCondition(condition);
-        }
         // Parse arc conditions: "Waif.arc >= 2"
-        else if (condition.Contains(".arc"))
+        if (condition.Contains(".arc"))
         {
             Debug.Log("Detected arc condition");
             return EvaluateArcCondition(condition);
         }
         
-        Debug.LogWarning($"Unknown condition format: {condition}");
+        Debug.LogWarning($"Unknown condition format: {condition}. Only arc conditions are supported.");
         return false;
-    }
-    
-    private bool EvaluateRelationshipCondition(string condition)
-    {
-        try
-        {
-            Debug.Log($"Parsing relationship condition: '{condition}'");
-            
-            // Parse format: "Waif->Priestess >= 3"
-            string[] parts = condition.Split(new string[] { "->" }, System.StringSplitOptions.None);
-            string fromChar = parts[0].Trim();
-            Debug.Log($"From character: '{fromChar}'");
-            
-            string rightPart = parts[1].Trim(); // "Priestess >= 3"
-            Debug.Log($"Right part: '{rightPart}'");
-            
-            // Find the operator and extract character name and value
-            string op = "";
-            string toChar = "";
-            int targetValue = 0;
-            
-            if (rightPart.Contains(" >="))
-            {
-                op = ">=";
-                string[] opParts = rightPart.Split(new string[] { " >=" }, System.StringSplitOptions.None);
-                toChar = opParts[0].Trim();
-                targetValue = int.Parse(opParts[1].Trim());
-            }
-            else if (rightPart.Contains(" <="))
-            {
-                op = "<=";
-                string[] opParts = rightPart.Split(new string[] { " <=" }, System.StringSplitOptions.None);
-                toChar = opParts[0].Trim();
-                targetValue = int.Parse(opParts[1].Trim());
-            }
-            else if (rightPart.Contains(" =="))
-            {
-                op = "==";
-                string[] opParts = rightPart.Split(new string[] { " ==" }, System.StringSplitOptions.None);
-                toChar = opParts[0].Trim();
-                targetValue = int.Parse(opParts[1].Trim());
-            }
-            else if (rightPart.Contains(" !="))
-            {
-                op = "!=";
-                string[] opParts = rightPart.Split(new string[] { " !=" }, System.StringSplitOptions.None);
-                toChar = opParts[0].Trim();
-                targetValue = int.Parse(opParts[1].Trim());
-            }
-            else if (rightPart.Contains(" >"))
-            {
-                op = ">";
-                string[] opParts = rightPart.Split(new string[] { " >" }, System.StringSplitOptions.None);
-                toChar = opParts[0].Trim();
-                targetValue = int.Parse(opParts[1].Trim());
-            }
-            else if (rightPart.Contains(" <"))
-            {
-                op = "<";
-                string[] opParts = rightPart.Split(new string[] { " <" }, System.StringSplitOptions.None);
-                toChar = opParts[0].Trim();
-                targetValue = int.Parse(opParts[1].Trim());
-            }
-            else
-            {
-                Debug.LogWarning($"Unknown operator in relationship condition: {rightPart}");
-                return false;
-            }
-            
-            Debug.Log($"To character: '{toChar}', Operator: '{op}', Target value: {targetValue}");
-            
-            // Convert character names to IDs
-            CharacterManager.CharacterID fromID = GetCharacterID(fromChar);
-            CharacterManager.CharacterID toID = GetCharacterID(toChar);
-            Debug.Log($"Character IDs: {fromID} -> {toID}");
-            
-            int currentValue = characterManager.GetRelationship(fromID, toID);
-            Debug.Log($"Current relationship value: {currentValue}");
-            
-            bool result = EvaluateComparison(currentValue, op, targetValue);
-            Debug.Log($"Comparison result: {currentValue} {op} {targetValue} = {result}");
-            
-            return result;
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError($"Error parsing relationship condition '{condition}': {e.Message}");
-            return false;
-        }
     }
     
     private bool EvaluateArcCondition(string condition)
