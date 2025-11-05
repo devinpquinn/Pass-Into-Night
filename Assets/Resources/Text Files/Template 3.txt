@@ -3,23 +3,17 @@ Waif: Is it strange that being lost feels like freedom?
 Priestess: Freedom and captivity often wear each other's faces.
 Warder: This isn't freedom. This is chaos barely held in check.
 Waif: Maybe that's what freedom really is.
-{IF: Waif->Priestess >= 2}
+{IF: Waif.arc >= 2}
 Priestess: From the mouths of babes... wisdom often comes from unexpected places.
 Waif: I learned that from watching you both.
-{SET: Waif->Priestess +1}
-{SET: Waif->Warder +1}
-{SET: Priestess->Waif +1}
-{SET: Priestess->Warder +1}
-{SET: Warder->Waif +1}
-{SET: Warder->Priestess +1}
+{SET: Waif.arc +1}
+{SET: Priestess.arc +1}
+{SET: Warder.arc +1}
 {ELSE}
 Priestess: From the mouths of babes...
-{SET: Waif->Priestess +1}
-{SET: Waif->Warder +1}
-{SET: Priestess->Waif +1}
-{SET: Priestess->Warder +1}
-{SET: Warder->Waif +1}
-{SET: Warder->Priestess +1}
+{SET: Waif.arc +1}
+{SET: Priestess.arc +1}
+{SET: Warder.arc +1}
 {ENDIF}
 Warder: I... see your point.
 
@@ -29,23 +23,17 @@ Priestess: In my order, we believe each star holds the memory of a life.
 Pilot: Navigational charts give them designations, but that's not the same as names.
 Waif: I'd like to name them all someday.
 Priestess: A worthy aspiration.
-{IF: Waif->Pilot >= 2}
+{IF: Waif.arc >= 2}
 Pilot: Just don't interfere with my navigation system... though I wouldn't mind helping you name a few.
 Waif: Really? That would be amazing!
-{SET: Waif->Priestess +1}
-{SET: Waif->Pilot +1}
-{SET: Priestess->Waif +1}
-{SET: Priestess->Pilot +1}
-{SET: Pilot->Waif +1}
-{SET: Pilot->Priestess +1}
+{SET: Waif.arc +1}
+{SET: Priestess.arc +1}
+{SET: Pilot.arc +1}
 {ELSE}
 Pilot: Just don't interfere with my navigation system.
-{SET: Waif->Priestess +1}
-{SET: Waif->Pilot +1}
-{SET: Priestess->Waif +1}
-{SET: Priestess->Pilot +1}
-{SET: Pilot->Waif +1}
-{SET: Pilot->Priestess +1}
+{SET: Waif.arc +1}
+{SET: Priestess.arc +1}
+{SET: Pilot.arc +1}
 {ENDIF}
 
 [Waif-Warder-Pilot]
@@ -54,23 +42,17 @@ Pilot: Hard to say with these readings.
 Warder: We need certainties, not estimates.
 Waif: Sometimes uncertainty is more honest than false certainties.
 Pilot: The kid's got a point, Warder.
-{IF: Warder->Pilot >= 2}
+{IF: Warder.arc >= 2}
 Warder: I suppose... flexibility has its place. Your experience has taught me that.
 Pilot: And your discipline has kept us all grounded. We make a good team.
-{SET: Waif->Warder +1}
-{SET: Waif->Pilot +1}
-{SET: Warder->Waif +1}
-{SET: Warder->Pilot +1}
-{SET: Pilot->Waif +1}
-{SET: Pilot->Warder +1}
+{SET: Waif.arc +1}
+{SET: Warder.arc +1}
+{SET: Pilot.arc +1}
 {ELSE}
 Warder: I suppose... flexibility has its place.
-{SET: Waif->Warder +1}
-{SET: Waif->Pilot +1}
-{SET: Warder->Waif +1}
-{SET: Warder->Pilot +1}
-{SET: Pilot->Waif +1}
-{SET: Pilot->Warder +1}
+{SET: Waif.arc +1}
+{SET: Warder.arc +1}
+{SET: Pilot.arc +1}
 {ENDIF}
 
 [Priestess-Warder-Pilot]
@@ -79,23 +61,17 @@ Warder: Weight keeps us grounded. Focused.
 Pilot: Some weight is necessary. Some just slows you down.
 Priestess: Wisdom lies in knowing the difference.
 Warder: And how do we learn that difference?
-{IF: Priestess->Warder >= 3}
+{IF: Priestess.arc >= 3}
 Pilot: Trial and error, mostly.
 Priestess: And forgiveness. Mostly forgiveness... for ourselves and each other.
 Warder: I'm beginning to understand the value of both.
-{SET: Priestess->Warder +1}
-{SET: Priestess->Pilot +1}
-{SET: Warder->Priestess +1}
-{SET: Warder->Pilot +1}
-{SET: Pilot->Priestess +1}
-{SET: Pilot->Warder +1}
+{SET: Priestess.arc +1}
+{SET: Warder.arc +1}
+{SET: Pilot.arc +1}
 {ELSE}
 Pilot: Trial and error, mostly.
 Priestess: And forgiveness. Mostly forgiveness.
-{SET: Priestess->Warder +1}
-{SET: Priestess->Pilot +1}
-{SET: Warder->Priestess +1}
-{SET: Warder->Pilot +1}
-{SET: Pilot->Priestess +1}
-{SET: Pilot->Warder +1}
+{SET: Priestess.arc +1}
+{SET: Warder.arc +1}
+{SET: Pilot.arc +1}
 {ENDIF}
