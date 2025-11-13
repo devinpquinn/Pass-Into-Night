@@ -251,6 +251,15 @@ public class DialogManager : MonoBehaviour
         }
     }
     
+    private System.Collections.IEnumerator SetPortraitsAfterFrame()
+    {
+        yield return null; // Wait one frame
+        if (selectionManager != null)
+        {
+            selectionManager.SetAllCharactersToSelected();
+        }
+    }
+    
     // Conversation Loading Methods
     public void LoadConversationForCharacters(List<string> selectedCharacterNames)
     {
@@ -734,13 +743,13 @@ public class DialogManager : MonoBehaviour
         if (dialogQueue.Count > 0)
         {
             Debug.Log($"Ending scene loaded with {dialogQueue.Count} lines. Starting dialog immediately...");
-            // Set all portraits to selected state for ending scenes
-            if (selectionManager != null)
-            {
-                selectionManager.SetAllCharactersToSelected();
-            }
             // Start ending scenes immediately without delay
             StartDialog();
+            // Set all portraits to selected state for ending scenes AFTER starting dialog
+            if (selectionManager != null)
+            {
+                StartCoroutine(SetPortraitsAfterFrame());
+            }
         }
         else
         {
