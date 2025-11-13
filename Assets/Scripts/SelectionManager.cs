@@ -212,7 +212,7 @@ public class SelectionManager : MonoBehaviour
         }
     }
     
-    void SetAllPortraitsInactive()
+    public void SetAllPortraitsInactive()
     {
         for (int i = 0; i < characterPortraits.Length; i++)
         {

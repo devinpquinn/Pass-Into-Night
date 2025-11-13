@@ -1,31 +1,4 @@
-# Example Ending Scene
-# This is a sample ending scene that plays through all four characters
-# Notice there are no chunk headers like [Waif-Priestess] - just continuous dialog
-
-The four travelers stand together at the edge of the void, the pale light of distant stars reflecting in their eyes.
-
-0: We made it this far together.
-
-1: The path was longer than I expected, but shorter than I feared.
-
-2: Each step brought us closer to this moment... and to each other.
-
-3: What lies beyond is unknown, but we face it as one.
-
-The void stretches before them, infinite and welcoming.
-
-{SET:all.arc+1}
-
-0: Are you ready?
-
-1: As ready as one can ever be.
-
-2: Together, then.
-
-3: Together.
-
-They step forward into the light, their forms dissolving into something greater than the sum of their parts.
-
-The journey ends where all journeys must - in transformation.
-
-# End of ending scene
+This is the example ending scene.
+Here it is.
+Waif: Look, I'm talking!
+Priestess: Me too!

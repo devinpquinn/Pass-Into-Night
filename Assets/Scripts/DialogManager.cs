@@ -217,9 +217,12 @@ public class DialogManager : MonoBehaviour
 
     void HighlightSpeaker(int speakerIndex)
     {
-        // Don't highlight speakers during ending scenes
+        // Handle ending scene highlighting separately
         if (isPlayingEndingScene)
+        {
+            HighlightSpeakerForEndingScene(speakerIndex);
             return;
+        }
             
         if (selectionManager != null)
         {
@@ -231,6 +234,20 @@ public class DialogManager : MonoBehaviour
             {
                 selectionManager.SetCharacterToSpeaking(speakerIndex);
             }
+        }
+    }
+    
+    void HighlightSpeakerForEndingScene(int speakerIndex)
+    {
+        if (selectionManager == null) return;
+        
+        // For ending scenes, set all characters to selected state
+        selectionManager.SetAllCharactersToSelected();
+        
+        // Set the current speaker to speaking state
+        if (speakerIndex >= 0)
+        {
+            selectionManager.SetCharacterToSpeaking(speakerIndex);
         }
     }
     
@@ -717,6 +734,11 @@ public class DialogManager : MonoBehaviour
         if (dialogQueue.Count > 0)
         {
             Debug.Log($"Ending scene loaded with {dialogQueue.Count} lines. Starting dialog immediately...");
+            // Set all portraits to selected state for ending scenes
+            if (selectionManager != null)
+            {
+                selectionManager.SetAllCharactersToSelected();
+            }
             // Start ending scenes immediately without delay
             StartDialog();
         }
