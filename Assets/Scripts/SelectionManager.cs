@@ -48,7 +48,10 @@ public class SelectionManager : MonoBehaviour
     private System.Collections.IEnumerator CheckForEndingSceneAndStart()
     {
         // Wait a frame to ensure DialogManager has initialized
-        yield return null;
+        if(dialogManager == null)
+        {
+            yield return null;
+        }
         
         // Don't start selection if an ending scene is playing
         if (dialogManager != null && dialogManager.IsPlayingEndingScene())
