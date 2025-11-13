@@ -480,6 +480,8 @@ MonoBehaviour:
   selectionManager: {fileID: 1486696451}
   characterManager: {fileID: 1728258052}
   currentConversation: {fileID: 0}
+  testEndingScene: {fileID: 4900000, guid: 6cd3a212919a21e4d85fba49a261978a, type: 3}
+  playTestSceneFirst: 1
   dialogPanel: {fileID: 948208859}
   dialogText: {fileID: 1395434257}
 --- !u!4 &419666009
@@ -1278,8 +1280,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterManager
   characterArcs: 00000000000000000000000000000000
-  relationshipMatrix: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-  showRelationshipLabels: 0
 --- !u!4 &1728258053
 Transform:
   m_ObjectHideFlags: 0

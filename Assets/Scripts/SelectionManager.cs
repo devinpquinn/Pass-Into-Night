@@ -41,6 +41,22 @@ public class SelectionManager : MonoBehaviour
         // Initialize all portraits as inactive
         SetAllPortraitsInactive();
         
+        // Use coroutine to properly wait and check for ending scene
+        StartCoroutine(CheckForEndingSceneAndStart());
+    }
+    
+    private System.Collections.IEnumerator CheckForEndingSceneAndStart()
+    {
+        // Wait a frame to ensure DialogManager has initialized
+        yield return null;
+        
+        // Don't start selection if an ending scene is playing
+        if (dialogManager != null && dialogManager.IsPlayingEndingScene())
+        {
+            Debug.Log("Ending scene detected, skipping initial selection phase");
+            yield break;
+        }
+        
         // Start the first conversation selection
         StartNewRound();
     }

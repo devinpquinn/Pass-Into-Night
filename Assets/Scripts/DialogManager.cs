@@ -13,6 +13,10 @@ public class DialogManager : MonoBehaviour
     [Header("Current Conversation")]
     [SerializeField] private Conversation currentConversation;
     
+    [Header("Ending Scene Testing")]
+    [SerializeField] private TextAsset testEndingScene;
+    [SerializeField] private bool playTestSceneFirst = true;
+    
     [Header("Dialog Timing")]
     private float dialogStartDelay = 1f; // Delay before starting dialog after selection
     private string waitingPlaceholderText = "Loading...";
@@ -21,6 +25,10 @@ public class DialogManager : MonoBehaviour
     private bool isWaitingToStartDialog = false;
     private float dialogDelayTimer = 0f;
     private Queue<string> pendingDialogQueue = new Queue<string>();
+    
+    // Ending scene state
+    private bool isPlayingEndingScene = false;
+    private bool hasPlayedTestScene = false;
     
     public RectTransform dialogPanel;
     private Camera uiCamera;
@@ -46,6 +54,13 @@ public class DialogManager : MonoBehaviour
     void Start()
     {
         uiCamera = Camera.main;
+        
+        // Check if we should play a test ending scene first
+        if (testEndingScene != null && playTestSceneFirst && !hasPlayedTestScene)
+        {
+            hasPlayedTestScene = true;
+            LoadAndPlayEndingScene(testEndingScene);
+        }
     }
 
     void Update()
@@ -108,6 +123,13 @@ public class DialogManager : MonoBehaviour
             HighlightSpeaker(-1);
             currentSpeaker = -1;
             
+            // Check if we're finishing an ending scene
+            if (isPlayingEndingScene)
+            {
+                OnEndingSceneComplete();
+                return;
+            }
+            
             // Reset the selection system for a new selection phase
             if (selectionManager != null)
             {
@@ -137,6 +159,13 @@ public class DialogManager : MonoBehaviour
                 dialogText.text = "";
                 HighlightSpeaker(-1);
                 currentSpeaker = -1;
+                
+                // Check if we're finishing an ending scene
+                if (isPlayingEndingScene)
+                {
+                    OnEndingSceneComplete();
+                    return;
+                }
                 
                 if (selectionManager != null)
                 {
@@ -188,6 +217,10 @@ public class DialogManager : MonoBehaviour
 
     void HighlightSpeaker(int speakerIndex)
     {
+        // Don't highlight speakers during ending scenes
+        if (isPlayingEndingScene)
+            return;
+            
         if (selectionManager != null)
         {
             // Set all characters to selected state first
@@ -637,8 +670,95 @@ public class DialogManager : MonoBehaviour
         return names;
     }
     
+    // Ending Scene Methods
+    
+    /// <summary>
+    /// Loads and plays an ending scene without chunk headers - processes the entire file line by line
+    /// </summary>
+    public void LoadAndPlayEndingScene(TextAsset endingSceneFile)
+    {
+        if (endingSceneFile == null)
+        {
+            Debug.LogError("Ending scene file is null!");
+            return;
+        }
+        
+        Debug.Log($"Loading ending scene: {endingSceneFile.name}");
+        
+        isPlayingEndingScene = true;
+        dialogQueue.Clear();
+        
+        // Load the entire file as one continuous conversation
+        string content = endingSceneFile.text;
+        string[] lines = content.Split('\n');
+        
+        List<string> processedLines = new List<string>();
+        
+        foreach (string line in lines)
+        {
+            string trimmedLine = line.Trim();
+            
+            // Skip empty lines and comments (lines starting with #)
+            if (string.IsNullOrEmpty(trimmedLine) || trimmedLine.StartsWith("#"))
+                continue;
+                
+            processedLines.Add(trimmedLine);
+        }
+        
+        // Process the conversation with conditions (IF/ELSE blocks, commands)
+        List<string> finalConversation = ProcessConversationWithConditions(processedLines);
+        
+        // Queue all dialog lines
+        foreach (string line in finalConversation)
+        {
+            dialogQueue.Enqueue(line);
+        }
+        
+        if (dialogQueue.Count > 0)
+        {
+            Debug.Log($"Ending scene loaded with {dialogQueue.Count} lines. Starting dialog immediately...");
+            // Start ending scenes immediately without delay
+            StartDialog();
+        }
+        else
+        {
+            Debug.LogWarning("Ending scene file contains no dialog lines!");
+            OnEndingSceneComplete();
+        }
+    }
+    
+    /// <summary>
+    /// Called when an ending scene finishes playing
+    /// </summary>
+    private void OnEndingSceneComplete()
+    {
+        Debug.Log("Ending scene complete");
+        isPlayingEndingScene = false;
+        
+        // If this was a test scene, proceed to normal game flow
+        if (hasPlayedTestScene && selectionManager != null)
+        {
+            selectionManager.StartNewRound();
+        }
+    }
+    
+    /// <summary>
+    /// Public method to trigger an ending scene during runtime (for game endings)
+    /// </summary>
+    public void PlayEndingScene(TextAsset endingSceneFile)
+    {
+        LoadAndPlayEndingScene(endingSceneFile);
+    }
+    
+    /// <summary>
+    /// Public method to check if an ending scene is currently playing
+    /// </summary>
+    public bool IsPlayingEndingScene()
+    {
+        return isPlayingEndingScene;
+    }
 
-
+    
     
     // Conditional dialog system
     private bool EvaluateCondition(string conditionLine)
